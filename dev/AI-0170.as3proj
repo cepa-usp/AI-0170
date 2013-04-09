@@ -17,6 +17,7 @@
   <classpaths>
     <class path="src" />
     <class path="..\..\cepa-lib\AS3\src" />
+    <class path="lib" />
   </classpaths>
   <!-- Build options -->
   <build>

@@ -2,9 +2,14 @@ package
 {
 	import cepa.graph.DataStyle;
 	import cepa.graph.GraphFunction;
+	import cepa.graph.rectangular.AxisX;
+	import cepa.graph.rectangular.AxisY;
 	import cepa.graph.rectangular.SimpleGraph;
 	import flash.display.Sprite;
 	import flash.geom.Point;
+	import flash.text.TextField;
+	import flash.text.TextFormat;
+	import flash.text.TextFormatAlign;
 	import flash.utils.Dictionary;
 	/**
 	 * ...
@@ -24,6 +29,7 @@ package
 		private var layerRects:Sprite;
 		private var layerFunctions:Sprite;
 		private var layerPoints:Sprite;
+		private var layerTextos:Sprite;
 		
 		private var graph:SimpleGraph;
 		private var f:GraphFunction;
@@ -33,25 +39,63 @@ package
 		private var selectedType:String;
 		private var selectedIndex:int;
 		private var selectedValue:Number;
-		private var primitiveConstante:Number;
+		//private var primitiveConstante:Number;
+		private var showPrimitive:Boolean = false;
+		private var showHpoints:Boolean = false;
 		
-		public function Graph_model(f:GraphFunction, F:GraphFunction, primitive:Number, points:Vector.<Object> = null) 
+		private var _graphSize:Point = new Point(740, 480);
+		
+		private var txtSomaDTF:TextFormat = new TextFormat("arial", 12, 0x000000);
+		private var txtSoma:TextField;
+		private var txtNDTF:TextFormat = new TextFormat("arial", 12, 0x000000);
+		private var txtN:TextField;
+		private var _lockAB:Boolean = false;
+		
+		public function Graph_model(f:GraphFunction, F:GraphFunction, points:Vector.<Object> = null) 
 		{
 			this.f = f;
 			this.F = F;
-			this.primitiveConstante = primitive;
+			//this.primitiveConstante = primitive;
 			
 			if (points == null) this.points = new Vector.<Object>();
 			else this.points = points;
 			
 			createLayers();
 			createGraph();
+			createTexts();
+			
 			addFuntcion();
-			addPrimitive();
+			//addPrimitive();
 			
 			select(TYPE_NONE, NaN, NaN);
 			
 			draw();
+		}
+		
+		private function createTexts():void 
+		{
+			txtSoma = new TextField();
+			txtSomaDTF.align = TextFormatAlign.RIGHT;
+			txtSoma.defaultTextFormat = txtSomaDTF;
+			txtSoma.width = 200;
+			txtSoma.height = 25;
+			txtSoma.x = 800 - 60 - 205;
+			txtSoma.y = 5;
+			txtSoma.selectable = false;
+			//txtSoma.border = true;
+			layerTextos.addChild(txtSoma);
+			
+			txtN = new TextField();
+			txtNDTF.align = TextFormatAlign.RIGHT;
+			txtN.defaultTextFormat = txtNDTF;
+			txtN.width = 200;
+			txtN.height = 25;
+			txtN.x = 800-60-205;
+			txtN.y = 30;
+			txtN.selectable = false;
+			//txtN.border = true;
+			layerTextos.addChild(txtN);
+			
 		}
 		
 		/**
@@ -114,7 +158,9 @@ package
 			layerGraph = new Sprite();
 			layerPoints = new Sprite();
 			layerRects = new Sprite();
+			layerTextos = new Sprite();
 			
+			addChild(layerTextos);
 			addChild(layerGraph);
 			addChild(layerRects);
 			addChild(layerFunctions);
@@ -126,7 +172,20 @@ package
 		 */
 		private function createGraph():void 
 		{
-			graph = new SimpleGraph( -10, 10, 740, -8, 8, 480);
+			graph = new SimpleGraph( -10, 10, graphSize.x, -8, 8, graphSize.y);
+			graph.setTicksDistance(SimpleGraph.AXIS_X, 5);
+			graph.setTicksDistance(SimpleGraph.AXIS_Y, 5);
+			graph.setSubticksDistance(SimpleGraph.AXIS_X, 1);
+			//graph.setSubticksDistance(SimpleGraph.AXIS_Y, 1);
+			graph.setAxisColor(0x808080);
+			graph.setTickAlignment(SimpleGraph.AXIS_X, AxisX.TICKS_CENTER);
+			graph.setTickAlignment(SimpleGraph.AXIS_Y, AxisY.TICKS_CENTER);
+			graph.resolution = 2;
+			
+			graph.grid = false;
+			
+			graph.setAxisName(SimpleGraph.AXIS_X, "x");
+			graph.setAxisName(SimpleGraph.AXIS_Y, "y");
 			
 			layerGraph.addChild(graph);
 		}
@@ -138,6 +197,14 @@ package
 		 */
 		public function addPoint(n:Number):void
 		{
+			if (points.length >= 2) {
+				if (points[0].x < points[points.length - 1].x) {
+					if (n < points[0].x || n > points[points.length - 1].x) return;
+				}else {
+					if (n > points[0].x || n < points[points.length - 1].x) return;
+				}
+			}
+			
 			var newObj:Object = new Object();
 			newObj.x = n;
 			newObj.h = null;
@@ -147,9 +214,19 @@ package
 				newObj.label = "a";
 			}else {
 				if (points.length == 1) newObj.label = "b";
+				if (points.length == 2 && !lockAB) lockAB = true;
 				lookAdd: for (var i:int = 0; i < points.length; i++) 
 				{
 					if (n < points[i].x) {
+						if(i > 0){
+							var oldPoint:Object = points[i-1];
+							if (oldPoint.h != null) {
+								if (newObj.x < oldPoint.h) {
+									newObj.h = oldPoint.h;
+									oldPoint.h = null;
+								}
+							}
+						}
 						points.splice(i, 0, newObj);
 						break lookAdd;
 					}else if (i == points.length - 1) {
@@ -159,6 +236,7 @@ package
 				}
 			}
 			draw();
+			calculateSum();
 		}
 		
 		/**
@@ -170,12 +248,13 @@ package
 		{
 			lookRemove: for (var i:int = 0; i < points.length; i++) 
 			{
-				if (n == points[i].x) {
+				if (n == points[i].x && points[i].label == null) {
 					var point:Object = points.splice(i, 1)[0];
 					break lookRemove;
 				}
 			}
 			draw();
+			calculateSum();
 		}
 		
 		/**
@@ -185,6 +264,8 @@ package
 		 */
 		public function addPointM(h:Number):void
 		{
+			if (points.length < 2) return;
+			
 			lookAdd: for (var i:int = 1; i < points.length; i++) 
 			{
 				if (h < points[i].x) {
@@ -198,6 +279,7 @@ package
 				}
 			}
 			draw();
+			calculateSum();
 		}
 		
 		/**
@@ -214,6 +296,79 @@ package
 					break lookAdd;
 				}
 			}
+			draw();
+			calculateSum();
+		}
+		
+		private function calculateSum():void
+		{
+			if (points.length < 2) return;
+			
+			var sum:Number = 0;
+			var ptA:Number;
+			var ptB:Number;
+			
+			for (var i:int = 0; i < points.length; i++) 
+			{
+				if (points[i].label == "a") ptA = points[i].x;
+				else if (points[i].label == "b") ptB = points[i].x;
+				
+				if (points[i].h != null) {
+					sum += (points[i + 1].x - points[i].x) * f.value(points[i].h);
+				}
+			}
+			
+			if (ptA > ptB) sum *= -1;
+			
+			txtSoma.text = "soma = " + sum.toPrecision(2);
+			txtN.text = "n = " + (points.length - 1);
+		}
+		
+		/**
+		 * Salva o estado atual em um Object.
+		 * @return Estado atual do gráfico.
+		 */
+		public function getState():Object
+		{
+			var state:Object = new Object();
+			
+			state.n = points.length;
+			
+			for (var i:int = 0; i < points.length; i++) 
+			{
+				state[i] = { x: points[i].x, h: points[i].h };
+			}
+			
+			state.xmin = graph.xmin;
+			state.xmax = graph.xmax;
+			state.ymin = graph.ymin;
+			state.ymax = graph.ymax;
+			
+			return state;
+		}
+		
+		/**
+		 * Restaura o estado do gráfico.
+		 * @param	state Estado salvo a ser recuperado.
+		 */
+		public function restoreState(state:Object):void
+		{
+			points = new Vector.<Object>();
+			
+			for (var i:int = 0; i < state.n; i++) 
+			{
+				var obj:Object = new Object();
+				obj.x = state[i].x;
+				obj.h = state[i].h;
+				
+				points.push(obj);
+			}
+			
+			graph.xmin = state.xmin;
+			graph.xmax = state.xmax;
+			graph.ymin = state.ymin;
+			graph.ymax = state.ymax;
+			
 			draw();
 		}
 		
@@ -243,6 +398,7 @@ package
 					objReturn.type = TYPE_DIVISOR;
 					objReturn.index = i;
 					objReturn.value = points[i].x;
+					objReturn.label = points[i].label;
 					
 					select(TYPE_DIVISOR, i, points[i].x);
 					
@@ -270,7 +426,7 @@ package
 			for (j = graph.xmin; j < graph.xmax; j+=(graph.xmax - graph.xmin)/100) 
 			{
 				posStage = getStageCoords(j, f.value(j));
-				if (Point.distance(clickPoint, posStage) < minDist) {
+				if (Point.distance(clickPoint, posStage) < minDist * 2) {
 					objReturn = new Object();
 					objReturn.type = TYPE_FUNCTION;
 					//objReturn.index = NaN;
@@ -300,7 +456,7 @@ package
 			for (j = graph.xmin; j < graph.xmax; j+=(graph.xmax - graph.xmin)/100) 
 			{
 				posStage = getStageCoords(j, F.value(j));
-				if (Point.distance(clickPoint, posStage) < minDist) {
+				if (Point.distance(clickPoint, posStage) < minDist * 2) {
 					objReturn = new Object();
 					objReturn.type = TYPE_PRIMITIVE;
 					//objReturn.index = NaN;
@@ -313,52 +469,54 @@ package
 			}
 			
 			//Busca retângulos
-			var pta:Point = getStageCoords(points[0].x, 0);
-			var ptb:Point = getStageCoords(points[points.length - 1].x, 0);
-			if (clickPoint.x > pta.x && clickPoint.x < ptb.x) {
-				var clickOnGraph:Point = getGraphCoords(clickPoint.x, clickPoint.y);
-				//var valueClickOnFunction:Number = f.value(clickOnGraph.x);
-				//if (clickOnGraph.y < valueClickOnFunction) {
-					lookRect: for (i = 1; i < points.length; i++) 
-					{
-						if (clickOnGraph.x < points[i].x) {
-							if(points[i-1].h != null){
-								var altura:Number = f.value(points[i - 1].h);
-								if (altura < 0) {
-									if (clickOnGraph.y > altura && clickOnGraph.y < 0) {
-										objReturn = new Object();
-										objReturn.type = TYPE_RECTANGLE;
-										objReturn.index = i-1;
-										//objReturn.value = NaN;
-										
-										select(TYPE_RECTANGLE, i - 1, NaN);
-										
-										return objReturn;
+			if(points.length >= 2){
+				var pta:Point = getStageCoords(points[0].x, 0);
+				var ptb:Point = getStageCoords(points[points.length - 1].x, 0);
+				if (clickPoint.x > pta.x && clickPoint.x < ptb.x) {
+					var clickOnGraph:Point = getGraphCoords(clickPoint.x, clickPoint.y);
+					//var valueClickOnFunction:Number = f.value(clickOnGraph.x);
+					//if (clickOnGraph.y < valueClickOnFunction) {
+						lookRect: for (i = 1; i < points.length; i++) 
+						{
+							if (clickOnGraph.x < points[i].x) {
+								if(points[i-1].h != null){
+									var altura:Number = f.value(points[i - 1].h);
+									if (altura < 0) {
+										if (clickOnGraph.y > altura && clickOnGraph.y < 0) {
+											objReturn = new Object();
+											objReturn.type = TYPE_RECTANGLE;
+											objReturn.index = i-1;
+											//objReturn.value = NaN;
+											
+											select(TYPE_RECTANGLE, i - 1, NaN);
+											
+											return objReturn;
+										}else {
+											break lookRect;
+										}
 									}else {
-										break lookRect;
+										if (clickOnGraph.y < altura && clickOnGraph.y > 0) {
+											objReturn = new Object();
+											objReturn.type = TYPE_RECTANGLE;
+											objReturn.index = i-1;
+											//objReturn.value = NaN;
+											
+											select(TYPE_RECTANGLE, i - 1, NaN);
+											
+											return objReturn;
+										}else {
+											break lookRect;
+										}
 									}
+									
 								}else {
-									if (clickOnGraph.y < altura && clickOnGraph.y > 0) {
-										objReturn = new Object();
-										objReturn.type = TYPE_RECTANGLE;
-										objReturn.index = i-1;
-										//objReturn.value = NaN;
-										
-										select(TYPE_RECTANGLE, i - 1, NaN);
-										
-										return objReturn;
-									}else {
-										break lookRect;
-									}
+									break lookRect;
 								}
 								
-							}else {
-								break lookRect;
 							}
-							
 						}
-					}
-				//}
+					//}
+				}
 			}
 			
 			select(TYPE_NONE, NaN, NaN);
@@ -384,6 +542,14 @@ package
 			draw();
 		}
 		
+		public function setValueToSelected(value:Number):void
+		{
+			points[selectedIndex].x = getGraphCoords(value, 0).x;
+			selectedValue = points[selectedIndex].x;
+			
+			draw();
+		}
+		
 		/**
 		 * Transforma as coordenadas do gráfico em coordenadas do palco.
 		 * @param	graphPointX Coordenada x no gráfico.
@@ -404,7 +570,7 @@ package
 		 * @param	mouseY Coordenada y do palco.
 		 * @return Retorna um point com as coordenadas do gráfico.
 		 */
-		private function getGraphCoords(mouseX:Number, mouseY:Number):Point
+		public function getGraphCoords(mouseX:Number, mouseY:Number):Point
 		{
 			var posX:Number = graph.pixel2x(mouseX - graph.x);
 			var posY:Number = graph.pixel2y(mouseY - graph.y);
@@ -412,18 +578,98 @@ package
 			return new Point(posX, posY);
 		}
 		
-		public function getDifference(diff:Number):Number
+		/**
+		 * Calcula a distância de um número à origem.
+		 * @param	dist Número em coordenadas do gráfico 
+		 * @return Retorna um ponto contendo a distância do número dado à origem nos eixo x e y.
+		 */
+		public function getDistanceFromOrigin(dist:Number):Point
 		{
 			var ptStage:Point = getStageCoords(0, 0);
-			ptStage.y += diff;
-			var ptOnGraph:Point = getGraphCoords(0, ptStage.y);
+			ptStage.x += dist;
+			ptStage.y += dist;
+			var ptOnGraph:Point = getGraphCoords(ptStage.x, ptStage.y);
 			
-			return ptOnGraph.y;
+			return ptOnGraph;
 		}
 		
+		/**
+		 * Função pública utilizada para redesenhar o gráfico.
+		 */
 		public function update():void
 		{
 			draw();
+		}
+		
+		/**
+		 * Desloca o gráfico de acordo com o ponto recebido (deslocamento em pixels).
+		 * @param	displacement Ponto com o valor em pixels a ser deslocado no eixo x e y.
+		 */
+		public function panPixel(displacement:Point):void
+		{
+			//graph.panX = displacement.x;
+			//graph.panY = displacement.y;
+			var distX:Number = getDistanceFromOrigin(displacement.x).x;
+			var distY:Number = getDistanceFromOrigin(displacement.y).y;
+			
+			graph.setRange(graph.xmin - distX, graph.xmax - distX, graph.ymin - distY, graph.ymax - distY);
+			
+			updateFunctionsRange();
+			
+			draw();
+		}
+		
+		public function zoomInCenter():void
+		{
+			zoomInPtPixel(new Point(graphSize.x / 2, graphSize.y/ 2));
+		}
+		
+		public function zoomOutCenter():void
+		{
+			zoomOutPtPixel(new Point(graphSize.x / 2, graphSize.y/ 2));
+		}
+		
+		private var zoomRangePercent:Number = 10;
+		public function zoomInPtPixel(pt:Point):void
+		{
+			var zoomRangeX:Number = (graph.xmax - graph.xmin) * zoomRangePercent / 100;
+			var zoomRangeY:Number = (graph.ymax - graph.ymin) * zoomRangePercent / 100;
+			
+			var ptGraph:Point = getGraphCoords(pt.x, pt.y);
+			var graphCenter:Point = new Point((graph.xmax - graph.xmin) / 2, (graph.ymax - graph.ymin) / 2);
+			
+			var pX:Number = (ptGraph.x - graph.xmin) / (graph.xmax - graph.xmin);
+			var pY:Number = (ptGraph.y - graph.ymin) / (graph.ymax - graph.ymin);
+			
+			graph.setRange(graph.xmin + zoomRangeX * pX, graph.xmax - zoomRangeX * (1 - pX), graph.ymin + zoomRangeY * pY, graph.ymax - zoomRangeY * (1 - pY));
+			
+			updateFunctionsRange();
+			
+			draw();
+		}
+		
+		public function zoomOutPtPixel(pt:Point):void
+		{
+			var zoomRangeX:Number = (graph.xmax - graph.xmin) * zoomRangePercent / 100;
+			var zoomRangeY:Number = (graph.ymax - graph.ymin) * zoomRangePercent / 100;
+			
+			var ptGraph:Point = getGraphCoords(pt.x, pt.y);
+			var graphCenter:Point = new Point((graph.xmax - graph.xmin) / 2, (graph.ymax - graph.ymin) / 2);
+			
+			var pX:Number = (ptGraph.x - graph.xmin) / (graph.xmax - graph.xmin);
+			var pY:Number = (ptGraph.y - graph.ymin) / (graph.ymax - graph.ymin);
+			
+			graph.setRange(graph.xmin - zoomRangeX * pX, graph.xmax + zoomRangeX * (1 - pX), graph.ymin - zoomRangeY * pY, graph.ymax + zoomRangeY * (1 - pY));
+			
+			updateFunctionsRange();
+			
+			draw();
+		}
+		
+		private function updateFunctionsRange():void
+		{
+			f.setRange(graph.xmin, graph.xmax);
+			F.setRange(graph.xmin, graph.xmax);
 		}
 		
 		/**
@@ -453,7 +699,8 @@ package
 					
 					//Desenha o ponto na função
 					altura = getStageCoords(points[i].h, f.value(points[i].h));
-					drawFunctionPoint(altura, (selectedIndex == i && selectedType == TYPE_ALTURA));
+					if (showHpoints) drawFunctionPoint(altura, (selectedIndex == i && selectedType == TYPE_ALTURA));
+					else if(selectedIndex == i && selectedType == TYPE_ALTURA) drawFunctionPoint(altura, false);
 					
 					//Desenha os retângulos:
 					pt2 = getStageCoords(points[i + 1].x, 0);
@@ -470,13 +717,16 @@ package
 				addFuntcion();
 			}
 			
-			if (selectedType == TYPE_PRIMITIVE) {
-				removePrimitive();
-				addPrimitive(true);
-			}else {
-				removePrimitive();
-				addPrimitive();
+			if(showPrimitive){
+				if (selectedType == TYPE_PRIMITIVE) {
+					removePrimitive();
+					addPrimitive(true);
+				}else {
+					removePrimitive();
+					addPrimitive();
+				}
 			}
+			
 			
 			if (graph.hasFunction(F)) {
 				pt1 = getStageCoords(0, F.value(0));
@@ -558,6 +808,16 @@ package
 		private function drawRectangle(pt1:Point, pt2:Point, altura:Point, selected:Boolean):void
 		{
 			if (selected) {
+				layerRects.graphics.lineStyle(1, 0xC0C0C0);
+				layerRects.graphics.moveTo(pt1.x, pt1.y);
+				layerRects.graphics.lineTo(pt1.x, 0);
+				layerRects.graphics.moveTo(pt1.x, pt1.y);
+				layerRects.graphics.lineTo(pt1.x, stage.stageHeight);
+				layerRects.graphics.moveTo(pt2.x, pt2.y);
+				layerRects.graphics.lineTo(pt2.x, 0);
+				layerRects.graphics.moveTo(pt2.x, pt2.y);
+				layerRects.graphics.lineTo(pt2.x, stage.stageHeight);
+				
 				layerRects.graphics.lineStyle(2, 0x000000);
 				layerRects.graphics.beginFill(0x800000, 0.6);
 			}else{
@@ -570,6 +830,31 @@ package
 			layerRects.graphics.lineTo(pt2.x, pt2.y);
 			layerRects.graphics.lineTo(pt1.x, pt1.y);
 			layerRects.graphics.endFill();
+		}
+		
+		public function get graphSize():Point 
+		{
+			return _graphSize;
+		}
+		
+		public function set graphSize(value:Point):void 
+		{
+			_graphSize.x = value.x;
+			_graphSize.y = value.y;
+			
+			graph.setSize(value.x, value.y);
+			
+			draw();
+		}
+		
+		public function get lockAB():Boolean 
+		{
+			return _lockAB;
+		}
+		
+		public function set lockAB(value:Boolean):void 
+		{
+			_lockAB = value;
 		}
 		
 	}
