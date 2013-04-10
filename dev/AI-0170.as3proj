@@ -52,7 +52,8 @@
   </includeLibraries>
   <!-- SWC Libraries -->
   <libraryPaths>
-    <!-- example: <element path="..." /> -->
+    <element path="lib\menu.swc" />
+    <element path="lib\telas.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>

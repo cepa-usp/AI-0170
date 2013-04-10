@@ -49,7 +49,10 @@ package
 		private var txtSoma:TextField;
 		private var txtNDTF:TextFormat = new TextFormat("arial", 12, 0x000000);
 		private var txtN:TextField;
+		
 		private var _lockAB:Boolean = false;
+		private var _defineAB:Boolean = false;
+		private var _abDefined:Boolean = false;
 		
 		public function Graph_model(f:GraphFunction, F:GraphFunction, points:Vector.<Object> = null) 
 		{
@@ -95,6 +98,8 @@ package
 			txtN.selectable = false;
 			//txtN.border = true;
 			layerTextos.addChild(txtN);
+			
+			hideSum();
 			
 		}
 		
@@ -197,6 +202,8 @@ package
 		 */
 		public function addPoint(n:Number):void
 		{
+			if (points.length == 2 && _defineAB) return;
+			
 			if (points.length >= 2) {
 				if (points[0].x < points[points.length - 1].x) {
 					if (n < points[0].x || n > points[points.length - 1].x) return;
@@ -213,7 +220,10 @@ package
 				points.push(newObj);
 				newObj.label = "a";
 			}else {
-				if (points.length == 1) newObj.label = "b";
+				if (points.length == 1) {
+					newObj.label = "b";
+					_abDefined = true;
+				}
 				if (points.length == 2 && !lockAB) lockAB = true;
 				lookAdd: for (var i:int = 0; i < points.length; i++) 
 				{
@@ -265,6 +275,7 @@ package
 		public function addPointM(h:Number):void
 		{
 			if (points.length < 2) return;
+			if (points.length == 2 && _defineAB) return;
 			
 			lookAdd: for (var i:int = 1; i < points.length; i++) 
 			{
@@ -300,6 +311,41 @@ package
 			calculateSum();
 		}
 		
+		public function divideIn(nPartitions:int):void
+		{
+			if (nPartitions < 2) return;
+			
+			if (points.length > 2) {
+				for (var j:int = points.length - 1; j >= 0 ; j--) 
+				{
+					if (points[j].label == null) removePoint(points[j].x);
+					else points[j].h = null;
+				}
+			}
+			
+			var ptA:Number = getPtByLabel("a");
+			var ptB:Number = getPtByLabel("b");
+			var gap:Number;
+			if (ptB > ptA) gap = (ptB - ptA) / nPartitions;
+			else gap = (ptA - ptB) / nPartitions;
+			
+			for (var i:int = 1; i < nPartitions; i++) 
+			{
+				addPoint(points[0].x + i * gap);
+			}
+		}
+		
+		private function getPtByLabel(label:String):Number
+		{
+			for (var i:int = 0; i < points.length; i++) 
+			{
+				if(points[i].label != null)
+					if (points[i].label == label) return points[i].x;
+			}
+			
+			return NaN;
+		}
+		
 		private function calculateSum():void
 		{
 			if (points.length < 2) return;
@@ -322,6 +368,23 @@ package
 			
 			txtSoma.text = "soma = " + sum.toPrecision(2);
 			txtN.text = "n = " + (points.length - 1);
+		}
+		
+		public function get n():int
+		{
+			return points.length - 1;
+		}
+		
+		public function showSum():void
+		{
+			txtSoma.visible = true;
+			txtN.visible = true;
+		}
+		
+		public function hideSum():void
+		{
+			txtSoma.visible = false;
+			txtN.visible = false;
 		}
 		
 		/**
@@ -540,6 +603,30 @@ package
 			selectedValue = value;
 			
 			draw();
+		}
+		
+		public function deleteSelected():void
+		{
+			if (selectedType == TYPE_NONE) return;
+			if (selectedType == TYPE_FUNCTION) return;
+			if (selectedType == TYPE_PRIMITIVE) return;
+			if (selectedType == TYPE_PRIMITIVE_C) return;
+			
+			if (selectedType == TYPE_DIVISOR) {
+				removePoint(selectedValue);
+				select(TYPE_NONE, NaN, NaN);
+			}
+			
+			if (selectedType == TYPE_ALTURA) {
+				removePointM(selectedValue);
+				select(TYPE_NONE, NaN, NaN);
+			}
+			
+			if (selectedType == TYPE_RECTANGLE) {
+				removePointM(points[selectedIndex].h);
+				select(TYPE_NONE, NaN, NaN);
+			}
+			
 		}
 		
 		public function setValueToSelected(value:Number):void
@@ -855,6 +942,22 @@ package
 		public function set lockAB(value:Boolean):void 
 		{
 			_lockAB = value;
+		}
+		
+		public function get defineAB():Boolean 
+		{
+			return _defineAB;
+		}
+		
+		public function set defineAB(value:Boolean):void 
+		{
+			if (lockAB) _defineAB = false;
+			else _defineAB = value;
+		}
+		
+		public function get abDefined():Boolean 
+		{
+			return _abDefined;
 		}
 		
 	}
