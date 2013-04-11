@@ -40,7 +40,7 @@ package
 		private var selectedIndex:int;
 		private var selectedValue:Number;
 		//private var primitiveConstante:Number;
-		private var showPrimitive:Boolean = false;
+		private var _showPrimitive:Boolean = false;
 		private var showHpoints:Boolean = false;
 		
 		private var _graphSize:Point = new Point(740, 480);
@@ -53,6 +53,9 @@ package
 		private var _lockAB:Boolean = false;
 		private var _defineAB:Boolean = false;
 		private var _abDefined:Boolean = false;
+		
+		private var ptA:Object;
+		private var ptB:Object;
 		
 		public function Graph_model(f:GraphFunction, F:GraphFunction, points:Vector.<Object> = null) 
 		{
@@ -151,7 +154,10 @@ package
 		 */
 		private function removePrimitive():void
 		{
-			graph.removeFunction(F);
+			if (graph.hasFunction(F)) {
+				graph.removeFunction(F);
+				graph.draw();
+			}
 		}
 		
 		/**
@@ -219,10 +225,12 @@ package
 			if (points.length == 0) {
 				points.push(newObj);
 				newObj.label = "a";
+				ptA = newObj;
 			}else {
 				if (points.length == 1) {
 					newObj.label = "b";
 					_abDefined = true;
+					ptB = newObj;
 				}
 				if (points.length == 2 && !lockAB) lockAB = true;
 				lookAdd: for (var i:int = 0; i < points.length; i++) 
@@ -260,6 +268,7 @@ package
 			{
 				if (n == points[i].x && points[i].label == null) {
 					var point:Object = points.splice(i, 1)[0];
+					if (selectedType == TYPE_DIVISOR && selectedIndex == i) select(TYPE_NONE, NaN, NaN);
 					break lookRemove;
 				}
 			}
@@ -304,6 +313,7 @@ package
 			{
 				if (h < points[i].x) {
 					points[i - 1].h = null;
+					if (selectedType == TYPE_ALTURA && selectedIndex == i - 1) select(TYPE_NONE, NaN, NaN);
 					break lookAdd;
 				}
 			}
@@ -333,6 +343,54 @@ package
 			{
 				addPoint(points[0].x + i * gap);
 			}
+		}
+		
+		public function upperSum():void
+		{
+			var x0:Number;
+			var x1:Number;
+			var h:Number;
+			var hAux:Number;
+			
+			for (var i:int = 0; i < points.length - 1; i++) 
+			{
+				x0 = points[i].x;
+				x1 = points[i + 1].x;
+				h = x0;
+				for (var j:Number = x0; j < x1; j+= (x0 < x1 ? 0.01 : -0.01)) 
+				{
+					hAux = f.value(j);
+					if (hAux > f.value(h)) h = j;
+				}
+				points[i].h = h;
+			}
+			
+			calculateSum();
+			draw();
+		}
+		
+		public function lowerSum():void
+		{
+			var x0:Number;
+			var x1:Number;
+			var h:Number;
+			var hAux:Number;
+			
+			for (var i:int = 0; i < points.length - 1; i++) 
+			{
+				x0 = points[i].x;
+				x1 = points[i + 1].x;
+				h = x0;
+				for (var j:Number = x0; j < x1; j+= (x0 < x1 ? 0.01 : -0.01)) 
+				{
+					hAux = f.value(j);
+					if (hAux < f.value(h)) h = j;
+				}
+				points[i].h = h;
+			}
+			
+			calculateSum();
+			draw();
 		}
 		
 		private function getPtByLabel(label:String):Number
@@ -399,7 +457,7 @@ package
 			
 			for (var i:int = 0; i < points.length; i++) 
 			{
-				state[i] = { x: points[i].x, h: points[i].h };
+				state[i] = { x: points[i].x, h: points[i].h, l: points[i].label };
 			}
 			
 			state.xmin = graph.xmin;
@@ -423,6 +481,12 @@ package
 				var obj:Object = new Object();
 				obj.x = state[i].x;
 				obj.h = state[i].h;
+				obj.label = state[i].l;
+				
+				if (obj.label != null) {
+					if (obj.label == "a") ptA = obj;
+					if (obj.label == "b") ptB = obj;
+				}
 				
 				points.push(obj);
 			}
@@ -605,34 +669,69 @@ package
 			draw();
 		}
 		
-		public function deleteSelected():void
+		public function deleteSelected(types:Array = null):void
 		{
 			if (selectedType == TYPE_NONE) return;
 			if (selectedType == TYPE_FUNCTION) return;
 			if (selectedType == TYPE_PRIMITIVE) return;
 			if (selectedType == TYPE_PRIMITIVE_C) return;
 			
+			if(types == null){
+				removeSelected();
+			}else {
+				if (types.indexOf(selectedType) != -1) {
+					removeSelected();
+				}
+			}
+			
+		}
+		
+		private function removeSelected():void
+		{
 			if (selectedType == TYPE_DIVISOR) {
 				removePoint(selectedValue);
-				select(TYPE_NONE, NaN, NaN);
+				//select(TYPE_NONE, NaN, NaN);
 			}
 			
 			if (selectedType == TYPE_ALTURA) {
 				removePointM(selectedValue);
-				select(TYPE_NONE, NaN, NaN);
+				//select(TYPE_NONE, NaN, NaN);
 			}
 			
 			if (selectedType == TYPE_RECTANGLE) {
 				removePointM(points[selectedIndex].h);
-				select(TYPE_NONE, NaN, NaN);
+				//select(TYPE_NONE, NaN, NaN);
 			}
-			
 		}
 		
 		public function setValueToSelected(value:Number):void
 		{
 			points[selectedIndex].x = getGraphCoords(value, 0).x;
 			selectedValue = points[selectedIndex].x;
+			
+			if (points[selectedIndex].label != null) {
+				if (points[selectedIndex].label == "a") {
+					if (value > ptB.x) {
+						points[0] = ptB;
+						points[1] = ptA;
+						selectedIndex = 1;
+					}else {
+						points[0] = ptA;
+						points[1] = ptB;
+						selectedIndex = 0;
+					}
+				}else {
+					if (value < ptA.x) {
+						points[0] = ptB;
+						points[1] = ptA;
+						selectedIndex = 0;
+					}else {
+						points[0] = ptA;
+						points[1] = ptB;
+						selectedIndex = 1;
+					}
+				}
+			}
 			
 			draw();
 		}
@@ -812,6 +911,8 @@ package
 					removePrimitive();
 					addPrimitive();
 				}
+			}else {
+				removePrimitive();
 			}
 			
 			
@@ -958,6 +1059,17 @@ package
 		public function get abDefined():Boolean 
 		{
 			return _abDefined;
+		}
+		
+		public function get showPrimitive():Boolean 
+		{
+			return _showPrimitive;
+		}
+		
+		public function set showPrimitive(value:Boolean):void 
+		{
+			_showPrimitive = value;
+			draw();
 		}
 		
 	}

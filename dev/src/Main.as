@@ -218,84 +218,6 @@ package
 			functions.push([f4, F4]);
 		}
 		
-		/**
-		 * Carrega uma tela de acordo com a indicação.
-		 * @param	screen Tela a ser carregada.
-		 */
-		private function loadScreen(screen:int):void 
-		{
-			switch (screen) {
-				case INICIAL:
-					if (layer_menu.numChildren > 0){
-						layer_menu.removeChild(subMenu);
-						layer_menu.removeChild(menu);
-					}
-					layer_screen.addChild(tela0);
-					break;
-				case CHOOSE_F:
-					if (layer_menu.numChildren == 0) {
-						layer_menu.addChild(subMenu);
-						layer_menu.addChild(menu);
-					}
-					layer_screen.addChild(tela1);
-					break;
-				case CHOOSE_AB:
-					if (layer_menu.numChildren == 0) {
-						layer_menu.addChild(subMenu);
-						layer_menu.addChild(menu);
-					}
-					if (grafico == null) grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
-					grafico.hideSum();
-					grafico.defineAB = true;
-					grafico.x = 60;
-					layer_graph.addChild(grafico);
-					stage.addEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
-					stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
-					stage.addEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
-					break;
-				case CHOOSE_SUM:
-					layer_screen.addChild(tela3);
-					break;
-				case PARTITION:
-					if (grafico == null) grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
-					grafico.hideSum();
-					grafico.defineAB = false;
-					grafico.lockAB = true;
-					grafico.x = 60;
-					layer_graph.addChild(grafico);
-					switch (currentStrategy) {
-						case INFERIOR:
-						case SUPERIOR:
-							if (grafico.n == 1) grafico.divideIn(defaultN);
-							menu.plus.addEventListener(MouseEvent.CLICK, plusHandler);
-							menu.minus.addEventListener(MouseEvent.CLICK, minusHandler);
-							break;
-						case PERSONAL:
-							
-							break;
-					}
-					stage.addEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
-					stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
-					stage.addEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
-					break;
-				case RESULT:
-					if (grafico == null) grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
-					grafico.showSum();
-					grafico.defineAB = false;
-					grafico.lockAB = true;
-					grafico.x = 60;
-					layer_graph.addChild(grafico);
-					stage.addEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
-					stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
-					stage.addEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
-					break;
-				case FINAL:
-					
-					break;
-				
-			}
-		}
-		
 		private function plusHandler(e:MouseEvent):void 
 		{
 			switch (currentScreen) {
@@ -316,7 +238,7 @@ package
 		
 		private function chooseFunction(e:MouseEvent):void 
 		{
-			trace(int("a"));
+			//trace(int("a"));
 			indexFunction = int(MovieClip(e.target).name.replace("f", ""));
 			if (!isNaN(indexFunction)) {
 				if (grafico != null) grafico = null;
@@ -331,6 +253,9 @@ package
 		
 		private function createNew(e:MouseEvent):void 
 		{
+			currentStrategy = -1;
+			indexFunction = -1;
+			primitiveConstant = 0;
 			next();
 		}
 		
@@ -343,6 +268,14 @@ package
 			}
 			unloadScreen(currentScreen);
 			currentScreen++;
+			loadScreen(currentScreen);
+			menu.currentScreen.text = currentScreen.toString();
+		}
+		
+		private function previous(e:MouseEvent = null):void
+		{
+			unloadScreen(currentScreen);
+			currentScreen--;
 			loadScreen(currentScreen);
 			menu.currentScreen.text = currentScreen.toString();
 		}
@@ -370,6 +303,9 @@ package
 					break;
 				case RESULT:
 					
+					//TODO: condição pra passar.
+					
+					return true;
 					break;
 				case FINAL:
 					
@@ -380,12 +316,143 @@ package
 			return false;
 		}
 		
-		private function previous(e:MouseEvent = null):void
+		/**
+		 * Carrega uma tela de acordo com a indicação.
+		 * @param	screen Tela a ser carregada.
+		 */
+		private function loadScreen(screen:int, state:Object = null):void 
 		{
-			unloadScreen(currentScreen);
-			currentScreen--;
-			loadScreen(currentScreen);
-			menu.currentScreen.text = currentScreen.toString();
+			switch (screen) {
+				case INICIAL:
+					if (layer_menu.numChildren > 0){
+						layer_menu.removeChild(subMenu);
+						layer_menu.removeChild(menu);
+					}
+					layer_screen.addChild(tela0);
+					break;
+				case CHOOSE_F:
+					if (layer_menu.numChildren == 0) {
+						layer_menu.addChild(subMenu);
+						layer_menu.addChild(menu);
+					}
+					menu.plus.visible = false;
+					menu.minus.visible = false;
+					layer_screen.addChild(tela1);
+					break;
+				case CHOOSE_AB:
+					if (layer_menu.numChildren == 0) {
+						layer_menu.addChild(subMenu);
+						layer_menu.addChild(menu);
+					}
+					menu.plus.visible = false;
+					menu.minus.visible = false;
+					if (grafico == null) grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
+					grafico.hideSum();
+					grafico.addPoint( -5);
+					grafico.addPoint( 5);
+					grafico.defineAB = true;
+					grafico.showPrimitive = false;
+					grafico.x = 60;
+					if (state != null) grafico.restoreState(state);
+					layer_graph.addChild(grafico);
+					stage.addEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
+					stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
+					stage.addEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
+					break;
+				case CHOOSE_SUM:
+					if (layer_menu.numChildren == 0) {
+						layer_menu.addChild(subMenu);
+						layer_menu.addChild(menu);
+					}
+					menu.plus.visible = false;
+					menu.minus.visible = false;
+					layer_screen.addChild(tela3);
+					break;
+				case PARTITION:
+					if (layer_menu.numChildren == 0) {
+						layer_menu.addChild(subMenu);
+						layer_menu.addChild(menu);
+					}
+					menu.plus.visible = true;
+					menu.minus.visible = true;
+					if (grafico == null) grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
+					grafico.hideSum();
+					grafico.defineAB = false;
+					grafico.lockAB = true;
+					grafico.showPrimitive = false;
+					grafico.x = 60;
+					if (state != null) grafico.restoreState(state);
+					layer_graph.addChild(grafico);
+					switch (currentStrategy) {
+						case INFERIOR:
+						case SUPERIOR:
+							if (grafico.n == 1) grafico.divideIn(defaultN);
+							else grafico.divideIn(grafico.n);
+							
+							menu.plus.addEventListener(MouseEvent.CLICK, plusHandler);
+							menu.minus.addEventListener(MouseEvent.CLICK, minusHandler);
+							break;
+						case PERSONAL:
+							
+							break;
+					}
+					stage.addEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
+					stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
+					stage.addEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
+					break;
+				case RESULT:
+					if (layer_menu.numChildren == 0) {
+						layer_menu.addChild(subMenu);
+						layer_menu.addChild(menu);
+					}
+					if (grafico == null) grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
+					grafico.showSum();
+					grafico.defineAB = false;
+					grafico.lockAB = true;
+					grafico.showPrimitive = false;
+					grafico.x = 60;
+					switch (currentStrategy) {
+						case INFERIOR:
+							menu.plus.visible = false;
+							menu.minus.visible = false;
+							grafico.lowerSum();
+							break;
+						case SUPERIOR:
+							menu.plus.visible = false;
+							menu.minus.visible = false;
+							grafico.upperSum();
+							break;
+						case PERSONAL:
+							menu.plus.visible = true;
+							menu.minus.visible = true;
+							break;
+					}
+					if (state != null) grafico.restoreState(state);
+					layer_graph.addChild(grafico);
+					stage.addEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
+					stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
+					stage.addEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
+					break;
+				case FINAL:
+					if (layer_menu.numChildren == 0) {
+						layer_menu.addChild(subMenu);
+						layer_menu.addChild(menu);
+					}
+					menu.plus.visible = false;
+					menu.minus.visible = false;
+					if (grafico == null) grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
+					grafico.hideSum();
+					grafico.defineAB = false;
+					grafico.lockAB = true;
+					grafico.x = 60;
+					grafico.showPrimitive = true;
+					if (state != null) grafico.restoreState(state);
+					layer_graph.addChild(grafico);
+					stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
+					stage.addEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
+					break;
+				
+			}
 		}
 		
 		/**
@@ -425,7 +492,10 @@ package
 					stage.removeEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
 					break;
 				case FINAL:
-					
+					layer_graph.removeChild(grafico);
+					stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
+					stage.removeEventListener(MouseEvent.MOUSE_DOWN, stageDown);
+					stage.removeEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
 					break;
 				
 			}
@@ -448,15 +518,8 @@ package
 			switch (e.keyCode) {
 				case Keyboard.S:
 					//Salvar
+					salvar(e.ctrlKey);
 					
-					var state:Object = new Object();
-					//state.gs = JSON.stringify(grafico.getState());
-					state.gs = grafico.getState();
-					state.pc = primitiveConstant;
-					state.f = indexFunction;
-					
-					var stringState:String = JSON.stringify(state);
-					fileHandler.salvar(stringState);
 					break;
 				case Keyboard.R:
 					//Recuperar
@@ -464,39 +527,58 @@ package
 					break;
 				case Keyboard.P:
 					//Adiciona um ponto
-					grafico.addPoint(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
+					if(currentScreen == PARTITION && currentStrategy == PERSONAL) grafico.addPoint(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
 					break;
 				case Keyboard.M:
 					//Adiciona uma altura
-					grafico.addPointM(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
+					if(currentScreen == RESULT && currentStrategy == PERSONAL) grafico.addPointM(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
 					break;
 				case Keyboard.O:
-					grafico.removePoint(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
+					if(currentScreen == PARTITION && currentStrategy == PERSONAL) grafico.removePoint(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
 					break;
 				case Keyboard.N:
-					grafico.removePointM(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
+					if(currentScreen == RESULT && currentStrategy == PERSONAL) grafico.removePointM(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
 					break;
 				case Keyboard.DELETE:
-					grafico.deleteSelected();
+					if(currentScreen == PARTITION && currentStrategy == PERSONAL) grafico.deleteSelected([Graph_model.TYPE_DIVISOR]);
+					if(currentScreen == RESULT && currentStrategy == PERSONAL) grafico.deleteSelected([Graph_model.TYPE_ALTURA, Graph_model.TYPE_RECTANGLE]);
 					break;
 				
 			}
 		}
 		
-		private function loadComplete(content:String):void {
-			var state:Object = JSON.parse(content);
-			trace(state);
+		private function salvar(saveAs:Boolean):void
+		{
+			var state:Object = new Object();
+			state.gs = grafico.getState();
+			state.pc = primitiveConstant;
+			state.f = indexFunction;
+			state.sc = currentScreen;
+			state.st = currentStrategy;
 			
-			removeChild(grafico);
+			var stringState:String = JSON.stringify(state);
+			if (saveAs) fileHandler.saveAs(stringState);
+			else fileHandler.save(stringState);
+		}
+		
+		private function loadComplete(content:String):void {
+			
+			unloadScreen(currentScreen);
+			
+			var state:Object = JSON.parse(content);
 			
 			primitiveConstant = state.pc;
 			indexFunction = state.f;
-			grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
+			currentScreen = state.sc;
+			currentStrategy = state.st;
+			//grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
 			
-			grafico.restoreState(state.gs);
+			//grafico.restoreState(state.gs);
 			
-			grafico.x = 60;
-			addChild(grafico);
+			//grafico.x = 60;
+			//addChild(grafico);
+			
+			loadScreen(currentScreen, state.gs);
 		}
 		
 		private function testando():void
@@ -550,7 +632,10 @@ package
 		private var posClick:Point = new Point();
 		private function stageDown(e:MouseEvent):void 
 		{
-			if (subMenuOpen) closeSubMenu();
+			if (e.target != menu.openMenu) {
+				if (subMenuOpen) closeSubMenu();
+			}
+			
 			var objClicked:Object = grafico.searchElement(new Point(grafico.mouseX, grafico.mouseY));
 			
 			switch (objClicked.type) {

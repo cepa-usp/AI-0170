@@ -24,12 +24,27 @@ package
 		private var _content:String;
 		private var returnFunction:Function;
 		
+		private var currentPath:String = "";
+		
 		public function FileHandler(formato:String) 
 		{
 			this.formato = formato;
 		}
 		
-		public function salvar(content:String):void{
+		public function save(content:String):void
+		{
+			if (currentPath == "") saveAs(content);
+			else {
+				var confFile:File = new File(currentPath);
+				var FSt:FileStream = new FileStream();
+				FSt.open(confFile, FileMode.WRITE);
+				if (encrypt) FSt.writeUTFBytes(compress(content));
+				else FSt.writeUTFBytes(content);
+				FSt.close();
+			}
+		}
+		
+		public function saveAs(content:String):void{
 			this._content = content;
 			arquivo.browseForSave("Salvar configuração");
 			arquivo.addEventListener(Event.SELECT, salvarArquivo);
@@ -52,7 +67,8 @@ package
 			var nome:String = tArr.pop();
 			var confFileDef:String = confExt(nome);
 			tArr.push(confFileDef);
-			var confFile:File = new File(tArr.join(File.separator));
+			currentPath = tArr.join(File.separator)
+			var confFile:File = new File(currentPath);
 			var FSt:FileStream = new FileStream();
 			FSt.open(confFile, FileMode.WRITE);
 			if (encrypt) FSt.writeUTFBytes(compress(content));
@@ -73,6 +89,7 @@ package
 		private function abrirArquivo(e:Event):void {
 			arquivo.removeEventListener(Event.SELECT, abrirArquivo);
 			//var Load:URLLoader = new URLLoader();
+			currentPath = arquivo.nativePath;
 			loader.load(new URLRequest(arquivo.nativePath));
 			loader.addEventListener(Event.COMPLETE, carregado);
 		}
