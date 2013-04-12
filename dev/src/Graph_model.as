@@ -253,6 +253,8 @@ package
 					}
 				}
 			}
+			
+			select(TYPE_NONE, NaN, NaN);
 			draw();
 			calculateSum();
 		}
@@ -268,10 +270,12 @@ package
 			{
 				if (n == points[i].x && points[i].label == null) {
 					var point:Object = points.splice(i, 1)[0];
-					if (selectedType == TYPE_DIVISOR && selectedIndex == i) select(TYPE_NONE, NaN, NaN);
+					//if (selectedType == TYPE_DIVISOR && selectedIndex == i) select(TYPE_NONE, NaN, NaN);
 					break lookRemove;
 				}
 			}
+			
+			select(TYPE_NONE, NaN, NaN);
 			draw();
 			calculateSum();
 		}
@@ -298,6 +302,8 @@ package
 					break lookAdd;
 				}
 			}
+			
+			select(TYPE_NONE, NaN, NaN);
 			draw();
 			calculateSum();
 		}
@@ -313,10 +319,12 @@ package
 			{
 				if (h < points[i].x) {
 					points[i - 1].h = null;
-					if (selectedType == TYPE_ALTURA && selectedIndex == i - 1) select(TYPE_NONE, NaN, NaN);
+					//if (selectedType == TYPE_ALTURA && selectedIndex == i - 1) select(TYPE_NONE, NaN, NaN);
 					break lookAdd;
 				}
 			}
+			
+			select(TYPE_NONE, NaN, NaN);
 			draw();
 			calculateSum();
 		}
@@ -516,6 +524,21 @@ package
 			var posStage:Point;
 			var objReturn:Object;
 			
+			//Busca no F(0)
+			if(graph.hasFunction(F)){
+				posStage = getStageCoords(0, F.value(0));
+				if (Point.distance(clickPoint, posStage) < minDist) {
+					objReturn = new Object();
+					objReturn.type = TYPE_PRIMITIVE_C;
+					//objReturn.index = NaN;
+					//objReturn.value = NaN;
+					
+					select(TYPE_PRIMITIVE_C, NaN, NaN);
+					
+					return objReturn;
+				}
+			}
+			
 			//Busca nos divisores
 			for (i = 0; i < points.length; i++) 
 			{
@@ -564,20 +587,6 @@ package
 					return objReturn;
 				}
 			}
-			
-			//Busca no F(0)
-			posStage = getStageCoords(0, F.value(0));
-			if (Point.distance(clickPoint, posStage) < minDist) {
-				objReturn = new Object();
-				objReturn.type = TYPE_PRIMITIVE_C;
-				//objReturn.index = NaN;
-				//objReturn.value = NaN;
-				
-				select(TYPE_PRIMITIVE_C, NaN, NaN);
-				
-				return objReturn;
-			}
-			
 			
 			//Busca no F
 			for (j = graph.xmin; j < graph.xmax; j+=(graph.xmax - graph.xmin)/100) 
@@ -706,7 +715,13 @@ package
 		
 		public function setValueToSelected(value:Number):void
 		{
-			points[selectedIndex].x = getGraphCoords(value, 0).x;
+			var newPosX:Number = getGraphCoords(value, 0).x;
+			var roundPos:int = Math.round(newPosX);
+			var stageRoundX:Number = getStageCoords(roundPos, 0).x;
+			
+			if (Math.abs(value - stageRoundX) < 4) points[selectedIndex].x = roundPos;
+			else points[selectedIndex].x = newPosX;
+			
 			selectedValue = points[selectedIndex].x;
 			
 			if (points[selectedIndex].label != null) {

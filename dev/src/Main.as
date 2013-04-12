@@ -9,6 +9,7 @@ package
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.ui.Keyboard;
 	
 	/**
@@ -67,6 +68,8 @@ package
 			
 			//testando();
 			
+			this.scrollRect = new Rectangle(0, 0, 800, 480);
+			
 			
 			currentScreen = INICIAL;
 			
@@ -75,6 +78,7 @@ package
 			createScreens();
 			createFunctions();
 			//createGraph();
+			stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
 			
 			loadScreen(currentScreen);
 		}
@@ -101,17 +105,23 @@ package
 		private function createMenu():void 
 		{
 			menu = new Menu();
-			menu.openMenu.buttonMode = true;
-			menu.next.buttonMode = true;
-			menu.previous.buttonMode = true;
-			menu.help.buttonMode = true;
-			menu.openMenu.addEventListener(MouseEvent.CLICK, openMenuClick);
-			menu.next.addEventListener(MouseEvent.CLICK, next);
-			menu.previous.addEventListener(MouseEvent.CLICK, previous);
+			makeButton(menu.openMenu, openMenuClick)//.addEventListener(MouseEvent.CLICK, );
+			makeButton(menu.next, next);// .addEventListener(MouseEvent.CLICK, next);
+			makeButton(menu.previous, previous);// .addEventListener(MouseEvent.CLICK, previous);
+			makeButton(menu.help, null);
+			makeButton(menu.plus, null);
+			makeButton(menu.minus, null);
 			//menu.help.addEventListener(MouseEvent.CLICK, showHelp);
 			
 			subMenu = new SubMenu();
 			subMenu.x = -subMenu.width + 60;
+			makeButton(subMenu.newEx, createNew);
+			makeButton(subMenu.open, openFile);
+			makeButton(subMenu.save, save);
+			makeButton(subMenu.saveAs, saveAs);
+			makeButton(subMenu.language, null);
+			makeButton(subMenu.about, null);
+			
 			fileHandler = new FileHandler("ai170");
 		}
 		
@@ -147,47 +157,69 @@ package
 			
 			tela1 = new Tela1();
 			tela1.f0.mouseChildren = false;
-			tela1.f0.buttonMode = true;
 			tela1.f1.mouseChildren = false;
-			tela1.f1.buttonMode = true;
 			tela1.f2.mouseChildren = false;
-			tela1.f2.buttonMode = true;
 			tela1.f3.mouseChildren = false;
-			tela1.f3.buttonMode = true;
 			tela1.f4.mouseChildren = false;
+			
+			tela1.f0.buttonMode = true;
+			tela1.f1.buttonMode = true;
+			tela1.f2.buttonMode = true;
+			tela1.f3.buttonMode = true;
 			tela1.f4.buttonMode = true;
+			
+			tela1.f0.gotoAndStop(1);
+			tela1.f1.gotoAndStop(1);
+			tela1.f2.gotoAndStop(1);
+			tela1.f3.gotoAndStop(1);
+			tela1.f4.gotoAndStop(1);
+			
 			tela1.addEventListener(MouseEvent.CLICK, chooseFunction);
 			
 			tela3 = new Tela3();
 			tela3.inferior.buttonMode = true;
 			tela3.superior.buttonMode = true;
 			tela3.personal.buttonMode = true;
+			
 			tela3.inferior.mouseChildren = false;
 			tela3.superior.mouseChildren = false;
 			tela3.personal.mouseChildren = false;
+			
+			tela3.inferior.gotoAndStop(1);
+			tela3.superior.gotoAndStop(1);
+			tela3.personal.gotoAndStop(1);
+			
 			tela3.addEventListener(MouseEvent.CLICK, choseStrategy);
 		}
 		
 		private function choseStrategy(e:MouseEvent):void 
 		{
+			tela3.inferior.gotoAndStop(1);
+			tela3.superior.gotoAndStop(1);
+			tela3.personal.gotoAndStop(1);
 			switch(MovieClip(e.target).name) {
 				case "inferior":
 					currentStrategy = INFERIOR;
+					tela3.inferior.gotoAndStop(2);
 					break;
 				case "superior":
 					currentStrategy = SUPERIOR;
+					tela3.superior.gotoAndStop(2);
 					break;
 				case "personal":
 					currentStrategy = PERSONAL;
+					tela3.personal.gotoAndStop(2);
 					break;
 				default:
 					currentStrategy = -1;
 					break;
 			}
 			
+			/*
 			if (currentStrategy >= 0) {
 				next();
 			}
+			*/
 		}
 		
 		/**
@@ -239,10 +271,17 @@ package
 		private function chooseFunction(e:MouseEvent):void 
 		{
 			//trace(int("a"));
-			indexFunction = int(MovieClip(e.target).name.replace("f", ""));
-			if (!isNaN(indexFunction)) {
+			var newIndex:int = int(MovieClip(e.target).name.replace("f", ""));
+			if (!isNaN(newIndex)) {
+				if(indexFunction != -1){
+					if (newIndex != indexFunction) {
+						MovieClip(tela1.getChildByName("f" + indexFunction)).gotoAndStop(1);
+					}
+				}
+				indexFunction = newIndex;
+				MovieClip(tela1.getChildByName("f" + indexFunction)).gotoAndStop(2);
 				if (grafico != null) grafico = null;
-				next();
+				//next();
 			}
 		}
 		
@@ -256,7 +295,11 @@ package
 			currentStrategy = -1;
 			indexFunction = -1;
 			primitiveConstant = 0;
-			next();
+			unloadScreen(currentScreen);
+			currentScreen = 1;
+			loadScreen(currentScreen);
+			menu.currentScreen.text = currentScreen.toString();
+			//next();
 		}
 		
 		private function next(e:MouseEvent = null):void
@@ -269,7 +312,6 @@ package
 			unloadScreen(currentScreen);
 			currentScreen++;
 			loadScreen(currentScreen);
-			menu.currentScreen.text = currentScreen.toString();
 		}
 		
 		private function previous(e:MouseEvent = null):void
@@ -277,7 +319,6 @@ package
 			unloadScreen(currentScreen);
 			currentScreen--;
 			loadScreen(currentScreen);
-			menu.currentScreen.text = currentScreen.toString();
 		}
 		
 		private function alowNext(screen:int):Boolean
@@ -322,6 +363,7 @@ package
 		 */
 		private function loadScreen(screen:int, state:Object = null):void 
 		{
+			menu.currentScreen.text = screen.toString();
 			switch (screen) {
 				case INICIAL:
 					if (layer_menu.numChildren > 0){
@@ -338,6 +380,13 @@ package
 					menu.plus.visible = false;
 					menu.minus.visible = false;
 					layer_screen.addChild(tela1);
+					if (indexFunction == -1) {
+						tela1.f0.gotoAndStop(1);
+						tela1.f1.gotoAndStop(1);
+						tela1.f2.gotoAndStop(1);
+						tela1.f3.gotoAndStop(1);
+						tela1.f4.gotoAndStop(1);
+					}
 					break;
 				case CHOOSE_AB:
 					if (layer_menu.numChildren == 0) {
@@ -348,15 +397,17 @@ package
 					menu.minus.visible = false;
 					if (grafico == null) grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
 					grafico.hideSum();
-					grafico.addPoint( -5);
-					grafico.addPoint( 5);
+					if(grafico.n == -1){
+						grafico.addPoint( -5);
+						grafico.addPoint( 5);
+					}
 					grafico.defineAB = true;
 					grafico.showPrimitive = false;
 					grafico.x = 60;
 					if (state != null) grafico.restoreState(state);
 					layer_graph.addChild(grafico);
 					stage.addEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
-					stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
+					//stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
 					stage.addEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
 					break;
 				case CHOOSE_SUM:
@@ -367,6 +418,11 @@ package
 					menu.plus.visible = false;
 					menu.minus.visible = false;
 					layer_screen.addChild(tela3);
+					if (currentStrategy == -1) {
+						tela3.inferior.gotoAndStop(1);
+						tela3.superior.gotoAndStop(1);
+						tela3.personal.gotoAndStop(1);
+					}
 					break;
 				case PARTITION:
 					if (layer_menu.numChildren == 0) {
@@ -397,7 +453,7 @@ package
 							break;
 					}
 					stage.addEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
-					stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
+					//stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
 					stage.addEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
 					break;
 				case RESULT:
@@ -430,7 +486,7 @@ package
 					if (state != null) grafico.restoreState(state);
 					layer_graph.addChild(grafico);
 					stage.addEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
-					stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
+					//stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
 					stage.addEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
 					break;
 				case FINAL:
@@ -448,7 +504,7 @@ package
 					grafico.showPrimitive = true;
 					if (state != null) grafico.restoreState(state);
 					layer_graph.addChild(grafico);
-					stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
+					//stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
 					stage.addEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
 					break;
 				
@@ -471,7 +527,7 @@ package
 				case CHOOSE_AB:
 					layer_graph.removeChild(grafico);
 					stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
-					stage.removeEventListener(MouseEvent.MOUSE_DOWN, stageDown);
+					//stage.removeEventListener(MouseEvent.MOUSE_DOWN, stageDown);
 					stage.removeEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
 					break;
 				case CHOOSE_SUM:
@@ -480,7 +536,7 @@ package
 				case PARTITION:
 					layer_graph.removeChild(grafico);
 					stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
-					stage.removeEventListener(MouseEvent.MOUSE_DOWN, stageDown);
+					//stage.removeEventListener(MouseEvent.MOUSE_DOWN, stageDown);
 					stage.removeEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
 					menu.plus.removeEventListener(MouseEvent.CLICK, plusHandler);
 					menu.minus.removeEventListener(MouseEvent.CLICK, minusHandler);
@@ -488,20 +544,38 @@ package
 				case RESULT:
 					layer_graph.removeChild(grafico);
 					stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
-					stage.removeEventListener(MouseEvent.MOUSE_DOWN, stageDown);
+					//stage.removeEventListener(MouseEvent.MOUSE_DOWN, stageDown);
 					stage.removeEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
 					break;
 				case FINAL:
 					layer_graph.removeChild(grafico);
 					stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
-					stage.removeEventListener(MouseEvent.MOUSE_DOWN, stageDown);
+					//stage.removeEventListener(MouseEvent.MOUSE_DOWN, stageDown);
 					stage.removeEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
 					break;
 				
 			}
 		}
 		
+		private function makeButton(bt:MovieClip, func:Function):void
+		{
+			bt.gotoAndStop(1);
+			bt.mouseChildren = false;
+			bt.buttonMode = true;
+			bt.addEventListener(MouseEvent.MOUSE_OVER, overBtn);
+			bt.addEventListener(MouseEvent.MOUSE_OUT, outBtn);
+			if (func != null) bt.addEventListener(MouseEvent.MOUSE_DOWN, func);
+		}
 		
+		private function overBtn(e:MouseEvent):void 
+		{
+			MovieClip(e.target).gotoAndStop(2);
+		}
+		
+		private function outBtn(e:MouseEvent):void 
+		{
+			MovieClip(e.target).gotoAndStop(1);
+		}
 		
 		
 		
@@ -518,12 +592,12 @@ package
 			switch (e.keyCode) {
 				case Keyboard.S:
 					//Salvar
-					salvar(e.ctrlKey);
+					//salvar(e.ctrlKey);
 					
 					break;
 				case Keyboard.R:
 					//Recuperar
-					fileHandler.abrir(loadComplete);
+					//fileHandler.abrir(loadComplete);
 					break;
 				case Keyboard.P:
 					//Adiciona um ponto
@@ -547,18 +621,28 @@ package
 			}
 		}
 		
-		private function salvar(saveAs:Boolean):void
+		private function save(e:MouseEvent = null):void
+		{
+			var stringState:String = JSON.stringify(getState());
+			fileHandler.save(stringState);
+		}
+		
+		private function saveAs(e:MouseEvent = null):void
+		{
+			var stringState:String = JSON.stringify(getState());
+			fileHandler.saveAs(stringState);
+		}
+		
+		private function getState():Object
 		{
 			var state:Object = new Object();
-			state.gs = grafico.getState();
+			if(grafico != null) state.gs = grafico.getState();
 			state.pc = primitiveConstant;
 			state.f = indexFunction;
 			state.sc = currentScreen;
 			state.st = currentStrategy;
 			
-			var stringState:String = JSON.stringify(state);
-			if (saveAs) fileHandler.saveAs(stringState);
-			else fileHandler.save(stringState);
+			return state;
 		}
 		
 		private function loadComplete(content:String):void {
@@ -636,28 +720,32 @@ package
 				if (subMenuOpen) closeSubMenu();
 			}
 			
-			var objClicked:Object = grafico.searchElement(new Point(grafico.mouseX, grafico.mouseY));
+			if (e.target is MovieClip) return;
 			
-			switch (objClicked.type) {
-				case Graph_model.TYPE_PRIMITIVE_C:
-					posClick.y = stage.mouseY;
-					stage.addEventListener(MouseEvent.MOUSE_MOVE, movingPrimitive);
-					stage.addEventListener(MouseEvent.MOUSE_UP, stopMovingPrimitive);
-					break;
-				case Graph_model.TYPE_NONE:
-					posClick.x = stage.mouseX;
-					posClick.y = stage.mouseY;
-					stage.addEventListener(MouseEvent.MOUSE_MOVE, panning);
-					stage.addEventListener(MouseEvent.MOUSE_UP, stopPanning);
-					break;
-				case Graph_model.TYPE_DIVISOR:
-					if (objClicked.label != null) {
-						if (!grafico.lockAB) {
-							stage.addEventListener(MouseEvent.MOUSE_MOVE, movingAB);
-							stage.addEventListener(MouseEvent.MOUSE_UP, stopMovingAB);
+			if(layer_graph.contains(grafico)){
+				var objClicked:Object = grafico.searchElement(new Point(grafico.mouseX, grafico.mouseY));
+				
+				switch (objClicked.type) {
+					case Graph_model.TYPE_PRIMITIVE_C:
+						posClick.y = stage.mouseY;
+						stage.addEventListener(MouseEvent.MOUSE_MOVE, movingPrimitive);
+						stage.addEventListener(MouseEvent.MOUSE_UP, stopMovingPrimitive);
+						break;
+					case Graph_model.TYPE_NONE:
+						posClick.x = stage.mouseX;
+						posClick.y = stage.mouseY;
+						stage.addEventListener(MouseEvent.MOUSE_MOVE, panning);
+						stage.addEventListener(MouseEvent.MOUSE_UP, stopPanning);
+						break;
+					case Graph_model.TYPE_DIVISOR:
+						if (objClicked.label != null) {
+							if (!grafico.lockAB) {
+								stage.addEventListener(MouseEvent.MOUSE_MOVE, movingAB);
+								stage.addEventListener(MouseEvent.MOUSE_UP, stopMovingAB);
+							}
 						}
-					}
-					break;
+						break;
+				}
 			}
 		}
 		
