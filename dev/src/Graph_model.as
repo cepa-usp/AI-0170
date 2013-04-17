@@ -43,6 +43,8 @@ package
 		private var _showPrimitive:Boolean = false;
 		private var showHpoints:Boolean = false;
 		
+		private var _showhRects:Boolean = true;
+		
 		private var _graphSize:Point = new Point(740, 480);
 		
 		private var txtSomaDTF:TextFormat = new TextFormat("arial", 12, 0x000000);
@@ -557,18 +559,20 @@ package
 			}
 			
 			//Busca nos pontos de altura
-			for (i = 0; i < points.length; i++) 
-			{
-				posStage = getStageCoords(points[i].h, f.value(points[i].h));
-				if (Point.distance(clickPoint, posStage) < minDist) {
-					objReturn = new Object();
-					objReturn.type = TYPE_ALTURA;
-					objReturn.index = i;
-					objReturn.value = points[i].h;
-					
-					select(TYPE_ALTURA, i, points[i].h);
-					
-					return objReturn;
+			if(showhRects){
+				for (i = 0; i < points.length; i++) 
+				{
+					posStage = getStageCoords(points[i].h, f.value(points[i].h));
+					if (Point.distance(clickPoint, posStage) < minDist) {
+						objReturn = new Object();
+						objReturn.type = TYPE_ALTURA;
+						objReturn.index = i;
+						objReturn.value = points[i].h;
+						
+						select(TYPE_ALTURA, i, points[i].h);
+						
+						return objReturn;
+					}
 				}
 			}
 			
@@ -589,69 +593,73 @@ package
 			}
 			
 			//Busca no F
-			for (j = graph.xmin; j < graph.xmax; j+=(graph.xmax - graph.xmin)/100) 
-			{
-				posStage = getStageCoords(j, F.value(j));
-				if (Point.distance(clickPoint, posStage) < minDist * 2) {
-					objReturn = new Object();
-					objReturn.type = TYPE_PRIMITIVE;
-					//objReturn.index = NaN;
-					//objReturn.value = NaN;
-					
-					select(TYPE_PRIMITIVE, NaN, NaN);
-					
-					return objReturn;
+			if(showPrimitive){
+				for (j = graph.xmin; j < graph.xmax; j+=(graph.xmax - graph.xmin)/100) 
+				{
+					posStage = getStageCoords(j, F.value(j));
+					if (Point.distance(clickPoint, posStage) < minDist * 2) {
+						objReturn = new Object();
+						objReturn.type = TYPE_PRIMITIVE;
+						//objReturn.index = NaN;
+						//objReturn.value = NaN;
+						
+						select(TYPE_PRIMITIVE, NaN, NaN);
+						
+						return objReturn;
+					}
 				}
 			}
 			
 			//Busca retângulos
-			if(points.length >= 2){
-				var pta:Point = getStageCoords(points[0].x, 0);
-				var ptb:Point = getStageCoords(points[points.length - 1].x, 0);
-				if (clickPoint.x > pta.x && clickPoint.x < ptb.x) {
-					var clickOnGraph:Point = getGraphCoords(clickPoint.x, clickPoint.y);
-					//var valueClickOnFunction:Number = f.value(clickOnGraph.x);
-					//if (clickOnGraph.y < valueClickOnFunction) {
-						lookRect: for (i = 1; i < points.length; i++) 
-						{
-							if (clickOnGraph.x < points[i].x) {
-								if(points[i-1].h != null){
-									var altura:Number = f.value(points[i - 1].h);
-									if (altura < 0) {
-										if (clickOnGraph.y > altura && clickOnGraph.y < 0) {
-											objReturn = new Object();
-											objReturn.type = TYPE_RECTANGLE;
-											objReturn.index = i-1;
-											//objReturn.value = NaN;
-											
-											select(TYPE_RECTANGLE, i - 1, NaN);
-											
-											return objReturn;
+			if(showhRects){
+				if(points.length >= 2){
+					var pta:Point = getStageCoords(points[0].x, 0);
+					var ptb:Point = getStageCoords(points[points.length - 1].x, 0);
+					if (clickPoint.x > pta.x && clickPoint.x < ptb.x) {
+						var clickOnGraph:Point = getGraphCoords(clickPoint.x, clickPoint.y);
+						//var valueClickOnFunction:Number = f.value(clickOnGraph.x);
+						//if (clickOnGraph.y < valueClickOnFunction) {
+							lookRect: for (i = 1; i < points.length; i++) 
+							{
+								if (clickOnGraph.x < points[i].x) {
+									if(points[i-1].h != null){
+										var altura:Number = f.value(points[i - 1].h);
+										if (altura < 0) {
+											if (clickOnGraph.y > altura && clickOnGraph.y < 0) {
+												objReturn = new Object();
+												objReturn.type = TYPE_RECTANGLE;
+												objReturn.index = i-1;
+												//objReturn.value = NaN;
+												
+												select(TYPE_RECTANGLE, i - 1, NaN);
+												
+												return objReturn;
+											}else {
+												break lookRect;
+											}
 										}else {
-											break lookRect;
+											if (clickOnGraph.y < altura && clickOnGraph.y > 0) {
+												objReturn = new Object();
+												objReturn.type = TYPE_RECTANGLE;
+												objReturn.index = i-1;
+												//objReturn.value = NaN;
+												
+												select(TYPE_RECTANGLE, i - 1, NaN);
+												
+												return objReturn;
+											}else {
+												break lookRect;
+											}
 										}
+										
 									}else {
-										if (clickOnGraph.y < altura && clickOnGraph.y > 0) {
-											objReturn = new Object();
-											objReturn.type = TYPE_RECTANGLE;
-											objReturn.index = i-1;
-											//objReturn.value = NaN;
-											
-											select(TYPE_RECTANGLE, i - 1, NaN);
-											
-											return objReturn;
-										}else {
-											break lookRect;
-										}
+										break lookRect;
 									}
 									
-								}else {
-									break lookRect;
 								}
-								
 							}
-						}
-					//}
+						//}
+					}
 				}
 			}
 			
@@ -726,7 +734,7 @@ package
 			
 			if (points[selectedIndex].label != null) {
 				if (points[selectedIndex].label == "a") {
-					if (value > ptB.x) {
+					if (newPosX > ptB.x) {
 						points[0] = ptB;
 						points[1] = ptA;
 						selectedIndex = 1;
@@ -736,7 +744,7 @@ package
 						selectedIndex = 0;
 					}
 				}else {
-					if (value < ptA.x) {
+					if (newPosX < ptA.x) {
 						points[0] = ptB;
 						points[1] = ptA;
 						selectedIndex = 0;
@@ -751,13 +759,32 @@ package
 			draw();
 		}
 		
+		public function getSelectedType():String
+		{
+			return selectedType;
+		}
+		
+		public function getSelectedPosition():Point
+		{
+			switch (selectedType) {
+				case TYPE_DIVISOR:
+					return getStageCoords(selectedValue, 0);
+				case TYPE_ALTURA:
+					return getStageCoords(selectedValue, f.value(selectedValue));
+				//case TYPE_PRIMITIVE_C:
+				//	return getStageCoords(selectedValue, F.value(selectedValue));
+			}
+			
+			return null;
+		}
+		
 		/**
 		 * Transforma as coordenadas do gráfico em coordenadas do palco.
 		 * @param	graphPointX Coordenada x no gráfico.
 		 * @param	graphPointY Coordenada y no gráfico.
 		 * @return Retorna um point com as coordenadas do palco.
 		 */
-		private function getStageCoords(graphPointX:Number, graphPointY:Number):Point
+		public function getStageCoords(graphPointX:Number, graphPointY:Number):Point
 		{
 			var posX:Number = graph.x2pixel(graphPointX) + graph.x;
 			var posY:Number = graph.y2pixel(graphPointY) + graph.y;
@@ -792,6 +819,18 @@ package
 			var ptOnGraph:Point = getGraphCoords(ptStage.x, ptStage.y);
 			
 			return ptOnGraph;
+		}
+		
+		public function getNearPos(posX:Number, posY:Number):Point
+		{
+			var posOnGraph:Point = getGraphCoords(posX, posY);
+			var newPos:Point = new Point(Math.round(posOnGraph.x), Math.round(posOnGraph.y));
+			var newPosStage:Point = getStageCoords(newPos.x, newPos.y);
+			if (Point.distance(newPosStage, new Point(posX, posY)) < 4) {
+				return newPosStage;
+			}else {
+				return new Point(posX, posY);
+			}
 		}
 		
 		/**
@@ -904,8 +943,10 @@ package
 					else if(selectedIndex == i && selectedType == TYPE_ALTURA) drawFunctionPoint(altura, false);
 					
 					//Desenha os retângulos:
-					pt2 = getStageCoords(points[i + 1].x, 0);
-					drawRectangle(pt1, pt2, altura, (selectedIndex == i && selectedType == TYPE_RECTANGLE));
+					if(_showhRects){
+						pt2 = getStageCoords(points[i + 1].x, 0);
+						drawRectangle(pt1, pt2, altura, (selectedIndex == i && selectedType == TYPE_RECTANGLE));
+					}
 					
 				}
 			}
@@ -1084,6 +1125,17 @@ package
 		public function set showPrimitive(value:Boolean):void 
 		{
 			_showPrimitive = value;
+			draw();
+		}
+		
+		public function get showhRects():Boolean 
+		{
+			return _showhRects;
+		}
+		
+		public function set showhRects(value:Boolean):void 
+		{
+			_showhRects = value;
 			draw();
 		}
 		

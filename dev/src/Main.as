@@ -11,6 +11,7 @@ package
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.ui.Keyboard;
+	import tutorial.CaixaTextoNova;
 	
 	/**
 	 * ...
@@ -30,6 +31,7 @@ package
 		private var layer_screen:Sprite;
 		private var layer_menu:Sprite;
 		private var layer_info:Sprite;
+		private var layer_mark:Sprite;
 		
 		//Indice telas:
 		private const INICIAL:int = 0;
@@ -55,6 +57,8 @@ package
 		private var currentStrategy:int = -1;
 		private const defaultN:int = 5;
 		
+		private var informacoes:CaixaTextoNova;
+		
 		public function Main():void 
 		{
 			
@@ -69,7 +73,9 @@ package
 			//testando();
 			
 			this.scrollRect = new Rectangle(0, 0, 800, 480);
-			
+			informacoes = new CaixaTextoNova();
+			informacoes.nextButton.visible = false;
+			informacoes.closeButton.addEventListener(MouseEvent.CLICK, closeInfo);
 			
 			currentScreen = INICIAL;
 			
@@ -83,6 +89,11 @@ package
 			loadScreen(currentScreen);
 		}
 		
+		private function closeInfo(e:MouseEvent):void 
+		{
+			if (layer_info.contains(informacoes)) layer_info.removeChild(informacoes);
+		}
+		
 		/**
 		 * Cria as camadas da aplicação.
 		 */
@@ -92,8 +103,10 @@ package
 			layer_info = new Sprite();
 			layer_menu = new Sprite();
 			layer_screen = new Sprite();
+			layer_mark = new Sprite();
 			
 			addChild(layer_graph);
+			addChild(layer_mark);
 			addChild(layer_screen);
 			addChild(layer_menu);
 			addChild(layer_info);
@@ -254,7 +267,27 @@ package
 		{
 			switch (currentScreen) {
 				case PARTITION:
-					grafico.divideIn(grafico.n + 1);
+					if (currentStrategy == PERSONAL) {
+						if (layer_mark.contains(mark)) {
+							var yOrigin:Number = grafico.getStageCoords(0, 0).y;
+							if(yOrigin == mark.y){
+								var posOnGraph:Point = grafico.globalToLocal(new Point(mark.x, mark.y));
+								grafico.addPoint(grafico.getGraphCoords(posOnGraph.x, posOnGraph.y).x);
+							}
+						}
+					}else{
+						grafico.divideIn(grafico.n + 1);
+					}
+					break;
+				case RESULT:
+					if (currentStrategy == PERSONAL) {
+						if (layer_mark.contains(mark)) {
+							posOnGraph = grafico.globalToLocal(new Point(mark.x, mark.y));
+							var graphCoords:Point = grafico.getGraphCoords(posOnGraph.x, posOnGraph.y);
+							var ptFunc:Point = grafico.getStageCoords(graphCoords.x, functions[indexFunction][0].value(graphCoords.x));
+							if(Point.distance(posOnGraph, ptFunc) < 1) grafico.addPointM(graphCoords.x);
+						}
+					}
 					break;
 			}
 		}
@@ -263,7 +296,14 @@ package
 		{
 			switch (currentScreen) {
 				case PARTITION:
-					grafico.divideIn(grafico.n - 1);
+					if (currentStrategy == PERSONAL) {
+						grafico.deleteSelected([Graph_model.TYPE_DIVISOR]);
+					}else{
+						grafico.divideIn(grafico.n - 1);
+					}
+					break;
+				case RESULT:
+					grafico.deleteSelected([Graph_model.TYPE_ALTURA]);
 					break;
 			}
 		}
@@ -401,6 +441,7 @@ package
 						grafico.addPoint( -5);
 						grafico.addPoint( 5);
 					}
+					grafico.showhRects = false;
 					grafico.defineAB = true;
 					grafico.showPrimitive = false;
 					grafico.x = 60;
@@ -436,6 +477,7 @@ package
 					grafico.defineAB = false;
 					grafico.lockAB = true;
 					grafico.showPrimitive = false;
+					grafico.showhRects = false;
 					grafico.x = 60;
 					if (state != null) grafico.restoreState(state);
 					layer_graph.addChild(grafico);
@@ -444,14 +486,13 @@ package
 						case SUPERIOR:
 							if (grafico.n == 1) grafico.divideIn(defaultN);
 							else grafico.divideIn(grafico.n);
-							
-							menu.plus.addEventListener(MouseEvent.CLICK, plusHandler);
-							menu.minus.addEventListener(MouseEvent.CLICK, minusHandler);
 							break;
 						case PERSONAL:
 							
 							break;
 					}
+					menu.plus.addEventListener(MouseEvent.CLICK, plusHandler);
+					menu.minus.addEventListener(MouseEvent.CLICK, minusHandler);
 					stage.addEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
 					//stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
 					stage.addEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
@@ -466,6 +507,7 @@ package
 					grafico.defineAB = false;
 					grafico.lockAB = true;
 					grafico.showPrimitive = false;
+					grafico.showhRects = true;
 					grafico.x = 60;
 					switch (currentStrategy) {
 						case INFERIOR:
@@ -481,6 +523,8 @@ package
 						case PERSONAL:
 							menu.plus.visible = true;
 							menu.minus.visible = true;
+							menu.plus.addEventListener(MouseEvent.CLICK, plusHandler);
+							menu.minus.addEventListener(MouseEvent.CLICK, minusHandler);
 							break;
 					}
 					if (state != null) grafico.restoreState(state);
@@ -509,6 +553,37 @@ package
 					break;
 				
 			}
+			loadInfo(screen);
+		}
+		
+		private function loadInfo(screen:int):void 
+		{
+			switch(screen) {
+				case INICIAL:
+					break;
+				case CHOOSE_F:
+					//setInfoText("Escolha a função para iniciar o exercício");
+					break;
+				case CHOOSE_AB:
+					break;
+				case CHOOSE_SUM:
+					break;
+				case PARTITION:
+					break;
+				case RESULT:
+					break;
+				case FINAL:
+					break;
+				
+			}
+		}
+		
+		private function setInfoText(text:String):void
+		{
+			informacoes.setText(text, CaixaTextoNova.LEFT, CaixaTextoNova.CENTER);
+			informacoes.setPosition(50, 180);
+			informacoes.nextButton.visible = false;
+			layer_info.addChild(informacoes);
 		}
 		
 		/**
@@ -517,6 +592,7 @@ package
 		 */
 		private function unloadScreen(screen:int):void 
 		{
+			removeMark();
 			switch (screen) {
 				case INICIAL:
 					layer_screen.removeChild(tela0);
@@ -705,10 +781,12 @@ package
 			if (e.delta > 0) {
 				//Zoom in
 				grafico.zoomInPtPixel(new Point(grafico.mouseX, grafico.mouseY));
+				updateMarkPosition()
 				//grafico.zoomInCenter();
 			}else {
 				//Zoon out
 				grafico.zoomOutPtPixel(new Point(grafico.mouseX, grafico.mouseY));
+				updateMarkPosition();
 				//grafico.zoomOutCenter();
 			}
 		}
@@ -720,10 +798,12 @@ package
 				if (subMenuOpen) closeSubMenu();
 			}
 			
-			if (e.target is MovieClip) return;
+			if (stage.mouseX < 60) return;
+			if (grafico == null) return;
 			
 			if(layer_graph.contains(grafico)){
 				var objClicked:Object = grafico.searchElement(new Point(grafico.mouseX, grafico.mouseY));
+				trace(objClicked.type);
 				
 				switch (objClicked.type) {
 					case Graph_model.TYPE_PRIMITIVE_C:
@@ -734,16 +814,45 @@ package
 					case Graph_model.TYPE_NONE:
 						posClick.x = stage.mouseX;
 						posClick.y = stage.mouseY;
+						panClick.x = stage.mouseX;
+						panClick.y = stage.mouseY;
 						stage.addEventListener(MouseEvent.MOUSE_MOVE, panning);
 						stage.addEventListener(MouseEvent.MOUSE_UP, stopPanning);
 						break;
 					case Graph_model.TYPE_DIVISOR:
 						if (objClicked.label != null) {
 							if (!grafico.lockAB) {
+								removeMark();
 								stage.addEventListener(MouseEvent.MOUSE_MOVE, movingAB);
 								stage.addEventListener(MouseEvent.MOUSE_UP, stopMovingAB);
+							}else {
+								var pos:Point = grafico.getSelectedPosition();
+								pos.x += grafico.x;
+								setMark(pos, false);
 							}
+						}else {
+							pos = grafico.getSelectedPosition();
+							pos.x += grafico.x;
+							setMark(pos, false);
 						}
+						break;
+					case Graph_model.TYPE_FUNCTION:
+						posClick.x = stage.mouseX;
+						posClick.y = stage.mouseY;
+						stage.addEventListener(MouseEvent.MOUSE_UP, stopPanning);
+						break;
+					case Graph_model.TYPE_ALTURA:
+						pos = grafico.getSelectedPosition();
+						pos.x += grafico.x;
+						setMark(pos, false);
+						break;
+					case Graph_model.TYPE_RECTANGLE:
+						posClick.x = stage.mouseX;
+						posClick.y = stage.mouseY;
+						setMark(posClick, false);
+						break;
+					default:
+						//removeMark();
 						break;
 				}
 			}
@@ -758,20 +867,93 @@ package
 		{
 			stage.removeEventListener(MouseEvent.MOUSE_MOVE, movingAB);
 			stage.removeEventListener(MouseEvent.MOUSE_UP, stopMovingAB);
+			var positionSelected:Point = grafico.getSelectedPosition();
+			if (positionSelected != null) {
+				positionSelected.x += grafico.x;
+				setMark(positionSelected, false);
+			}
 		}
 		
+		private var panClick:Point = new Point();
 		private function panning(e:MouseEvent):void 
 		{
-			var displace:Point = new Point(stage.mouseX - posClick.x, stage.mouseY - posClick.y);
-			posClick.x = stage.mouseX;
-			posClick.y = stage.mouseY;
+			var displace:Point = new Point(stage.mouseX - panClick.x, stage.mouseY - panClick.y);
+			panClick.x = stage.mouseX;
+			panClick.y = stage.mouseY;
 			grafico.panPixel(displace);
+			
+			updateMarkPosition();
 		}
+		
+		//------------------------- Marcação no palco --------------------------------
+		
+		private var mark:Mark = new Mark();
+		private var posMarkGraph:Point = new Point();
+		private function setMark(position:Point, snap:Boolean = true):void
+		{
+			if (snap) {
+				var nearPos:Point = grafico.getNearPos(position.x - grafico.x, position.y);
+				mark.x = nearPos.x + grafico.x;
+				mark.y = nearPos.y;
+			}else{
+				mark.x = position.x;
+				mark.y = position.y;
+			}
+			var markGrafico:Point = grafico.globalToLocal(new Point(mark.x, mark.y));
+			var markGraph:Point = grafico.getGraphCoords(markGrafico.x, markGrafico.y);
+			posMarkGraph.x = markGraph.x;
+			posMarkGraph.y = markGraph.y;
+			
+			if (!layer_mark.contains(mark)) layer_mark.addChild(mark);
+		}
+		
+		private function updateMarkPosition():void
+		{
+			if(layer_mark.contains(mark)){
+				var markStage:Point = grafico.getStageCoords(posMarkGraph.x, posMarkGraph.y);
+				mark.x = markStage.x + grafico.x;
+				mark.y = markStage.y + grafico.y;
+			}
+		}
+		
+		private function removeMark():void
+		{
+			if (layer_mark.contains(mark)) layer_mark.removeChild(mark);
+		}
+		
+		//------------------------- Fim marcação palco ----------------------------------
 		
 		private function stopPanning(e:MouseEvent):void 
 		{
 			stage.removeEventListener(MouseEvent.MOUSE_MOVE, panning);
 			stage.removeEventListener(MouseEvent.MOUSE_UP, stopPanning);
+			
+			if (Point.distance(posClick, new Point(stage.mouseX, stage.mouseY)) < 1) {
+				var posMouse:Point = new Point(grafico.mouseX, grafico.mouseY);
+				var graphCoordsOfMouse:Point = grafico.getGraphCoords(posMouse.x, posMouse.y);
+				
+				if(currentScreen == PARTITION){
+					//Adiciona a marcação X do ponto no eixo x
+					var stageCoordsOfMouseX:Point = grafico.getStageCoords(graphCoordsOfMouse.x, 0);
+					
+					if (Point.distance(posMouse, stageCoordsOfMouseX) < 5) {
+						setMark(new Point(posClick.x, stageCoordsOfMouseX.y));
+					}else {
+						setMark(posClick);
+					}
+				}else if (currentScreen == RESULT) {
+					//Adiciona a marcação X da altura
+					var stageCoordsOfMouseFunc:Point = grafico.getStageCoords(graphCoordsOfMouse.x, functions[indexFunction][0].value(graphCoordsOfMouse.x));
+					
+					if (Point.distance(posMouse, stageCoordsOfMouseFunc) < 5) {
+						setMark(new Point(posClick.x, stageCoordsOfMouseFunc.y));
+					}else {
+						setMark(posClick);
+					}
+				}else if (currentScreen == CHOOSE_AB) {
+					setMark(posClick);
+				}
+			}
 		}
 		
 		private function movingPrimitive(e:MouseEvent):void 

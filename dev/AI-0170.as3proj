@@ -54,6 +54,7 @@
   <libraryPaths>
     <element path="lib\menu.swc" />
     <element path="lib\telas.swc" />
+    <element path="lib\tutorial\tutorialButtons.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>

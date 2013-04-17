@@ -16,7 +16,7 @@
     </define>
     <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'12/04/2013'</value>
+      <value>'17/04/2013'</value>
     </define>
     <verbose-stacktraces>true</verbose-stacktraces>
     <source-path append="true">
@@ -31,6 +31,7 @@
     <library-path append="true">
       <path-element>D:\Projetos\05 - GitHub\AI-0170\dev\lib\menu.swc</path-element>
       <path-element>D:\Projetos\05 - GitHub\AI-0170\dev\lib\telas.swc</path-element>
+      <path-element>D:\Projetos\05 - GitHub\AI-0170\dev\lib\tutorial\tutorialButtons.swc</path-element>
     </library-path>
   </compiler>
   <file-specs>
