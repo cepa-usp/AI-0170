@@ -24,6 +24,7 @@ package
 		private var primitiveConstant:Number = 0;
 		private var fileHandler:FileHandler;
 		private var functions:Array;
+		private var mcFunctions:Array;
 		private var indexFunction:int = -1;
 		
 		//Camadas:
@@ -157,6 +158,7 @@ package
 			subMenuOpen = false;
 		}
 		
+		private var tela1Accord:Accordion;
 		/**
 		 * Cria as telas que serão utilizadas.
 		 */
@@ -169,25 +171,31 @@ package
 			tela0.newFile.addEventListener(MouseEvent.CLICK, createNew);
 			
 			tela1 = new Tela1();
-			tela1.f0.mouseChildren = false;
-			tela1.f1.mouseChildren = false;
-			tela1.f2.mouseChildren = false;
-			tela1.f3.mouseChildren = false;
-			tela1.f4.mouseChildren = false;
+			tela1Accord = new Accordion();
+			var f0:F0 = new F0();
+			var f1:F1 = new F1();
+			var f2:F2 = new F2();
+			var f3:F3 = new F3();
+			var f4:F4 = new F4();
 			
-			tela1.f0.buttonMode = true;
-			tela1.f1.buttonMode = true;
-			tela1.f2.buttonMode = true;
-			tela1.f3.buttonMode = true;
-			tela1.f4.buttonMode = true;
+			mcFunctions = [];
+			mcFunctions.push(f0, f1, f2, f3, f4);
 			
-			tela1.f0.gotoAndStop(1);
-			tela1.f1.gotoAndStop(1);
-			tela1.f2.gotoAndStop(1);
-			tela1.f3.gotoAndStop(1);
-			tela1.f4.gotoAndStop(1);
+			for (var i:int = 0; i < mcFunctions.length; i++) 
+			{
+				mcFunctions[i].mouseChildren = false;
+				mcFunctions[i].name = "f" + String(i);
+				mcFunctions[i].buttonMode = true;
+				mcFunctions[i].gotoAndStop(1);
+				mcFunctions[i].addEventListener(MouseEvent.CLICK, chooseFunction);
+			}
 			
-			tela1.addEventListener(MouseEvent.CLICK, chooseFunction);
+			tela1Accord.addAba(new MF1(), [f0, f1]);
+			tela1Accord.addAba(new MF2(), [f2, f3]);
+			tela1Accord.addAba(new MF3(), [f4]);
+			tela1.addChild(tela1Accord);
+			
+			//tela1.addEventListener(MouseEvent.CLICK, chooseFunction);
 			
 			tela3 = new Tela3();
 			tela3.inferior.buttonMode = true;
@@ -241,26 +249,26 @@ package
 		private function createFunctions():void 
 		{
 			var f0:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return 3 * x + 2 } );
-			var F0:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return 3/2 * Math.pow(x, 2) + 2 * x + primitiveConstant } );
+			var pF0:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return 3/2 * Math.pow(x, 2) + 2 * x + primitiveConstant } );
 			
 			var f1:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return x } );
-			var F1:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return 1 / 2 * Math.pow(x, 2) + primitiveConstant } );
+			var pF1:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return 1 / 2 * Math.pow(x, 2) + primitiveConstant } );
 			
 			var f2:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return 5 * Math.pow(x, 2) + 3 * x + 1 } );
-			var F2:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return 5 / 3 * Math.pow(x, 3) + 3/2 * Math.pow(x, 2) + x + primitiveConstant } );
+			var pF2:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return 5 / 3 * Math.pow(x, 3) + 3/2 * Math.pow(x, 2) + x + primitiveConstant } );
 			
 			var f3:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.log(x) } );
-			var F3:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return x * Math.log(x) + primitiveConstant } );
+			var pF3:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return x * Math.log(x) + primitiveConstant } );
 			
 			var f4:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.sin(x) } );
-			var F4:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return -Math.cos(x) + primitiveConstant} );
+			var pF4:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return -Math.cos(x) + primitiveConstant} );
 			
 			functions = new Array();
-			functions.push([f0, F0]);
-			functions.push([f1, F1]);
-			functions.push([f2, F2]);
-			functions.push([f3, F3]);
-			functions.push([f4, F4]);
+			functions.push([f0, pF0]);
+			functions.push([f1, pF1]);
+			functions.push([f2, pF2]);
+			functions.push([f3, pF3]);
+			functions.push([f4, pF4]);
 		}
 		
 		private function plusHandler(e:MouseEvent):void 
@@ -308,18 +316,21 @@ package
 			}
 		}
 		
+		private var fSelected:MovieClip;
 		private function chooseFunction(e:MouseEvent):void 
 		{
-			//trace(int("a"));
-			var newIndex:int = int(MovieClip(e.target).name.replace("f", ""));
+			var fClicked:MovieClip = MovieClip(e.target);
+			var newIndex:int = int(fClicked.name.replace("f", ""));
 			if (!isNaN(newIndex)) {
 				if(indexFunction != -1){
 					if (newIndex != indexFunction) {
-						MovieClip(tela1.getChildByName("f" + indexFunction)).gotoAndStop(1);
+						fSelected.gotoAndStop(1);
+						fSelected = null;
 					}
 				}
 				indexFunction = newIndex;
-				MovieClip(tela1.getChildByName("f" + indexFunction)).gotoAndStop(2);
+				fSelected = fClicked;
+				fClicked.gotoAndStop(2);
 				if (grafico != null) grafico = null;
 				//next();
 			}
@@ -334,6 +345,8 @@ package
 		{
 			currentStrategy = -1;
 			indexFunction = -1;
+			fSelected = null;
+			tela1Accord.close();
 			primitiveConstant = 0;
 			unloadScreen(currentScreen);
 			currentScreen = 1;
@@ -421,11 +434,10 @@ package
 					menu.minus.visible = false;
 					layer_screen.addChild(tela1);
 					if (indexFunction == -1) {
-						tela1.f0.gotoAndStop(1);
-						tela1.f1.gotoAndStop(1);
-						tela1.f2.gotoAndStop(1);
-						tela1.f3.gotoAndStop(1);
-						tela1.f4.gotoAndStop(1);
+						for (var i:int = 0; i < mcFunctions.length; i++) 
+						{
+							mcFunctions[i].gotoAndStop(1);
+						}
 					}
 					break;
 				case CHOOSE_AB:
