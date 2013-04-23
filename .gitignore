@@ -1,11 +1,8 @@
-# Build and Release Folders
-bin/
-bin-debug/
-bin-release/
+# Ignora os arquivos gerados pelo FlashDevelop
+/bin
 
-# Other files and folders
-.settings/
+# Ignora a versão anterior da configuração do projeto FlashDevelop
+/obj/*.old
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+# Ignora o arquivo de log do publish.sh
+/publish.log

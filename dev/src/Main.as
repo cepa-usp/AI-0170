@@ -10,6 +10,7 @@ package
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.system.System;
 	import flash.ui.Keyboard;
 	import tutorial.CaixaTextoNova;
 	
@@ -136,7 +137,8 @@ package
 			makeButton(subMenu.language, null);
 			makeButton(subMenu.about, null);
 			
-			fileHandler = new FileHandler("ai170");
+			//fileHandler = new FileHandlerAIR("ai170");
+			fileHandler = new FileHandlerFlash(stage);
 		}
 		
 		private var subMenuOpen:Boolean = false;
@@ -738,17 +740,11 @@ package
 			unloadScreen(currentScreen);
 			
 			var state:Object = JSON.parse(content);
-			
 			primitiveConstant = state.pc;
 			indexFunction = state.f;
 			currentScreen = state.sc;
 			currentStrategy = state.st;
-			//grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
-			
-			//grafico.restoreState(state.gs);
-			
-			//grafico.x = 60;
-			//addChild(grafico);
+			grafico = null;
 			
 			loadScreen(currentScreen, state.gs);
 		}
