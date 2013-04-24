@@ -1,0 +1,78 @@
+\documentclass[a4paper,12pt]{article}
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+  \usepackage[brazil]{babel}
+  \usepackage{amsmath}
+  
+  \newcommand\pair[2]{\ensuremath{\int dx&\quad#1 &&= #2 + C}}
+  
+\begin{document}
+
+
+  \section{Funções polinomiais}
+  
+  \begin{align*}
+    \pair{1}{x} \\
+    \pair{-1}{-x} \\
+    \pair{x}{x^2/2} \\
+    \pair{-x}{-x^2/2} \\
+    \pair{x+1}{x^2/2+x} \\
+    \pair{2x+1}{x^2+x} \\
+    \pair{x^2}{x^3/3} \\
+    \pair{x^2+1}{x^3/3 + x} \\
+    \pair{x^2+x}{x^3/3 + x^2/2} \\
+    \pair{x^2+x+1}{x^3/3 + x^2/2 + x}
+  \end{align*}
+
+  \section{Funções exponenciais}
+  \begin{align*}
+    \pair{e^x}{e^x} \\
+    \pair{e^{-x}}{-e^{-x}} \\
+    \pair{-e^{x}}{-e^x} \\
+    \pair{-e^{-x}}{e^{-x}} \\
+    \pair{e^x+1}{e^x+x} \\
+    \pair{e^{-x}+1}{-e^{-x}+x} \\
+    \pair{-e^x+1}{-e^x+x} \\
+    \pair{-e^{-x}+1}{e^{-x}+x} \\
+    \pair{e^x-1}{e^x-x} \\
+    \pair{2^x}{2^x/\ln 2}
+  \end{align*}
+
+  \section{Funções logarítmicas}
+  \begin{align*}
+    \pair{\log(x)}{\frac{1}{x\ln 10}} \\
+    \pair{\ln(x)}{1/x} \\
+    \pair{\log(x)+1}{\frac{1}{x\ln 10}+x} \\
+    \pair{\ln(x)+1}{1/x+x} \\
+    \pair{\log(x)-1}{\frac{1}{x\ln 10}-x} \\
+    \pair{\ln(x)-1}{1/x-x}
+  \end{align*}
+  
+  \section{Funções trigonométricas}
+  \begin{align*}
+    \pair{\sin(x)}{-\cos(x)} \\
+    \pair{\cos(x)}{\sin(x)} \\
+    \pair{\sin^2(x)}{x/2-\sin(2x)/4} \\
+    \pair{\cos^2(x)}{x/2+\sin(2x)/4} \\
+    \pair{\sin(x)\cos(x)}{-\cos(2x)/4} \\
+    \pair{\sin^2(x)\cos(x)}{\sin^3(x)/3} \\
+    \pair{\tan^2(x)}{\tan(x)-x} \\
+    \pair{\sec^2(x)}{\tan(x)} \\
+    \pair{\sec(x)\tan(x)}{\sec(x)}
+  \end{align*}
+
+  \section{Mistas}
+  \begin{align*}
+    \pair{x\cos(x)}{\cos(x)+x\sin(x)} \\
+    \pair{x\sin(x)}{\sin(x)-x\cos(x)} \\
+    \pair{x^2\sin(x)}{(2-x^2)\cos(x)+2x\sin(x)} \\
+    \pair{e^x\sin x}{e^x(\sin x-\cos x)/2} \\
+    \pair{e^x\cos x}{e^x(\sin x+\cos x)/2} \\
+    \pair{\cosh x}{\sinh x} \\
+    \pair{\sinh x}{\cosh x}
+  \end{align*}
+
+
+  
+  
+\end{document}

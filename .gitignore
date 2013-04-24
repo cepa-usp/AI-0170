@@ -6,3 +6,10 @@
 
 # Ignora o arquivo de log do publish.sh
 /publish.log
+
+# Ignora arquivos do LaTeX
+*.aux
+*.log
+*.pdf
+*.backup
+*~
