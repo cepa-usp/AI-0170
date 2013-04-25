@@ -189,7 +189,7 @@ package
 			graph.setTicksDistance(SimpleGraph.AXIS_X, 5);
 			graph.setTicksDistance(SimpleGraph.AXIS_Y, 5);
 			graph.setSubticksDistance(SimpleGraph.AXIS_X, 1);
-			//graph.setSubticksDistance(SimpleGraph.AXIS_Y, 1);
+			graph.setSubticksDistance(SimpleGraph.AXIS_Y, 1);
 			graph.setAxisColor(0x808080);
 			graph.setTickAlignment(SimpleGraph.AXIS_X, AxisX.TICKS_CENTER);
 			graph.setTickAlignment(SimpleGraph.AXIS_Y, AxisY.TICKS_CENTER);
@@ -436,6 +436,17 @@ package
 			
 			txtSoma.text = "soma = " + sum.toPrecision(2);
 			txtN.text = "n = " + (points.length - 1);
+		}
+		
+		public function betweenAB(n:Number):Boolean
+		{
+			if (ptA.x < ptB.x) {
+				if (n > ptA.x && n < ptB.x) return true;
+				else return false;
+			}else {
+				if (n < ptA.x && n > ptB.x) return true;
+				else return false;
+			}
 		}
 		
 		public function get n():int
@@ -841,6 +852,16 @@ package
 			draw();
 		}
 		
+		public function get allElements():Boolean
+		{
+			for (var i:int = 0; i < points.length - 1; i++) 
+			{
+				if (points[i].h == null) return false;
+			}
+			
+			return true;
+		}
+		
 		/**
 		 * Desloca o gráfico de acordo com o ponto recebido (deslocamento em pixels).
 		 * @param	displacement Ponto com o valor em pixels a ser deslocado no eixo x e y.
@@ -975,6 +996,9 @@ package
 			if (graph.hasFunction(F)) {
 				pt1 = getStageCoords(0, F.value(0));
 				drawPoint(pt1, selectedType == TYPE_PRIMITIVE_C);
+				//setChildIndex(layerGraph, numChildren - 1);
+			}else {
+				//setChildIndex(layerGraph, 1);
 			}
 			
 		}

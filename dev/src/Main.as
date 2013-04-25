@@ -8,10 +8,14 @@ package
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.system.System;
+	import flash.text.TextFieldAutoSize;
 	import flash.ui.Keyboard;
+	import flash.utils.getDefinitionByName;
+	import flash.utils.Timer;
 	import tutorial.CaixaTextoNova;
 	
 	/**
@@ -22,7 +26,7 @@ package
 	{
 		private var menu:Menu;
 		private var subMenu:SubMenu;
-		private var primitiveConstant:Number = 0;
+		private var primitiveConstant:Number = 1;
 		private var fileHandler:FileHandler;
 		private var functions:Array;
 		private var mcFunctions:Array;
@@ -59,32 +63,46 @@ package
 		private var currentStrategy:int = -1;
 		private const defaultN:int = 5;
 		
-		private var informacoes:CaixaTextoNova;
+		//private var informacoes:CaixaTextoNova;
+		private var informacoes:InfoBar;
 		
 		public function Main():void 
 		{
+			if (stage) init();
+			else addEventListener(Event.ADDED_TO_STAGE, init);
 			
-			//indexFunction = 0;
-			//grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
+		}
+		
+		private function init(e:Event = null):void 
+		{
+			removeEventListener(Event.ADDED_TO_STAGE, init);
 			
-			//addChild(grafico);
-			//grafico.x = 60;
-			
-			//addListeners();
-			
-			//testando();
+			this.graphics.lineStyle(4, 0xB4B4B4);
+			this.graphics.lineTo(800, 0);
+			this.graphics.lineTo(800, 480);
+			this.graphics.lineTo(0, 480);
+			this.graphics.lineTo(0, 0);
 			
 			this.scrollRect = new Rectangle(0, 0, 800, 480);
-			informacoes = new CaixaTextoNova();
-			informacoes.nextButton.visible = false;
-			informacoes.closeButton.addEventListener(MouseEvent.CLICK, closeInfo);
+			//informacoes = new CaixaTextoNova();
+			//informacoes.nextButton.visible = false;
+			//informacoes.closeButton.addEventListener(MouseEvent.CLICK, closeInfo);
+			informacoes = new InfoBar();
+			informacoes.info.autoSize = TextFieldAutoSize.LEFT
+			informacoes.info.width = 330;
+			informacoes.x = 62;
+			informacoes.y = 161;
+			informacoes.alpha = 0;
+			
+			//fileHandler = new FileHandlerAIR("ai170");
+			fileHandler = new FileHandlerFlash(stage);
 			
 			currentScreen = INICIAL;
 			
 			createLayers();
 			createMenu();
-			createScreens();
 			createFunctions();
+			createScreens();
 			//createGraph();
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
 			
@@ -126,6 +144,8 @@ package
 			makeButton(menu.help, null);
 			makeButton(menu.plus, null);
 			makeButton(menu.minus, null);
+			//makeButton(menu.currentScreen, loadInfo);
+			menu.currentScreen.addEventListener(MouseEvent.CLICK, loadInfo);
 			//menu.help.addEventListener(MouseEvent.CLICK, showHelp);
 			
 			subMenu = new SubMenu();
@@ -136,9 +156,6 @@ package
 			makeButton(subMenu.saveAs, saveAs);
 			makeButton(subMenu.language, null);
 			makeButton(subMenu.about, null);
-			
-			//fileHandler = new FileHandlerAIR("ai170");
-			fileHandler = new FileHandlerFlash(stage);
 		}
 		
 		private var subMenuOpen:Boolean = false;
@@ -174,17 +191,22 @@ package
 			
 			tela1 = new Tela1();
 			tela1Accord = new Accordion();
-			var f0:F0 = new F0();
-			var f1:F1 = new F1();
-			var f2:F2 = new F2();
-			var f3:F3 = new F3();
-			var f4:F4 = new F4();
+			tela1Accord.addEventListener("accordionClick", accClick);
+			//var f0:F0 = new F0();
+			//var f1:F1 = new F1();
+			//var f2:F2 = new F2();
+			//var f3:F3 = new F3();
+			//var f4:F4 = new F4();
 			
 			mcFunctions = [];
-			mcFunctions.push(f0, f1, f2, f3, f4);
+			//mcFunctions.push(f0, f1, f2, f3, f4);
 			
-			for (var i:int = 0; i < mcFunctions.length; i++) 
+			var classe:Class;
+			for (var i:int = 0; i <= 41; i++) 
 			{
+				classe = getClass(i);
+				//classe = Class(getDefinitionByName("F" + String(i)));
+				mcFunctions.push(new classe());
 				mcFunctions[i].mouseChildren = false;
 				mcFunctions[i].name = "f" + String(i);
 				mcFunctions[i].buttonMode = true;
@@ -192,9 +214,12 @@ package
 				mcFunctions[i].addEventListener(MouseEvent.CLICK, chooseFunction);
 			}
 			
-			tela1Accord.addAba(new MF1(), [f0, f1]);
-			tela1Accord.addAba(new MF2(), [f2, f3]);
-			tela1Accord.addAba(new MF3(), [f4]);
+			tela1Accord.addAba(new MF1(), mcFunctions.slice(0, 10));
+			tela1Accord.addAba(new MF2(), mcFunctions.slice(11, 20));
+			tela1Accord.addAba(new MF3(), mcFunctions.slice(21, 26));
+			tela1Accord.addAba(new MF4(), mcFunctions.slice(27, 35));
+			tela1Accord.addAba(new MF5(), mcFunctions.slice(36, 42));
+
 			tela1.addChild(tela1Accord);
 			
 			//tela1.addEventListener(MouseEvent.CLICK, chooseFunction);
@@ -213,6 +238,150 @@ package
 			tela3.personal.gotoAndStop(1);
 			
 			tela3.addEventListener(MouseEvent.CLICK, choseStrategy);
+		}
+		
+		private function getClass(n:int):Class 
+		{
+			switch(n) {
+				case 0:
+					return F0;
+					break;
+				case 1:
+					return F1;
+					break;
+				case 2:
+					return F2;
+					break;
+				case 3:
+					return F3;
+					break;
+				case 4:
+					return F4;
+					break;
+				case 5:
+					return F5;
+					break;
+				case 6:
+					return F6;
+					break;
+				case 7:
+					return F7;
+					break;
+				case 8:
+					return F8;
+					break;
+				case 9:
+					return F9;
+					break;
+				case 10:
+					return F10;
+					break;
+				case 11:
+					return F11;
+					break;
+				case 12:
+					return F12;
+					break;
+				case 13:
+					return F13;
+					break;
+				case 14:
+					return F14;
+					break;
+				case 15:
+					return F15;
+					break;
+				case 16:
+					return F16;
+					break;
+				case 17:
+					return F17;
+					break;
+				case 18:
+					return F18;
+					break;
+				case 19:
+					return F19;
+					break;
+				case 20:
+					return F20;
+					break;
+				case 21:
+					return F21;
+					break;
+				case 22:
+					return F22;
+					break;
+				case 23:
+					return F23;
+					break;
+				case 24:
+					return F24;
+					break;
+				case 25:
+					return F25;
+					break;
+				case 26:
+					return F26;
+					break;
+				case 27:
+					return F27;
+					break;
+				case 28:
+					return F28;
+					break;
+				case 29:
+					return F29;
+					break;
+				case 30:
+					return F30;
+					break;
+				case 31:
+					return F31;
+					break;
+				case 32:
+					return F32;
+					break;
+				case 33:
+					return F33;
+					break;
+				case 34:
+					return F34;
+					break;
+				case 35:
+					return F35;
+					break;
+				case 36:
+					return F36;
+					break;
+				case 37:
+					return F37;
+					break;
+				case 38:
+					return F38;
+					break;
+				case 39:
+					return F39;
+					break;
+				case 40:
+					return F40;
+					break;
+				case 41:
+					return F41;
+					break;
+				
+			}
+			return null;
+		}
+		
+		private function accClick(e:Event):void 
+		{
+			if(indexFunction != -1){
+				fSelected.gotoAndStop(1);
+				fSelected = null;
+				indexFunction = -1;
+			}
+			verificaAvancar();
 		}
 		
 		private function choseStrategy(e:MouseEvent):void 
@@ -237,7 +406,7 @@ package
 					currentStrategy = -1;
 					break;
 			}
-			
+			verificaAvancar();
 			/*
 			if (currentStrategy >= 0) {
 				next();
@@ -250,20 +419,142 @@ package
 		 */
 		private function createFunctions():void 
 		{
-			var f0:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return 3 * x + 2 } );
-			var pF0:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return 3/2 * Math.pow(x, 2) + 2 * x + primitiveConstant } );
+			//----------------------- Funções polinomiais --------------------------------
 			
-			var f1:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return x } );
-			var pF1:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return 1 / 2 * Math.pow(x, 2) + primitiveConstant } );
+			var f0:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return 1 } );
+			var pF0:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return x + primitiveConstant } );
 			
-			var f2:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return 5 * Math.pow(x, 2) + 3 * x + 1 } );
-			var pF2:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return 5 / 3 * Math.pow(x, 3) + 3/2 * Math.pow(x, 2) + x + primitiveConstant } );
+			var f1:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return -1 } );
+			var pF1:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return -x + primitiveConstant } );
 			
-			var f3:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.log(x) } );
-			var pF3:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return x * Math.log(x) + primitiveConstant } );
+			var f2:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return x } );
+			var pF2:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.pow(x, 2) / 2 + primitiveConstant } );
 			
-			var f4:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.sin(x) } );
-			var pF4:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return -Math.cos(x) + primitiveConstant} );
+			var f3:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return -x } );
+			var pF3:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return -Math.pow(x, 2) / 2 + primitiveConstant } );
+			
+			var f4:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return x+1 } );
+			var pF4:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.pow(x, 2)/2 + x + primitiveConstant } );
+			
+			var f5:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return 2*x + 1 } );
+			var pF5:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.pow(x, 2) + x + primitiveConstant } );
+			
+			var f6:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.pow(x, 2) } );
+			var pF6:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.pow(x, 3) / 3 + primitiveConstant } );
+			
+			var f7:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.pow(x, 2) + 1 } );
+			var pF7:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.pow(x, 3) / 3 + x + primitiveConstant } );
+			
+			var f8:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.pow(x, 2) + x} );
+			var pF8:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.pow(x, 3) / 3 + Math.pow(x, 2) + primitiveConstant } );
+			
+			var f9:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.pow(x, 2) + x + 1 } );
+			var pF9:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.pow(x, 3) / 3 + Math.pow(x, 2) + x + primitiveConstant } );
+			
+			//---------------------- Funções exponenciais ---------------
+			
+			var f10:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.exp(x) } );
+			var pF10:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.exp(x) + primitiveConstant } );
+			
+			var f11:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.exp(-x) } );
+			var pF11:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return -Math.exp(-x) + primitiveConstant } );
+			
+			var f12:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return -Math.exp(x) } );
+			var pF12:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return -Math.exp(x) + primitiveConstant } );
+			
+			var f13:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return -Math.exp(-x) } );
+			var pF13:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.exp(-x) + primitiveConstant } );
+			
+			var f14:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.exp(x) + 1 } );
+			var pF14:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.exp(x) + x + primitiveConstant } );
+			
+			var f15:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.exp(-x)+1 } );
+			var pF15:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return -Math.exp(-x) + x + primitiveConstant } );
+			
+			var f16:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return -Math.exp(x)+1 } );
+			var pF16:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return -Math.exp(x) + x + primitiveConstant } );
+			
+			var f17:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return -Math.exp(-x) + 1 } );
+			var pF17:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.exp(-x) + x + primitiveConstant } );
+			
+			var f18:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.exp(x) - 1} );
+			var pF18:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.exp(x) - x + primitiveConstant } );
+			
+			var f19:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.pow(2, x) } );
+			var pF19:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.pow(2, x) / Math.LN2 + primitiveConstant } );
+			
+			//---------------------- Funções logarítmicas ---------------
+			
+			var f20:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.log(x) } );
+			var pF20:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return 1/(x*Math.LN10*Math.log(x)) + primitiveConstant } );
+			
+			var f21:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.LN10*Math.log(x) } );
+			var pF21:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return 1/x + primitiveConstant } );
+			
+			var f22:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.log(x)+1 } );
+			var pF22:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return 1/(x*Math.LN10*Math.log(x)) + x + primitiveConstant } );
+			
+			var f23:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.LN10*Math.log(x) + 1 } );
+			var pF23:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return 1/x + x + primitiveConstant } );
+			
+			var f24:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.log(x) - 1 } );
+			var pF24:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return 1/(x*Math.LN10*Math.log(x)) - x + primitiveConstant } );
+			
+			var f25:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.LN10*Math.log(x)-1 } );
+			var pF25:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return 1 / x - x + primitiveConstant } );
+			
+			//---------------------- Funções trigonométricas ---------------
+			
+			var f26:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.sin(x) } );
+			var pF26:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return -Math.cos(x) + primitiveConstant } );
+			
+			var f27:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.cos(x) } );
+			var pF27:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.sin(x) + primitiveConstant } );
+			
+			var f28:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.pow(Math.sin(x), 2) } );
+			var pF28:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return x / 2 - Math.sin(2 * x) / 4 + primitiveConstant } );
+			
+			var f29:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.pow(Math.cos(x), 2) } );
+			var pF29:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return x / 2 + Math.sin(2 * x) / 4 + primitiveConstant } );
+			
+			var f30:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.sin(x)*Math.cos(x) } );
+			var pF30:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return -Math.cos(2*x)/4 + primitiveConstant } );
+			
+			var f31:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return  Math.pow(Math.sin(x), 2)*Math.cos(x)} );
+			var pF31:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.pow(Math.sin(x), 3)/3 + primitiveConstant } );
+			
+			var f32:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return  Math.pow(Math.tan(x), 2)} );
+			var pF32:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.tan(x) - x + primitiveConstant } );
+			
+			var f33:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return  Math.pow(1/Math.cos(x), 2)} );
+			var pF33:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.tan(x) + primitiveConstant } );
+			
+			var f34:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return 1/Math.cos(x) * Math.tan(x) } );
+			var pF34:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return 1 / Math.cos(x) + primitiveConstant } );
+			
+			//---------------------- Mistas ---------------
+			
+			var f35:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return x * Math.cos(x) } );
+			var pF35:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.cos(x) + x*Math.sin(x) + primitiveConstant } );
+			
+			var f36:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return x * Math.sin(x) } );
+			var pF36:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.sin(x) - x*Math.cos(x) + primitiveConstant } );
+			
+			var f37:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.pow(x, 2)*Math.sin(x) } );
+			var pF37:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return (2-Math.pow(x, 2))*Math.cos(x)+2*x*Math.sin(x) + primitiveConstant } );
+			
+			var f38:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.pow(Math.E, x)*Math.sin(x) } );
+			var pF38:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.pow(Math.E, x)*(Math.sin(x)-Math.cos(x))/2 + primitiveConstant } );
+			
+			var f39:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.pow(Math.E, x)*Math.cos(x) } );
+			var pF39:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.pow(Math.E, x)*(Math.sin(x)+Math.cos(x))/2 + primitiveConstant } );
+			
+			var f40:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return  Math.acos(x)} );
+			var pF40:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.asin(x) + primitiveConstant } );
+			
+			var f41:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return  Math.asin(x)} );
+			var pF41:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.acos(x) + primitiveConstant } );
+			
 			
 			functions = new Array();
 			functions.push([f0, pF0]);
@@ -271,6 +562,43 @@ package
 			functions.push([f2, pF2]);
 			functions.push([f3, pF3]);
 			functions.push([f4, pF4]);
+			functions.push([f5, pF5]);
+			functions.push([f6, pF6]);
+			functions.push([f7, pF7]);
+			functions.push([f8, pF8]);
+			functions.push([f9, pF9]);
+			functions.push([f10, pF10]);
+			functions.push([f11, pF11]);
+			functions.push([f12, pF12]);
+			functions.push([f13, pF13]);
+			functions.push([f14, pF14]);
+			functions.push([f15, pF15]);
+			functions.push([f16, pF16]);
+			functions.push([f17, pF17]);
+			functions.push([f18, pF18]);
+			functions.push([f19, pF19]);
+			functions.push([f20, pF20]);
+			functions.push([f21, pF21]);
+			functions.push([f22, pF22]);
+			functions.push([f23, pF23]);
+			functions.push([f24, pF24]);
+			functions.push([f25, pF25]);
+			functions.push([f26, pF26]);
+			functions.push([f27, pF27]);
+			functions.push([f28, pF28]);
+			functions.push([f29, pF29]);
+			functions.push([f30, pF30]);
+			functions.push([f31, pF31]);
+			functions.push([f32, pF32]);
+			functions.push([f33, pF33]);
+			functions.push([f34, pF34]);
+			functions.push([f35, pF35]);
+			functions.push([f36, pF36]);
+			functions.push([f37, pF37]);
+			functions.push([f38, pF38]);
+			functions.push([f39, pF39]);
+			functions.push([f40, pF40]);
+			functions.push([f41, pF41]);
 		}
 		
 		private function plusHandler(e:MouseEvent):void 
@@ -280,11 +608,14 @@ package
 					if (currentStrategy == PERSONAL) {
 						if (layer_mark.contains(mark)) {
 							var yOrigin:Number = grafico.getStageCoords(0, 0).y;
-							if(yOrigin == mark.y){
+							trace(yOrigin, mark.y);
+							if(Math.abs(yOrigin - mark.y) < 0.1){
 								var posOnGraph:Point = grafico.globalToLocal(new Point(mark.x, mark.y));
 								grafico.addPoint(grafico.getGraphCoords(posOnGraph.x, posOnGraph.y).x);
+								unlock(menu.minus);
 							}
 						}
+						lock(menu.plus);
 					}else{
 						grafico.divideIn(grafico.n + 1);
 					}
@@ -295,8 +626,14 @@ package
 							posOnGraph = grafico.globalToLocal(new Point(mark.x, mark.y));
 							var graphCoords:Point = grafico.getGraphCoords(posOnGraph.x, posOnGraph.y);
 							var ptFunc:Point = grafico.getStageCoords(graphCoords.x, functions[indexFunction][0].value(graphCoords.x));
-							if(Point.distance(posOnGraph, ptFunc) < 1) grafico.addPointM(graphCoords.x);
+							if (Point.distance(posOnGraph, ptFunc) < 1) {
+								grafico.addPointM(graphCoords.x);
+								unlock(menu.minus);
+							}
+							
+							verificaAvancar();
 						}
+						lock(menu.plus);
 					}
 					break;
 			}
@@ -308,12 +645,18 @@ package
 				case PARTITION:
 					if (currentStrategy == PERSONAL) {
 						grafico.deleteSelected([Graph_model.TYPE_DIVISOR]);
+						unlock(menu.plus);
+						lock(menu.minus);
 					}else{
 						grafico.divideIn(grafico.n - 1);
 					}
 					break;
 				case RESULT:
-					grafico.deleteSelected([Graph_model.TYPE_ALTURA]);
+					if(currentStrategy == PERSONAL){
+						grafico.deleteSelected([Graph_model.TYPE_ALTURA, Graph_model.TYPE_RECTANGLE]);
+						lock(menu.minus);
+					}
+					verificaAvancar();
 					break;
 			}
 		}
@@ -336,6 +679,7 @@ package
 				if (grafico != null) grafico = null;
 				//next();
 			}
+			verificaAvancar();
 		}
 		
 		private function openFile(e:MouseEvent):void 
@@ -349,7 +693,7 @@ package
 			indexFunction = -1;
 			fSelected = null;
 			tela1Accord.close();
-			primitiveConstant = 0;
+			primitiveConstant = 1;
 			unloadScreen(currentScreen);
 			currentScreen = 1;
 			loadScreen(currentScreen);
@@ -412,6 +756,47 @@ package
 			return false;
 		}
 		
+		private function verificaAvancar():void
+		{
+			switch (currentScreen) {
+				case CHOOSE_F:
+					if (indexFunction > -1) {
+						unlock(menu.next);
+					}else {
+						lock(menu.next);
+					}
+					break;
+				case CHOOSE_SUM:
+					if (currentStrategy > -1) {
+						unlock(menu.next);
+					}else {
+						lock(menu.next);
+					}
+					break;
+				case RESULT:
+					if(currentStrategy == PERSONAL){
+						if (grafico.allElements) unlock(menu.next);
+						else lock(menu.next);
+					}
+					break;
+				default:
+					unlock(menu.next);
+					break;
+			}
+		}
+		
+		private function lock(bt:*):void
+		{
+			bt.mouseEnabled = false;
+			bt.alpha = 0.5;
+		}
+		
+		private function unlock(bt:*):void
+		{
+			bt.mouseEnabled = true;
+			bt.alpha = 1;
+		}
+		
 		/**
 		 * Carrega uma tela de acordo com a indicação.
 		 * @param	screen Tela a ser carregada.
@@ -447,6 +832,7 @@ package
 						layer_menu.addChild(subMenu);
 						layer_menu.addChild(menu);
 					}
+					removeMark();
 					menu.plus.visible = false;
 					menu.minus.visible = false;
 					if (grafico == null) grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
@@ -484,8 +870,6 @@ package
 						layer_menu.addChild(subMenu);
 						layer_menu.addChild(menu);
 					}
-					menu.plus.visible = true;
-					menu.minus.visible = true;
 					if (grafico == null) grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
 					grafico.hideSum();
 					grafico.defineAB = false;
@@ -495,14 +879,20 @@ package
 					grafico.x = 60;
 					if (state != null) grafico.restoreState(state);
 					layer_graph.addChild(grafico);
+					removeMark();
+					menu.plus.visible = true;
+					menu.minus.visible = true;
 					switch (currentStrategy) {
 						case INFERIOR:
 						case SUPERIOR:
 							if (grafico.n == 1) grafico.divideIn(defaultN);
 							else grafico.divideIn(grafico.n);
+							unlock(menu.plus);
+							unlock(menu.minus);
 							break;
 						case PERSONAL:
-							
+							lock(menu.plus);
+							lock(menu.minus);
 							break;
 					}
 					menu.plus.addEventListener(MouseEvent.CLICK, plusHandler);
@@ -523,6 +913,7 @@ package
 					grafico.showPrimitive = false;
 					grafico.showhRects = true;
 					grafico.x = 60;
+					removeMark();
 					switch (currentStrategy) {
 						case INFERIOR:
 							menu.plus.visible = false;
@@ -537,6 +928,10 @@ package
 						case PERSONAL:
 							menu.plus.visible = true;
 							menu.minus.visible = true;
+							lock(menu.plus);
+							lock(menu.minus);
+							if (grafico.allElements) unlock(menu.next);
+							else lock(menu.next);
 							menu.plus.addEventListener(MouseEvent.CLICK, plusHandler);
 							menu.minus.addEventListener(MouseEvent.CLICK, minusHandler);
 							break;
@@ -567,20 +962,26 @@ package
 					break;
 				
 			}
-			loadInfo(screen);
+			loadInfo();
+			verificaAvancar();
 		}
 		
-		private function loadInfo(screen:int):void 
+		private function loadInfo(e:MouseEvent = null):void 
 		{
-			switch(screen) {
+			switch(currentScreen) {
 				case INICIAL:
 					break;
 				case CHOOSE_F:
-					//setInfoText("Escolha a função para iniciar o exercício");
+					if (infoTimer.running) closeInfoText();
+					else setInfoText("Escolha da função");
 					break;
 				case CHOOSE_AB:
+					if (infoTimer.running) closeInfoText();
+					else setInfoText("Escolha o intervalo de integração");
 					break;
 				case CHOOSE_SUM:
+					if (infoTimer.running) closeInfoText();
+					else setInfoText("Escolha da estratégia");
 					break;
 				case PARTITION:
 					break;
@@ -592,12 +993,42 @@ package
 			}
 		}
 		
+		private var infoTimer:Timer = new Timer(10 * 1000, 1);
 		private function setInfoText(text:String):void
 		{
-			informacoes.setText(text, CaixaTextoNova.LEFT, CaixaTextoNova.CENTER);
-			informacoes.setPosition(50, 180);
-			informacoes.nextButton.visible = false;
+			//informacoes.setText(text, CaixaTextoNova.LEFT, CaixaTextoNova.CENTER);
+			//informacoes.setPosition(50, 180);
+			//informacoes.nextButton.visible = false;
+			informacoes.info.text = text;
+			informacoes.info.y = -informacoes.info.height / 2;
+			informacoes.background.height = informacoes.info.height + 30;
+			informacoes.background.width = informacoes.info.textWidth + 20;
 			layer_info.addChild(informacoes);
+			Actuate.tween(informacoes, 0.5, { alpha:1 } );
+			infoTimer.addEventListener(TimerEvent.TIMER_COMPLETE, timerCloseInfo);
+			infoTimer.start();
+		}
+		
+		private function timerCloseInfo(e:TimerEvent):void 
+		{
+			infoTimer.reset();
+			infoTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, timerCloseInfo);
+			closeInfoText();
+		}
+		
+		private function closeInfoText():void
+		{
+			if (infoTimer.running) {
+				infoTimer.stop();
+				infoTimer.reset();
+				infoTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, timerCloseInfo);
+				Actuate.tween(informacoes, 0.5, { alpha:0 } ).onComplete(removeInfo);
+			}
+		}
+		
+		private function removeInfo():void 
+		{
+			layer_info.removeChild(informacoes);
 		}
 		
 		/**
@@ -607,6 +1038,7 @@ package
 		private function unloadScreen(screen:int):void 
 		{
 			removeMark();
+			closeInfoText();
 			switch (screen) {
 				case INICIAL:
 					layer_screen.removeChild(tela0);
@@ -647,13 +1079,16 @@ package
 			}
 		}
 		
-		private function makeButton(bt:MovieClip, func:Function):void
+		private function makeButton(bt:*, func:Function):void
 		{
-			bt.gotoAndStop(1);
-			bt.mouseChildren = false;
-			bt.buttonMode = true;
-			bt.addEventListener(MouseEvent.MOUSE_OVER, overBtn);
-			bt.addEventListener(MouseEvent.MOUSE_OUT, outBtn);
+			if (bt is MovieClip) {
+				bt.gotoAndStop(1);
+				bt.addEventListener(MouseEvent.MOUSE_OVER, overBtn);
+				bt.addEventListener(MouseEvent.MOUSE_OUT, outBtn);
+				bt.mouseChildren = false;
+				bt.buttonMode = true;
+			}
+			
 			if (func != null) bt.addEventListener(MouseEvent.MOUSE_DOWN, func);
 		}
 		
@@ -665,16 +1100,6 @@ package
 		private function outBtn(e:MouseEvent):void 
 		{
 			MovieClip(e.target).gotoAndStop(1);
-		}
-		
-		
-		
-		
-		
-		
-		private function addListeners():void 
-		{
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
 		}
 		
 		private function keyboardHandler(e:KeyboardEvent):void 
@@ -695,13 +1120,19 @@ package
 					break;
 				case Keyboard.M:
 					//Adiciona uma altura
-					if(currentScreen == RESULT && currentStrategy == PERSONAL) grafico.addPointM(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
+					if (currentScreen == RESULT && currentStrategy == PERSONAL) {
+						grafico.addPointM(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
+						verificaAvancar();
+					}
 					break;
 				case Keyboard.O:
 					if(currentScreen == PARTITION && currentStrategy == PERSONAL) grafico.removePoint(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
 					break;
 				case Keyboard.N:
-					if(currentScreen == RESULT && currentStrategy == PERSONAL) grafico.removePointM(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
+					if (currentScreen == RESULT && currentStrategy == PERSONAL) {
+						grafico.removePointM(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
+						verificaAvancar();
+					}
 					break;
 				case Keyboard.DELETE:
 					if(currentScreen == PARTITION && currentStrategy == PERSONAL) grafico.deleteSelected([Graph_model.TYPE_DIVISOR]);
@@ -749,34 +1180,6 @@ package
 			loadScreen(currentScreen, state.gs);
 		}
 		
-		private function testando():void
-		{
-			//grafico.addPoint( 9);
-			//grafico.addPoint( -8);
-			
-			//grafico.addPoint( -5);
-			//grafico.addPoint( 1);
-			//grafico.addPoint( 5);
-			//grafico.addPoint( -3);
-			
-			//grafico.addPointM( -7);
-			//grafico.addPointM( -4);
-			//grafico.addPointM( -1);
-			//grafico.addPointM( 3);
-			//grafico.addPointM( 8);
-			//
-			//grafico.select("rectangle", 2, NaN);
-			//grafico.select("divisor", 2, NaN);
-			//grafico.select("altura", 2, NaN);
-			
-			//grafico.searchElement(new Point(115, 115), 20);
-			stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
-			stage.addEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
-			
-			//stage.scaleMode = StageScaleMode.NO_SCALE;
-			//stage.addEventListener(Event.RESIZE, resizeAll);
-		}
-		
 		private function resizeAll(e:Event):void 
 		{
 			//trace("resize");
@@ -806,15 +1209,20 @@ package
 				if (subMenuOpen) closeSubMenu();
 			}
 			
-			if (stage.mouseX < 60) return;
+			if (menu.hitTestPoint(stage.mouseX, stage.mouseY)) return;
+			if (subMenu.hitTestPoint(stage.mouseX, stage.mouseY)) return;
+			
+			if (layer_info.contains(informacoes)) closeInfoText();
+			
 			if (grafico == null) return;
 			
 			if(layer_graph.contains(grafico)){
 				var objClicked:Object = grafico.searchElement(new Point(grafico.mouseX, grafico.mouseY));
-				trace(objClicked.type);
+				//trace(objClicked.type);
 				
 				switch (objClicked.type) {
 					case Graph_model.TYPE_PRIMITIVE_C:
+					case Graph_model.TYPE_PRIMITIVE:
 						posClick.y = stage.mouseY;
 						stage.addEventListener(MouseEvent.MOUSE_MOVE, movingPrimitive);
 						stage.addEventListener(MouseEvent.MOUSE_UP, stopMovingPrimitive);
@@ -835,13 +1243,19 @@ package
 								stage.addEventListener(MouseEvent.MOUSE_UP, stopMovingAB);
 							}else {
 								var pos:Point = grafico.getSelectedPosition();
-								pos.x += grafico.x;
-								setMark(pos, false);
+								//pos.x += grafico.x;
+								//setMark(pos, false);
+								posClick.x = stage.mouseX;
+								posClick.y = stage.mouseY;
+								stage.addEventListener(MouseEvent.MOUSE_UP, stopPanning);
 							}
 						}else {
-							pos = grafico.getSelectedPosition();
-							pos.x += grafico.x;
-							setMark(pos, false);
+							//pos = grafico.getSelectedPosition();
+							//pos.x += grafico.x;
+							//setMark(pos, false);
+							posClick.x = stage.mouseX;
+							posClick.y = stage.mouseY;
+							stage.addEventListener(MouseEvent.MOUSE_UP, stopPanning);
 						}
 						break;
 					case Graph_model.TYPE_FUNCTION:
@@ -850,14 +1264,18 @@ package
 						stage.addEventListener(MouseEvent.MOUSE_UP, stopPanning);
 						break;
 					case Graph_model.TYPE_ALTURA:
-						pos = grafico.getSelectedPosition();
-						pos.x += grafico.x;
-						setMark(pos, false);
+						//pos = grafico.getSelectedPosition();
+						//pos.x += grafico.x;
+						posClick.x = stage.mouseX;
+						posClick.y = stage.mouseY;
+						//setMark(pos, false);
+						stage.addEventListener(MouseEvent.MOUSE_UP, stopPanning);
 						break;
 					case Graph_model.TYPE_RECTANGLE:
 						posClick.x = stage.mouseX;
 						posClick.y = stage.mouseY;
-						setMark(posClick, false);
+						stage.addEventListener(MouseEvent.MOUSE_UP, stopPanning);
+						//setMark(posClick, false);
 						break;
 					default:
 						//removeMark();
@@ -899,11 +1317,16 @@ package
 		private var posMarkGraph:Point = new Point();
 		private function setMark(position:Point, snap:Boolean = true):void
 		{
+			if (currentScreen == CHOOSE_AB) {
+				if (layer_mark.contains(mark)) layer_mark.removeChild(mark);
+				return;
+			}
+			
 			if (snap) {
 				var nearPos:Point = grafico.getNearPos(position.x - grafico.x, position.y);
 				mark.x = nearPos.x + grafico.x;
 				mark.y = nearPos.y;
-			}else{
+			}else {
 				mark.x = position.x;
 				mark.y = position.y;
 			}
@@ -946,8 +1369,22 @@ package
 					
 					if (Point.distance(posMouse, stageCoordsOfMouseX) < 5) {
 						setMark(new Point(posClick.x, stageCoordsOfMouseX.y));
+						if (currentStrategy == PERSONAL) {
+							if(grafico.betweenAB(graphCoordsOfMouse.x)){
+								unlock(menu.plus);
+								if (grafico.getSelectedType() == Graph_model.TYPE_DIVISOR) unlock(menu.minus);
+								else lock(menu.minus);
+							}else {
+								lock(menu.plus);
+								lock(menu.minus);
+							}
+						}
 					}else {
 						setMark(posClick);
+						if(currentStrategy == PERSONAL){
+							lock(menu.plus);
+							lock(menu.minus);
+						}
 					}
 				}else if (currentScreen == RESULT) {
 					//Adiciona a marcação X da altura
@@ -955,10 +1392,25 @@ package
 					
 					if (Point.distance(posMouse, stageCoordsOfMouseFunc) < 5) {
 						setMark(new Point(posClick.x, stageCoordsOfMouseFunc.y));
+						if(currentStrategy == PERSONAL){
+							if(grafico.betweenAB(graphCoordsOfMouse.x)){
+								unlock(menu.plus);
+								if (grafico.getSelectedType() == Graph_model.TYPE_ALTURA || grafico.getSelectedType() == Graph_model.TYPE_RECTANGLE) unlock(menu.minus);
+								else lock(menu.minus);
+							}else {
+								lock(menu.plus);
+								lock(menu.minus);
+							}
+						}
 					}else {
 						setMark(posClick);
+						if(currentStrategy == PERSONAL){
+							lock(menu.plus);
+							if (grafico.getSelectedType() == Graph_model.TYPE_ALTURA || grafico.getSelectedType() == Graph_model.TYPE_RECTANGLE) unlock(menu.minus);
+							else lock(menu.minus);
+						}
 					}
-				}else if (currentScreen == CHOOSE_AB) {
+				}else if (currentScreen == CHOOSE_AB || currentScreen == FINAL) {
 					setMark(posClick);
 				}
 			}
