@@ -197,6 +197,7 @@ package
 			
 			graph.grid = false;
 			
+			graph.setAxesNameFormat(new TextFormat("arial", 13, 0x808080));
 			graph.setAxisName(SimpleGraph.AXIS_X, "x");
 			graph.setAxisName(SimpleGraph.AXIS_Y, "y");
 			
@@ -996,9 +997,6 @@ package
 			if (graph.hasFunction(F)) {
 				pt1 = getStageCoords(0, F.value(0));
 				drawPoint(pt1, selectedType == TYPE_PRIMITIVE_C);
-				//setChildIndex(layerGraph, numChildren - 1);
-			}else {
-				//setChildIndex(layerGraph, 1);
 			}
 			
 		}

@@ -38,6 +38,7 @@ package
 		private var layer_menu:Sprite;
 		private var layer_info:Sprite;
 		private var layer_mark:Sprite;
+		private var layer_borda:Sprite;
 		
 		//Indice telas:
 		private const INICIAL:int = 0;
@@ -76,12 +77,6 @@ package
 		private function init(e:Event = null):void 
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
-			
-			this.graphics.lineStyle(4, 0xB4B4B4);
-			this.graphics.lineTo(800, 0);
-			this.graphics.lineTo(800, 480);
-			this.graphics.lineTo(0, 480);
-			this.graphics.lineTo(0, 0);
 			
 			this.scrollRect = new Rectangle(0, 0, 800, 480);
 			//informacoes = new CaixaTextoNova();
@@ -124,12 +119,20 @@ package
 			layer_menu = new Sprite();
 			layer_screen = new Sprite();
 			layer_mark = new Sprite();
+			layer_borda = new Sprite();
 			
 			addChild(layer_graph);
 			addChild(layer_mark);
 			addChild(layer_screen);
 			addChild(layer_menu);
 			addChild(layer_info);
+			addChild(layer_borda);
+			
+			layer_borda.graphics.lineStyle(4, 0xB4B4B4);
+			layer_borda.graphics.lineTo(800, 0);
+			layer_borda.graphics.lineTo(800, 480);
+			layer_borda.graphics.lineTo(0, 480);
+			layer_borda.graphics.lineTo(0, 0);
 		}
 		
 		/**
@@ -817,6 +820,7 @@ package
 						layer_menu.addChild(subMenu);
 						layer_menu.addChild(menu);
 					}
+					menu.next.visible = true;
 					menu.plus.visible = false;
 					menu.minus.visible = false;
 					layer_screen.addChild(tela1);
@@ -826,12 +830,14 @@ package
 							mcFunctions[i].gotoAndStop(1);
 						}
 					}
+					menu.next.visible = true;
 					break;
 				case CHOOSE_AB:
 					if (layer_menu.numChildren == 0) {
 						layer_menu.addChild(subMenu);
 						layer_menu.addChild(menu);
 					}
+					menu.next.visible = true;
 					removeMark();
 					menu.plus.visible = false;
 					menu.minus.visible = false;
@@ -856,6 +862,7 @@ package
 						layer_menu.addChild(subMenu);
 						layer_menu.addChild(menu);
 					}
+					menu.next.visible = true;
 					menu.plus.visible = false;
 					menu.minus.visible = false;
 					layer_screen.addChild(tela3);
@@ -870,6 +877,7 @@ package
 						layer_menu.addChild(subMenu);
 						layer_menu.addChild(menu);
 					}
+					menu.next.visible = true;
 					if (grafico == null) grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
 					grafico.hideSum();
 					grafico.defineAB = false;
@@ -906,6 +914,7 @@ package
 						layer_menu.addChild(subMenu);
 						layer_menu.addChild(menu);
 					}
+					menu.next.visible = true;
 					if (grafico == null) grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
 					grafico.showSum();
 					grafico.defineAB = false;
@@ -947,6 +956,7 @@ package
 						layer_menu.addChild(subMenu);
 						layer_menu.addChild(menu);
 					}
+					menu.next.visible = false;
 					menu.plus.visible = false;
 					menu.minus.visible = false;
 					if (grafico == null) grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
@@ -966,30 +976,57 @@ package
 			verificaAvancar();
 		}
 		
+		private var infosShowed:Object = new Object();
+		private const maxDias:Number = 15 * 24 * 60 * 60 * 1000;//15 dias
 		private function loadInfo(e:MouseEvent = null):void 
 		{
 			switch(currentScreen) {
 				case INICIAL:
 					break;
 				case CHOOSE_F:
-					if (infoTimer.running) closeInfoText();
-					else setInfoText("Escolha da função");
+					verifyDate(e, currentScreen, "Escolha da função");
 					break;
 				case CHOOSE_AB:
-					if (infoTimer.running) closeInfoText();
-					else setInfoText("Escolha o intervalo de integração");
+					verifyDate(e, currentScreen, "Escolha o intervalo de integração");
 					break;
 				case CHOOSE_SUM:
-					if (infoTimer.running) closeInfoText();
-					else setInfoText("Escolha da estratégia");
+					verifyDate(e, currentScreen, "Escolha da estratégia");
 					break;
 				case PARTITION:
+					verifyDate(e, currentScreen, "Escolha da partição");
 					break;
 				case RESULT:
+					verifyDate(e, currentScreen, "Escolha dos elementos de área");
 					break;
 				case FINAL:
+					verifyDate(e, currentScreen, "Ajuste da constante de integração");
 					break;
 				
+			}
+		}
+		
+		private function verifyDate(event:MouseEvent, screen:int, info:String):void {
+			var date:Date = new Date();
+			var showedDate:Date;
+			
+			if (event != null) {
+				if (infoTimer.running) closeInfoText();
+				else {
+					setInfoText(info);
+					infosShowed[screen] = String(date.fullYear) + "," + String(date.month) + "," + String(date.date) + "," + String(date.hours);
+				}
+			}else{
+				if (infosShowed[screen] == null) {
+					setInfoText(info);
+					infosShowed[screen] = String(date.fullYear) + "," + String(date.month) + "," + String(date.date) + "," + String(date.hours);
+				}else {
+					var oldDate:Array = String(infosShowed[screen]).split(",");
+					showedDate = new Date(Number(oldDate[0]), Number(oldDate[1]), Number(oldDate[2]), Number(oldDate[3]));
+					if (date.valueOf() - showedDate.valueOf() > maxDias) {
+						setInfoText(info);
+						infosShowed[screen] = String(date.fullYear) + "," + String(date.month) + "," + String(date.date) + "," + String(date.hours);
+					}
+				}
 			}
 		}
 		
@@ -1004,6 +1041,10 @@ package
 			informacoes.background.height = informacoes.info.height + 30;
 			informacoes.background.width = informacoes.info.textWidth + 20;
 			layer_info.addChild(informacoes);
+			if (infoTimer.running) {
+				infoTimer.stop();
+				infoTimer.reset();
+			}
 			Actuate.tween(informacoes, 0.5, { alpha:1 } );
 			infoTimer.addEventListener(TimerEvent.TIMER_COMPLETE, timerCloseInfo);
 			infoTimer.start();
@@ -1011,6 +1052,9 @@ package
 		
 		private function timerCloseInfo(e:TimerEvent):void 
 		{
+			if (infoTimer.running) {
+				infoTimer.stop();
+			}
 			infoTimer.reset();
 			infoTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, timerCloseInfo);
 			closeInfoText();
@@ -1021,14 +1065,14 @@ package
 			if (infoTimer.running) {
 				infoTimer.stop();
 				infoTimer.reset();
-				infoTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, timerCloseInfo);
-				Actuate.tween(informacoes, 0.5, { alpha:0 } ).onComplete(removeInfo);
 			}
+			infoTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, timerCloseInfo);
+			Actuate.tween(informacoes, 0.5, { alpha:0 } ).onComplete(removeInfo);
 		}
 		
 		private function removeInfo():void 
 		{
-			layer_info.removeChild(informacoes);
+			if(layer_info.contains(informacoes)) layer_info.removeChild(informacoes);
 		}
 		
 		/**
