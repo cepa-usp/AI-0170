@@ -1,6 +1,9 @@
 # Ignora os arquivos gerados pelo FlashDevelop
 /bin
 
+# Ignora arquivos de deployment
+/deployment
+
 # Ignora a versão anterior da configuração do projeto FlashDevelop
 /obj/*.old
 
