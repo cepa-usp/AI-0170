@@ -1,3 +1,7 @@
 h1. Soma de Riemann e integração
 
+Este Recurso Educacional (RE) é uma ferramenta que permite ao educador e ao aprendiz explorar a construção geométrica chamada "Soma de Riemann", bem como seu limite, a _Integral de Riemann_. É possível também abordar o Teorema do Valor Médio (TVM) para integrais e o Teorema Fundamental do Cálculo.
+
+Veja este Recurso Educacional (RE) em ação "aqui":http://midia.atp.usp.br/atividades-interativas/AI-0170.
+
 h1. Riemann sum and integration
