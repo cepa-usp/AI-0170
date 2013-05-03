@@ -13,6 +13,7 @@ package
 		private var _content:String;
 		private var returnFunction:Function;
 		private var telaPaste:LoadStringScreen = new LoadStringScreen();
+		private var telaSave:SaveStringScreen = new SaveStringScreen();
 		private var stage:Stage;
 		
 		public function FileHandlerFlash(stage:Stage) 
@@ -22,8 +23,27 @@ package
 		
 		public function save(content:String):void
 		{
-			if (encrypt) System.setClipboard(compress(content));
-			else System.setClipboard(content);
+			if (encrypt) this._content = compress(content);
+			else this._content = content;
+			
+			telaSave.saveText.selectable = true;
+			telaSave.saveText.text = _content;
+			telaSave.ok.addEventListener(MouseEvent.CLICK, closeSave);
+			telaSave.saveToClip.addEventListener(MouseEvent.CLICK, saveToClipboard);
+			//telaSave.x = 252;
+			stage.addChild(telaSave);
+		}
+		
+		private function closeSave(e:MouseEvent):void 
+		{
+			telaSave.ok.removeEventListener(MouseEvent.CLICK, closeSave);
+			telaSave.saveToClip.removeEventListener(MouseEvent.CLICK, saveToClipboard);
+			stage.removeChild(telaSave);
+		}
+		
+		private function saveToClipboard(e:MouseEvent):void
+		{
+			System.setClipboard(content);
 		}
 		
 		public function saveAs(content:String):void{
@@ -35,6 +55,7 @@ package
 			telaPaste.pasteText.text = "";
 			telaPaste.ok.addEventListener(MouseEvent.CLICK, carregado);
 			telaPaste.cancel.addEventListener(MouseEvent.CLICK, cancel);
+			//telaPaste.x = 252;
 			stage.addChild(telaPaste);
 		}
 		
@@ -59,7 +80,7 @@ package
 				else _content = telaPaste.pasteText.text;
 				if (returnFunction != null) returnFunction(_content);
 			}catch (err:Error){
-				
+				returnFunction(null);
 			}
 			stage.removeChild(telaPaste);
 		}

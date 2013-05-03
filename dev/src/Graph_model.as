@@ -8,6 +8,7 @@ package
 	import flash.display.Sprite;
 	import flash.geom.Point;
 	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
 	import flash.utils.Dictionary;
@@ -23,6 +24,8 @@ package
 		public static const TYPE_PRIMITIVE:String = "primitive";
 		public static const TYPE_PRIMITIVE_C:String = "primitive_c";
 		public static const TYPE_RECTANGLE:String = "rectangle";
+		public static const TYPE_ALTURA_X:String = "altura_x";
+		public static const TYPE_ALTURA_Y:String = "altura_y";
 		public static const TYPE_NONE:String = "none";
 		
 		private var layerGraph:Sprite;
@@ -47,9 +50,9 @@ package
 		
 		private var _graphSize:Point = new Point(740, 480);
 		
-		private var txtSomaDTF:TextFormat = new TextFormat("arial", 12, 0x000000);
+		private var txtSomaDTF:TextFormat = new TextFormat("arial", 15, 0x000000, true);
 		private var txtSoma:TextField;
-		private var txtNDTF:TextFormat = new TextFormat("arial", 12, 0x000000);
+		private var txtNDTF:TextFormat = new TextFormat("arial", 15, 0x000000, true);
 		private var txtN:TextField;
 		
 		private var _lockAB:Boolean = false;
@@ -108,6 +111,14 @@ package
 			
 		}
 		
+		private var graphColor:uint = 0x000000;
+		
+		public function set gColor(cor:uint):void
+		{
+			graphColor = cor;
+			draw();
+		}
+		
 		/**
 		 * Adiciona a função ao gráfico.
 		 * @param	selected Indica se a função está selecionada ou não.
@@ -119,7 +130,7 @@ package
 				style.color = 0xFF0000;
 				style.stroke = 5;
 			}else{
-				style.color = 0x004000;
+				style.color = graphColor;
 				style.stroke = 2;
 			}
 			graph.addFunction(f, style);
@@ -173,11 +184,11 @@ package
 			layerRects = new Sprite();
 			layerTextos = new Sprite();
 			
-			addChild(layerTextos);
 			addChild(layerGraph);
 			addChild(layerRects);
 			addChild(layerFunctions);
 			addChild(layerPoints);
+			addChild(layerTextos);
 		}
 		
 		/**
@@ -459,12 +470,19 @@ package
 		{
 			txtSoma.visible = true;
 			txtN.visible = true;
+			
+			layerTextos.graphics.clear();
+			layerTextos.graphics.beginFill(0xFFFFFF, 0.8);
+			layerTextos.graphics.drawRect(800 - 150, 2, 150, 50);
+			layerTextos.graphics.endFill();
 		}
 		
 		public function hideSum():void
 		{
 			txtSoma.visible = false;
 			txtN.visible = false;
+			
+			layerTextos.graphics.clear();
 		}
 		
 		/**
@@ -517,6 +535,8 @@ package
 			graph.xmax = state.xmax;
 			graph.ymin = state.ymin;
 			graph.ymax = state.ymax;
+			
+			calculateSum();
 			
 			draw();
 		}
@@ -619,6 +639,31 @@ package
 						
 						return objReturn;
 					}
+				}
+			}
+			
+			//Busca nos pontos que formam um ponto de altura
+			if (selectedType == TYPE_ALTURA || selectedType == TYPE_ALTURA_X || selectedType == TYPE_ALTURA_Y) {
+				var origin:Point = getStageCoords(0, 0);
+				
+				if (Point.distance(clickPoint, new Point(getSelectedPosition().x, origin.y)) < minDist) {
+					objReturn = new Object();
+					objReturn.type = TYPE_ALTURA_X;
+					objReturn.index = selectedIndex;
+					objReturn.value = selectedValue;
+					
+					select(TYPE_ALTURA_Y, selectedIndex, selectedValue);
+					
+					return objReturn;
+				}else if (Point.distance(clickPoint, new Point(origin.x, getSelectedPosition().y)) < minDist) {
+					objReturn = new Object();
+					objReturn.type = TYPE_ALTURA_Y;
+					objReturn.index = selectedIndex;
+					objReturn.value = selectedValue;
+					
+					select(TYPE_ALTURA_X, selectedIndex, selectedValue);
+					
+					return objReturn;
 				}
 			}
 			
@@ -782,6 +827,8 @@ package
 				case TYPE_DIVISOR:
 					return getStageCoords(selectedValue, 0);
 				case TYPE_ALTURA:
+				case TYPE_ALTURA_X:
+				case TYPE_ALTURA_Y:
 					return getStageCoords(selectedValue, f.value(selectedValue));
 				//case TYPE_PRIMITIVE_C:
 				//	return getStageCoords(selectedValue, F.value(selectedValue));
@@ -949,6 +996,7 @@ package
 			
 			layerRects.graphics.clear();
 			layerPoints.graphics.clear();
+			layerFunctions.graphics.clear();
 			
 			for (i = 0; i < points.length; i++) 
 			{
@@ -962,7 +1010,11 @@ package
 					//Desenha o ponto na função
 					altura = getStageCoords(points[i].h, f.value(points[i].h));
 					if (showHpoints) drawFunctionPoint(altura, (selectedIndex == i && selectedType == TYPE_ALTURA));
-					else if(selectedIndex == i && selectedType == TYPE_ALTURA) drawFunctionPoint(altura, false);
+					else if (selectedIndex == i && (selectedType == TYPE_ALTURA || selectedType == TYPE_ALTURA_X || selectedType == TYPE_ALTURA_Y)) drawFunctionPoint(altura, false);
+					
+					//if (selectedIndex == i && (selectedType == TYPE_ALTURA_X || selectedType == TYPE_ALTURA_Y)) {
+						//drawRefPoints(altura);
+					//}
 					
 					//Desenha os retângulos:
 					if(_showhRects){
@@ -997,6 +1049,8 @@ package
 			if (graph.hasFunction(F)) {
 				pt1 = getStageCoords(0, F.value(0));
 				drawPoint(pt1, selectedType == TYPE_PRIMITIVE_C);
+				var ptFb:Point = getStageCoords(ptB.x, F.value(ptB.x));
+				drawPoint(ptFb, false);
 			}
 			
 		}
@@ -1026,6 +1080,7 @@ package
 		 */
 		private function drawFunctionPoint(ptf:Point, selected:Boolean):void
 		{
+			drawRefPoints(ptf);
 			layerPoints.graphics.lineStyle(1, 0x000000);
 			if (selected) {
 				layerPoints.graphics.beginFill(0xFF0000);
@@ -1037,6 +1092,89 @@ package
 			layerPoints.graphics.endFill();
 		}
 		
+		private function drawRefPoints(ptf:Point):void
+		{
+			var origin:Point = getStageCoords(0, 0);
+			dashTo(layerFunctions, ptf.x, ptf.y, ptf.x, origin.y, 5, 5);
+			dashTo(layerFunctions, ptf.x, ptf.y, origin.x, ptf.y, 5, 5);
+			
+			layerFunctions.graphics.lineStyle(1, 0x000000);
+			
+			if (selectedType == TYPE_ALTURA_X) {
+				layerFunctions.graphics.beginFill(0xFF0000);
+				layerFunctions.graphics.drawCircle(origin.x, ptf.y, 5);
+				layerFunctions.graphics.endFill();
+				layerFunctions.graphics.beginFill(0x00FF00);
+				layerFunctions.graphics.drawCircle(ptf.x, origin.y, 3);
+				
+			}else if (selectedType == TYPE_ALTURA_Y) {
+				layerFunctions.graphics.beginFill(0xFF0000);
+				layerFunctions.graphics.drawCircle(ptf.x, origin.y, 5);
+				layerFunctions.graphics.endFill();
+				layerFunctions.graphics.beginFill(0x00FF00);
+				layerFunctions.graphics.drawCircle(origin.x, ptf.y, 3);
+			}else {			
+				layerFunctions.graphics.beginFill(0x00FF00);
+				layerFunctions.graphics.drawCircle(ptf.x, origin.y, 3);
+				layerFunctions.graphics.drawCircle(origin.x, ptf.y, 3);
+			}
+			layerFunctions.graphics.endFill();
+		}
+		
+		/*
+		 * A função dashTo desenha uma linha tracejada.
+		 * 
+		 * by Ric Ewing (ric@formequalsfunction.com) - version 1.2 - 5.3.2002
+		 * 
+		 * startx, starty = beginning of dashed line
+		 * endx, endy = end of dashed line
+		 * len = length of dash
+		 * gap = length of gap between dashes
+		 */
+		private function dashTo (sprite:Sprite, startx:Number, starty:Number, endx:Number, endy:Number, len:Number, gap:Number) : void {
+			sprite.graphics.lineStyle(2, 0x000000);
+			// init vars
+			var seglength, delta, deltax, deltay, segs, cx, cy, radians;
+			// calculate the legnth of a segment
+			seglength = len + gap;
+			// calculate the length of the dashed line
+			deltax = endx - startx;
+			deltay = endy - starty;
+			delta = Math.sqrt((deltax * deltax) + (deltay * deltay));
+			// calculate the number of segments needed
+			segs = Math.floor(Math.abs(delta / seglength));
+			// get the angle of the line in radians
+			radians = Math.atan2(deltay,deltax);
+			// start the line here
+			cx = startx;
+			cy = starty;
+			// add these to cx, cy to get next seg start
+			deltax = Math.cos(radians)*seglength;
+			deltay = Math.sin(radians)*seglength;
+			// loop through each seg
+			for (var n = 0; n < segs; n++) {
+				sprite.graphics.moveTo(cx,cy);
+				sprite.graphics.lineTo(cx+Math.cos(radians)*len,cy+Math.sin(radians)*len);
+				cx += deltax;
+				cy += deltay;
+			}
+			// handle last segment as it is likely to be partial
+			sprite.graphics.moveTo(cx,cy);
+			delta = Math.sqrt((endx-cx)*(endx-cx)+(endy-cy)*(endy-cy));
+			if(delta>len){
+				// segment ends in the gap, so draw a full dash
+				sprite.graphics.lineTo(cx+Math.cos(radians)*len,cy+Math.sin(radians)*len);
+			} else if(delta>0) {
+				// segment is shorter than dash so only draw what is needed
+				sprite.graphics.lineTo(cx+Math.cos(radians)*delta,cy+Math.sin(radians)*delta);
+			}
+			// move the pen to the end position
+			sprite.graphics.moveTo(endx,endy);
+		}
+		
+		private var charA:TextField = new TextField();
+		private var charB:TextField = new TextField();
+		private var textStyle:TextFormat = new TextFormat("forte", 15, 0x000000);
 		/**
 		 * Desenha o caractere do ponto (label);
 		 * @param	char Caractere a ser desenhado.
@@ -1044,24 +1182,51 @@ package
 		 */
 		private function drawChar(char:String, pt:Point):void
 		{
-			var altura:Number = 10;
-			var largura:Number = 8;
-			var distancia:Number = 6;
-			
-			layerPoints.graphics.lineStyle(2, 0x000000);
 			if (char == "a" || char == "A") {
-				layerPoints.graphics.moveTo(pt.x, pt.y + distancia);
-				layerPoints.graphics.lineTo(pt.x - largura/2, pt.y + distancia + altura);
-				layerPoints.graphics.moveTo(pt.x, pt.y + distancia);
-				layerPoints.graphics.lineTo(pt.x + largura/2, pt.y + distancia + altura);
-				layerPoints.graphics.moveTo(pt.x - largura/3, pt.y + distancia + altura/2);
-				layerPoints.graphics.lineTo(pt.x + largura/3, pt.y + distancia + altura/2);
+				if (!layerPoints.contains(charA)) {
+					charA.defaultTextFormat = textStyle;
+					charA.width = 20;
+					charA.autoSize = TextFieldAutoSize.CENTER;
+					//charA.height = 30;
+					charA.selectable = false;
+					charA.text = "A";
+					layerPoints.addChild(charA);
+				}
+				charA.x = pt.x - charA.width/2;
+				charA.y = pt.y + 6;
 			}else if (char == "b" || char == "B") {
-				layerPoints.graphics.moveTo(pt.x - largura/2, pt.y + distancia);
-				layerPoints.graphics.lineTo(pt.x - largura/2, pt.y + distancia + altura);
-				layerPoints.graphics.curveTo(pt.x + largura, pt.y + distancia + altura/2 + altura/4, pt.x - largura/2, pt.y + distancia + altura/2);
-				layerPoints.graphics.curveTo(pt.x + largura, pt.y + distancia + altura/4, pt.x - largura/2, pt.y + distancia);
+				if (!layerPoints.contains(charB)) {
+					charB.defaultTextFormat = textStyle;
+					charB.width = 20;
+					charB.autoSize = TextFieldAutoSize.CENTER;
+					//charB.height = 10;
+					charB.selectable = false;
+					charB.text = "B";
+					layerPoints.addChild(charB);
+				}
+				charB.x = pt.x - charB.width/2;
+				charB.y = pt.y + 6;
 			}
+			
+			
+			//var altura:Number = 10;
+			//var largura:Number = 8;
+			//var distancia:Number = 6;
+			//
+			//layerPoints.graphics.lineStyle(2, 0x000000);
+			//if (char == "a" || char == "A") {
+				//layerPoints.graphics.moveTo(pt.x, pt.y + distancia);
+				//layerPoints.graphics.lineTo(pt.x - largura/2, pt.y + distancia + altura);
+				//layerPoints.graphics.moveTo(pt.x, pt.y + distancia);
+				//layerPoints.graphics.lineTo(pt.x + largura/2, pt.y + distancia + altura);
+				//layerPoints.graphics.moveTo(pt.x - largura/3, pt.y + distancia + altura/2);
+				//layerPoints.graphics.lineTo(pt.x + largura/3, pt.y + distancia + altura/2);
+			//}else if (char == "b" || char == "B") {
+				//layerPoints.graphics.moveTo(pt.x - largura/2, pt.y + distancia);
+				//layerPoints.graphics.lineTo(pt.x - largura/2, pt.y + distancia + altura);
+				//layerPoints.graphics.curveTo(pt.x + largura, pt.y + distancia + altura/2 + altura/4, pt.x - largura/2, pt.y + distancia + altura/2);
+				//layerPoints.graphics.curveTo(pt.x + largura, pt.y + distancia + altura/4, pt.x - largura/2, pt.y + distancia);
+			//}
 		}
 		
 		/**
