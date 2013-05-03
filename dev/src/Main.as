@@ -128,7 +128,7 @@ package
 			addChild(layer_info);
 			addChild(layer_borda);
 			
-			layer_borda.graphics.lineStyle(4, 0xB4B4B4);
+			layer_borda.graphics.lineStyle(4, 0xCCCCCC);
 			layer_borda.graphics.lineTo(800, 0);
 			layer_borda.graphics.lineTo(800, 480);
 			layer_borda.graphics.lineTo(0, 480);
@@ -193,6 +193,7 @@ package
 			tela0.newFile.addEventListener(MouseEvent.CLICK, createNew);
 			
 			tela1 = new Tela1();
+			tela1.x = 60;
 			tela1Accord = new Accordion();
 			tela1Accord.addEventListener("accordionClick", accClick);
 			//var f0:F0 = new F0();
@@ -228,6 +229,7 @@ package
 			//tela1.addEventListener(MouseEvent.CLICK, chooseFunction);
 			
 			tela3 = new Tela3();
+			tela3.x = 60;
 			tela3.inferior.buttonMode = true;
 			tela3.superior.buttonMode = true;
 			tela3.personal.buttonMode = true;
@@ -552,11 +554,11 @@ package
 			var f39:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return Math.pow(Math.E, x)*Math.cos(x) } );
 			var pF39:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.pow(Math.E, x)*(Math.sin(x)+Math.cos(x))/2 + primitiveConstant } );
 			
-			var f40:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return  Math.acos(x)} );
-			var pF40:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.asin(x) + primitiveConstant } );
+			var f40:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return  (Math.pow(Math.E, x) + Math.pow(Math.E, -x))/2} );
+			var pF40:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return (Math.pow(Math.E, x) - Math.pow(Math.E, -x))/2 + primitiveConstant } );
 			
-			var f41:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return  Math.asin(x)} );
-			var pF41:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return Math.acos(x) + primitiveConstant } );
+			var f41:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number {return  (Math.pow(Math.E, x) - Math.pow(Math.E, -x))/2} );
+			var pF41:GraphFunction = new GraphFunction( -10, 10, function(x:Number):Number { return (Math.pow(Math.E, x) + Math.pow(Math.E, -x))/2 + primitiveConstant } );
 			
 			
 			functions = new Array();
@@ -690,8 +692,31 @@ package
 			fileHandler.abrir(loadComplete);
 		}
 		
+		private var confirmScreen:ConfirmNew = new ConfirmNew();
 		private function createNew(e:MouseEvent):void 
 		{
+			if(currentScreen > 1){
+				confirmScreen.ok.addEventListener(MouseEvent.CLICK, confirmNew);
+				confirmScreen.cancel.addEventListener(MouseEvent.CLICK, cancelNew);
+				stage.addChild(confirmScreen);
+			}else {
+				confirmNew(null);
+			}
+			//currentStrategy = -1;
+			//indexFunction = -1;
+			//fSelected = null;
+			//tela1Accord.close();
+			//primitiveConstant = 1;
+			//unloadScreen(currentScreen);
+			//currentScreen = 1;
+			//loadScreen(currentScreen);
+			//menu.currentScreen.text = currentScreen.toString();
+		}
+		
+		private function confirmNew(e:MouseEvent):void
+		{
+			if(e != null) cancelNew(null);
+			
 			currentStrategy = -1;
 			indexFunction = -1;
 			fSelected = null;
@@ -701,7 +726,13 @@ package
 			currentScreen = 1;
 			loadScreen(currentScreen);
 			menu.currentScreen.text = currentScreen.toString();
-			//next();
+		}
+		
+		private function cancelNew(e:MouseEvent):void
+		{
+			confirmScreen.ok.removeEventListener(MouseEvent.CLICK, confirmNew);
+			confirmScreen.cancel.removeEventListener(MouseEvent.CLICK, cancelNew);
+			stage.removeChild(confirmScreen);
 		}
 		
 		private function next(e:MouseEvent = null):void
@@ -851,6 +882,7 @@ package
 					grafico.defineAB = true;
 					grafico.showPrimitive = false;
 					grafico.x = 60;
+					grafico.gColor = 0x808080;
 					if (state != null) grafico.restoreState(state);
 					layer_graph.addChild(grafico);
 					stage.addEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
@@ -885,6 +917,7 @@ package
 					grafico.showPrimitive = false;
 					grafico.showhRects = false;
 					grafico.x = 60;
+					grafico.gColor = 0x000000;
 					if (state != null) grafico.restoreState(state);
 					layer_graph.addChild(grafico);
 					removeMark();
@@ -922,6 +955,7 @@ package
 					grafico.showPrimitive = false;
 					grafico.showhRects = true;
 					grafico.x = 60;
+					grafico.gColor = 0x000000;
 					removeMark();
 					switch (currentStrategy) {
 						case INFERIOR:
@@ -960,10 +994,11 @@ package
 					menu.plus.visible = false;
 					menu.minus.visible = false;
 					if (grafico == null) grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
-					grafico.hideSum();
+					grafico.showSum();
 					grafico.defineAB = false;
 					grafico.lockAB = true;
 					grafico.x = 60;
+					grafico.gColor = 0x000000;
 					grafico.showPrimitive = true;
 					if (state != null) grafico.restoreState(state);
 					layer_graph.addChild(grafico);
@@ -1211,6 +1246,7 @@ package
 		}
 		
 		private function loadComplete(content:String):void {
+			if (content == null || content == "") return;
 			
 			unloadScreen(currentScreen);
 			
@@ -1308,6 +1344,8 @@ package
 						stage.addEventListener(MouseEvent.MOUSE_UP, stopPanning);
 						break;
 					case Graph_model.TYPE_ALTURA:
+					case Graph_model.TYPE_ALTURA_X:
+					case Graph_model.TYPE_ALTURA_Y:
 						//pos = grafico.getSelectedPosition();
 						//pos.x += grafico.x;
 						posClick.x = stage.mouseX;
