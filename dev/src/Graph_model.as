@@ -23,6 +23,7 @@ package
 		public static const TYPE_FUNCTION:String = "function";
 		public static const TYPE_PRIMITIVE:String = "primitive";
 		public static const TYPE_PRIMITIVE_C:String = "primitive_c";
+		public static const TYPE_PRIMITIVE_FB:String = "primitive_fb";
 		public static const TYPE_RECTANGLE:String = "rectangle";
 		public static const TYPE_ALTURA_X:String = "altura_x";
 		public static const TYPE_ALTURA_Y:String = "altura_y";
@@ -61,6 +62,8 @@ package
 		
 		private var ptA:Object;
 		private var ptB:Object;
+		
+		private var fB:Number;
 		
 		public function Graph_model(f:GraphFunction, F:GraphFunction, points:Vector.<Object> = null) 
 		{
@@ -415,7 +418,7 @@ package
 			draw();
 		}
 		
-		private function getPtByLabel(label:String):Number
+		public function getPtByLabel(label:String):Number
 		{
 			for (var i:int = 0; i < points.length; i++) 
 			{
@@ -505,6 +508,8 @@ package
 			state.ymin = graph.ymin;
 			state.ymax = graph.ymax;
 			
+			state.fb = fB;
+			
 			return state;
 		}
 		
@@ -536,10 +541,24 @@ package
 			graph.ymin = state.ymin;
 			graph.ymax = state.ymax;
 			
+			fB = state.fb;
+			
 			calculateSum();
 			
 			draw();
 		}
+		
+		public function setFb(value:Number):void
+		{
+			fB = value;
+		}
+		
+		public function getFb():Number
+		{
+			return fB;
+		}
+		
+		public var showFB:Boolean = false;
 		
 		/**
 		 * Busca um elemento próximo a um ponto. A ordem de busca é: pontos de divisão, pontos de altura, f, F, retângulos.
@@ -570,6 +589,21 @@ package
 					select(TYPE_PRIMITIVE_C, NaN, NaN);
 					
 					return objReturn;
+				}
+				
+				//Busca no F(B)
+				if (showFB) {
+					var ptFb:Point = getStageCoords(ptB.x, F.value(ptB.x));
+					if (Point.distance(clickPoint, ptFb) < minDist) {
+						objReturn = new Object();
+						objReturn.type = TYPE_PRIMITIVE_FB;
+						//objReturn.index = NaN;
+						//objReturn.value = NaN;
+						
+						select(TYPE_PRIMITIVE_FB, NaN, NaN);
+						
+						return objReturn;
+					}
 				}
 			}
 			
@@ -625,7 +659,10 @@ package
 			}
 			
 			//Busca no F
-			if(showPrimitive){
+			if (showPrimitive) {
+				//Busca F(B)
+				
+				//Verifica proximidade com F
 				for (j = graph.xmin; j < graph.xmax; j+=(graph.xmax - graph.xmin)/100) 
 				{
 					posStage = getStageCoords(j, F.value(j));
@@ -1049,8 +1086,13 @@ package
 			if (graph.hasFunction(F)) {
 				pt1 = getStageCoords(0, F.value(0));
 				drawPoint(pt1, selectedType == TYPE_PRIMITIVE_C);
-				var ptFb:Point = getStageCoords(ptB.x, F.value(ptB.x));
-				drawPoint(ptFb, false);
+				
+				if (showFB) {
+					if (selectedType == TYPE_PRIMITIVE_FB) {
+						var ptFb:Point = getStageCoords(ptB.x, F.value(ptB.x));
+						drawPoint(ptFb, true);
+					}
+				}
 			}
 			
 		}
