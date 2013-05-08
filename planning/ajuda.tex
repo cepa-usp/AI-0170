@@ -1,0 +1,275 @@
+\documentclass[a4paper,10pt]{scrartcl}
+  \usepackage[utf8]{inputenc}
+  %\usepackage[light,math]{kurier}
+  \usepackage{arev}
+  \usepackage[T1]{fontenc}
+  \usepackage[brazil]{babel}
+  \usepackage{indentfirst}
+  \usepackage{paralist}
+
+  \newcommand\subintervalo{\ensuremath{[x_i, x_i + \Delta x_i]}}
+  
+  \title{Texto de ajuda da AI-0170}
+  \author{I. R. Pagnossin @ CEPA}
+  
+  \hyphenation{in-ter-va-los co-me-ça cons-tan-te}
+
+\begin{document}
+
+\maketitle
+
+  \begin{abstract}
+    Os textos de ajuda devem aparecer numa janela que sobrepõe-se ao plano cartesiano, mas não ao menu (GUI). Alguns deles têm informações que devem ser preenchidas dinamicamente, consultando o objeto que representa o plano cartesiano.
+  \end{abstract}
+
+  \section*{Ajuda associada à GUI}
+    A barra de menus, que está sempre visível (exceto na tela 0), deve sempre disponibilizar os seguintes textos de ajuda.
+	
+  \subsection*{Menu principal}
+    Utilize o menu principal para criar uma nova atividade, para salvá-la ou para abrir uma atividade já salva.
+
+  \subsection*{Tela 0 (novo e abrir)}
+    \textit{Não há texto de ajuda nesta tela.}
+	
+  \subsection*{Tela 1 (escolha da função)}
+    \textbf{Função $f$}
+
+    Escolha a função que deseja integrar. O gráfico dela será exibido na tela 2.
+
+  \newpage
+    
+  \subsection*{Tela 2 (escolha do intervalo de integração)}
+    \textbf{Intervalo de integração}
+
+    Os pontos $a$ e $b$ sobre o eixo das abscissas representam os limites inferior e superior de integração, respectivamente. Arraste-os para esquerda ou para a direita para definir o intervalo de integração $[a,b]$ desejado. Você também pode invertê-los de posição, representando assim uma integração no sentido oposto à orientação do eixo das abscissas.
+
+  \subsection*{Tela 3 (escolha da estratégia)}
+    \textbf{Estratégia}
+
+    Escolha a estratégia de construção da soma de Riemann que melhor se adequa à sua necessidade:
+    \begin{compactdesc}
+    \item{\textbf{Soma inferior:}} caso você escolha esta opção, os pontos da partição serão automaticamente definidos
+    com base na quantidade $n$ de sub-intervalos, que por sua vez será definida na tela seguinte.
+    Além disso, o software automaticamente utilizará o menor valor de $f$ em cada sub-intervalo $[x_i,x_i+\Delta x_i]$ para calcular a soma de Riemann
+    (a soma dos elementos de área). Escolha esta opção caso você queira explorar o conceito de soma inferior ou para exibir dinamicamente da soma de Riemann
+    em função de $n$.    
+    \item{\textbf{Soma superior:}} caso você escolha esta opção, os pontos da partição serão automaticamente definidos com base na quantidade $n$ de sub-intervalos, que por sua vez será definida na tela seguinte. Além disso, o software automaticamente utilizará o maior valor de $f$ em cada sub-intervalo \subintervalo\ para calcular a soma de Riemann (a soma dos elementos de área). Escolha esta opção caso você queira explorar o conceito de soma superior ou para exibir dinamicamente da soma de Riemann em função de $n$.  
+    \item{\textbf{Soma personalizada:}} caso você escolha esta opção, os pontos da partição poderão ser criados livremente, inclusive com amplitudes $\Delta x_i$ variáveis. Além disso, você terá a liberdade de escolher os pontos de avaliação $\zeta_i$ associado a cada sub-intervalo \subintervalo. Escolha esta opção caso você queira demonstrar, passo-a-passo, a construção genérica da soma de Riemann, a arbitrariedade na escolha da partição ou o \emph{teorema do valor médio} para integrais.
+    \end{compactdesc}
+    
+  \newpage
+
+  \subsection*{Tela 4 (escolha da partição)}
+    \textbf{Partição}
+    
+    A partição é o conjunto de pontos sobre o eixo das abscissas que, juntamente com os pontos $a$ e $b$, dividem o intervalo de integração em $n$ sub-intervalos.
+    
+    Caso você tenha escolhido a estratégia ``soma inferior'' ou ``soma superior'', na tela 3, então nesta tela você poderá aumentar ou reduzir a quantidade $n$ de sub-intervalos de $[a,b]$. Neste caso, os pontos da partição serão automaticamente criados de modo que fiquem uniformemente distribuídos ao longo do intervalo de integração (matematicamente, esta restrição não é obrigatória. Aqui ela tem o intuito exclusivo de simplificar a construção da soma de Riemann para $n$ grande). Utilize os botões $+$ e $-$ para aumentar e reduzir $n$, respectivamente.
+
+    Caso você tenha escolhido a estratégia ``soma personalizada'' na tela 3, então nesta tela você poderá criar os pontos da partição livremente. Para adicionar um ponto na partição, pressione sobre o eixo $x$ (dentro do intervalo de integração) e, em seguida, pressione o botão $+$ na barra de ferramentas. Para remover um ponto da partição, pressione sobre o ponto desejado e, em seguida, pressione o botão $-$ (os limites de integração, que fazem parte da partição, não podem ser removidos).
+    
+  \subsection*{Tela 5 (escolha dos elementos de área)}
+    \textbf{Elementos de área}
+    
+    Caso você tenha escolhido a estratégia ``soma inferior'' ou ``soma superior'', então nesta tela você não precisará fazer nada, pois o software selecionará automaticamente os $\zeta_i$ de mod que $f(\zeta_i$ seja mínimo ou máximo em \subintervalo (somas inferior e superior, respectivamente). Porém, você ainda pode alterar a quantidade $n$ de sub-intervalos, como na tela anterior. Para isso, utilize os botões $+$ e $-$ na barra de ferramentas.
+    
+    Caso você tenha escolhido a estratégia ``soma personalizada'' na tela 3, então nesta tela você poderá escolher livremente os pontos $\zeta_i$ de avaliação de $f$. Para isso, pressione sobre o gráfico de $f$ na posição $x$ em que deseja criar o ponto de avaliação. Em seguida, pressione o botão $+$ para adicionar o ponto ali. Neste momento, o software automaticamente construirá um elemento de área retangular de base $\Delta x_i$ (amplitude do sub-intervalo) e altura $f(\zeta_i)$ (valor de $f$ no ponto de avaliação). Repita esse processo para adicionar outros pontos de avaliação (um para cada sub-intervalo) ou para ajustar o ponto de avaliação de um sub-intervalo que já tenha um. Para remover um ponto de avaliação (e o elemento de área correspondente), selecione-o e, em seguida, pressione o botão $-$ na barra de ferramentas.
+    
+  \subsection*{Tela 6 (Ajuste da constante de integração)}
+    \textbf{Teorema Fundamental do Cálculo}
+    
+    Arraste o gráfico da primitiva de $f$, a função $F$, para cima ou para baixo no plano cartesiano. Este processo representa a escolha de diferentes valores da constante de integração $C$. Um caso particular interessante é aquele em que $C = -F(a)$, o que corresponde a posicionar $F$ de modo que seu gráfico em $x = a$ cruze o eixo das abscissas, isto é, $y = F(a) = 0$. Nesta situação, o valor $y = F(b)$ é precisamente a integral definida de $f$ no intervalo de integração escolhido.
+    
+    Note que quando $n$ tende ao infinito (estratégias ``somas inferior'' e ``soma superior''), o valor da soma de Riemann, exibida no canto superior direito da tela, aproxima-se de $F(b)-F(a)$. Isto também acontece quando os pontos de avaliação $\zeta_i$ de cada sub-intervalo foram cuidadosamente escolhidos de modo que $f_i$ seja o valor médio de $f$ no sub-intervalo $[x_i,x_i+\Delta x_i]$, independentemente da quantidade $n$ de sub-intervalos (estratégia ``soma personalizada'').
+
+    
+  \subsection*{Botão $+$}
+    \subsubsection*{Tela 4}    
+    \textbf{Adicionar pontos na partição}
+    
+    Caso você tenha escolhido a estratégia ``soma inferior'' ou ``soma superior'' na tela 3, utilize este botão para aumentar o número $n+1$ de pontos da partição ($n$ é a quantidade de sub-intervalos). Os pontos serão automaticamente posicionados pelo software de modo que eles fiquem uniformemente distribuidos no intervalo de integração.
+    
+    Caso você tenha escolhido a estratégia ``soma personalizada'' na tela 3, utilize este botão para acrescentar pontos $x_i$ à partição livremente: pressione sobre o eixo $x$ na posição em que deseja adicionar o ponto (aparecerá uma ``x'' na tela) e pressione o botão $+$.
+    
+    \newpage
+    
+    \subsubsection*{Tela 5}
+    
+    \textbf{Adicionar pontos de avaliação}
+    
+    Caso você tenha escolhido a estratégia ``soma inferior'' ou ``soma superior'' na tela 3, utilize este botão para aumentar o número $n+1$ de pontos da partição ($n$ é a quantidade de sub-intervalos). Os pontos serão automaticamente posicionados pelo software de modo que eles fiquem uniformemente distribuidos no intervalo de integração.
+    
+    Caso você tenha escolhido a estratégia ``soma personalizada'' na tela 3, utilize este botão para acrescentar pontos de avaliação $\zeta_i \in \subintervalo$. Para isso, pressione na posição $(\zeta_i, f(\zeta_i))$ em que deseja adicionar o ponto (note que você deve pressionar sobre o gráfico de $f$) e, em seguida, pressione o botão $+$.
+    
+  \subsection*{Botão $-$}
+    \subsubsection*{Tela 4}    
+    \textbf{Remover pontos da partição}
+    
+    Caso você tenha escolhido a estratégia ``soma inferior'' ou ``soma superior'' na tela 3, utilize este botão para reduzir o número $n+1$ de pontos da partição ($n$ é a quantidade de sub-intervalos). Os pontos serão automaticamente posicionados pelo software de modo que eles fiquem uniformemente distribuidos no intervalo de integração.
+    
+    Caso você tenha escolhido a estratégia ``soma personalizada'' na tela 3, utilize este botão para remover pontos $x_i$ da partição: pressione sobre o ponto que deseja remover e, em seguida, pressione o botão $-$.
+    
+    
+    
+    \subsubsection*{Tela 5}
+    
+    \textbf{Remover pontos de avaliação}
+    
+    Caso você tenha escolhido a estratégia ``soma inferior'' ou ``soma superior'' na tela 3, utilize este botão para reduzir o número $n+1$ de pontos da partição ($n$ é a quantidade de sub-intervalos). Os pontos serão automaticamente posicionados pelo software de modo que eles fiquem uniformemente distribuidos no intervalo de integração.
+    
+    Caso você tenha escolhido a estratégia ``soma personalizada'' na tela 3, utilize este botão para remover pontos de avaliação $\zeta_i \in \subintervalo$ (e, consequentemente, elementos de área). Para isso, pressione sobre o ponto que deseja remover, em seguida, pressione o botão $-$.
+    
+  \section*{Ajuda associada aos EOI}
+
+  \subsection*{$a$ (limite inferior do intervalo de integração)}
+    \begin{compactdesc}
+      \item{Título:} limite inferior do intervalo de integração
+      \item{Símbolo:} $a$
+      \item{Valor:} <dinâmico>
+      \item{Descrição:} denota o valor da abscissa a partir da qual a integração \emph{começa}. Embora seja comum escolher $a < b$, esta relação não é obrigatória. De fato, $a \ge b$ também é possível. Na soma de Riemann, $a$ é o primeiro ponto da partição do intervalo de integração.
+      \item{Interação:} você pode alterar os limites de integração na tela 2.
+    \end{compactdesc}
+
+  \subsection*{$b$ (limite superior do intervalo de integração)}
+    \begin{compactdesc}
+      \item{Título:} limite superior do intervalo de integração
+      \item{Símbolo:} $b$
+      \item{Valor:} <dinâmico>
+      \item{Descrição:} denota o valor da abscissa na qual a integração \emph{termina}. Embora seja comum escolher $a < b$, esta relação não é obrigatória. De fato, $a \ge b$ também é possível. Na soma de Riemann, $b$ é o último ponto da partição do intervalo de integração.
+      \item{Interação:} você pode alterar os limites de integração na tela 2.
+    \end{compactdesc}
+
+  
+    
+  \subsection*{$x_i$ (ponto da partição que não $a$ e $b$)}
+    \begin{compactdesc}
+      \item{Título:} $i$-ésimo ponto da partição do intervalo de integração
+      \item{Símbolo:} $x_i$
+      \item{Valor:} <dinâmico>
+      \item{Descrição:} na soma de Riemann, uma partição do intervalo de integração é uma divisão desse intervalo em $n$ sub-intervalos menores. Essa divisão é feita escolhendo-se $n+1$ pontos da partição, começando em $x_0 = a$ e terminando em $x_n = b$. Note que existem infinitas partições possíveis (arbitrárias) de um mesmo intervalo de integração.
+      \item{Interação:} você pode adicionar e remover pontos da partição na tela 4.
+    \end{compactdesc}
+    
+    \newpage
+
+  \subsection*{$\zeta_i$ (pontos de avaliação de f)}
+    \begin{compactdesc}
+      \item{Título:} $i$-ésimo ponto de avaliação de $f$
+      \item{Símbolo:} $\zeta_i$
+      \item{Valor:} <dinâmico>
+      \item{Descrição:} no procedimento da soma de Riemann, escolhemos um ponto $\zeta_i$ dentro de cada sub-intervalo $[x_i,x_i + \Delta x_i]$ no qual o valor da função será calculado: $f(\zeta_i)$. Este valor representa a altura o elemento de área associado ao sub-intervalo. O valor de $\zeta_i$ é arbitrário, mas no caso em que é escolhido de tal modo que $f(\zeta_i)$ seja máximo no sub-intervalo, a soma de Riemann é também conhecida por ``soma superior''. Analogamente, quando $f(\zeta_i)$ é mínimo no sub-intervalo, temos a ``soma inferior''.
+      \item{Interação:} você pode adicionar e remover pontos de avaliação na tela 5 caso tenha optado pela estratégia ``soma personalizada'' (tela 3). Caso contrário, os pontos de avaliação são definidos automaticamente pelo software (somas inferior e superior) com base na quantidade $n$ de sub-intervalos (tela 4).
+    \end{compactdesc}
+	
+  \subsection*{$f(\zeta_i)$ (altura do elemento de área)}
+    \begin{compactdesc}
+      \item{Título:} altura do $i$-ésimo elemento de área
+      \item{Símbolo:} $f(\zeta_i)$
+      \item{Valor:} <dinâmico>
+      \item{Descrição:} no procedimento da soma de Riemann, escolhemos um ponto $\zeta_i$ dentro de cada sub-intervalo $[x_i,x_i + \Delta x_i]$ no qual o valor da função será calculado: $f(\zeta_i)$. Este valor representa a altura o elemento de área associado ao sub-intervalo. O valor de $\zeta_i$ é arbitrário, mas no caso em que é escolhido de tal modo que $f(\zeta_i)$ seja máximo no sub-intervalo, a soma de Riemann é também conhecida por ``soma superior''. Analogamente, quando $f(\zeta_i)$ é mínimo no sub-intervalo, temos a ``soma inferior''.
+      \item{Interação:} a altura do elemento de área é determinada automaticamente pelo software com base no ponto de avaliação $\zeta_i$ (tela 5).
+    \end{compactdesc}
+
+    \newpage
+    
+  \subsection*{$(\zeta_i,f(\zeta_i))$}
+    \begin{compactdesc}
+      \item{Título:} $i$-ésimo ponto de avaliação e valor de $f$ nesse ponto
+      \item{Símbolo:} $(\zeta_i,f(\zeta_i))$
+      \item{Valor:} <dinâmico, com formato (x.xx, y.yy)>
+      \item{Descrição:} o ponto do plano cartesiano cujas coordenadas são $x = \zeta_i$ e $y = f(\zeta_i)$.
+      \item{Interação:} você pode adicionar e remover pontos de avaliação ($\zeta_i$) na tela 5 caso tenha optado pela estratégia ``soma personalizada'', na tela 3. Caso contrário, os pontos de avaliação são calculados automaticamente pelo software (somas inferior e superior) com base na quantidade $n$ de sub-intervalos definida na tela 5. Note que $f(\zeta_i)$ é determinado automaticamente a partir de $\zeta_i$ e da função $f$ escolhida (tela 1).
+    \end{compactdesc}
+
+  \subsection*{$\Delta x_i$ (amplitude do i-ésimo sub-intervalo de integração)}
+    \begin{compactdesc}
+      \item{Título:} amplitude do $i$-ésimo sub-intervalo de integração
+      \item{Símbolo:} $\Delta x_i$
+      \item{Valor:} <dinâmico>
+      \item{Descrição:} corresponde à base do elemento de área associado ao sub-intervalo \subintervalo, cuja área é igual a $f(\zeta_i)\Delta x_i$, com $\zeta_i \in \subintervalo$.
+      \item{Interação:} caso você tenha escolhido a estratégia ``soma personalizada'' (tela 3), a amplitude de cada sub-intervalo de integração dependerá da escolha dos pontos da partição (tela 4). Neste caso, $\Delta x_i = x_{i+1} - x_i$, que varia conforme a distribuição dos $x_i$ no intervalo de integração. Por outro lado, caso você tenha escolhido ``soma inferior'' ou ``soma superior'', $\Delta x_i = (b - a)/n$, calculado automaticamente com base no intervalo de integração $[a,b]$ (tela 2) e na quantidade $n$ de sub-intervalos (tela 5). Note ainda que, apenas por simplicidade, neste caso $\Delta x_i$ terá o mesmo valor para todos os sub-intervalos. Caso você queira criar uma soma inferior ou superior com amplitudes distintas, escolha a estratégia ``soma personalizada'' e escolha manualmente os valores mínimo ou máximo de $f(\zeta_i)$ em cada sub-intervalo.
+    \end{compactdesc}
+   
+    \newpage
+    
+  \subsection*{$\Delta a_i$ (elemento de área)}
+    \begin{compactdesc}
+	\item{Título:} elemento de área
+	\item{Símbolo:} $\Delta a_i$
+	\item{Valor:} <dinâmico (a área do elemento de área)>
+	\item{Descrição:} representa a parcela de área associada ao sub-intervalo de integração \subintervalo. Na construção geométrica da soma de Riemann apresentada aqui, os elementos de área são retângulos de base $\Delta x_i$ e altura $f(\zeta_i)$, cuja área é $\Delta a_i = f(\zeta_i) \Delta x_i$.
+	\item{Interação:} os elementos de área são definidos com base nas escolhas da partição (tela 4) e dos pontos de avaliação de $f$ (nesta tela): caso você tenha escolhido a estratégia ``soma personalizada'', utilize os botões $+$ e $-$ na barra de ferramentas à esquerda para adicionar ou remover pontos de avaliação de $f$; caso tenha escolhido ``soma inferior'' ou ``soma superior'', os botões $+$ e $-$ acrescem e reduzem a quantidade $n$ de sub-intervalos, respectivamente.
+    \end{compactdesc}
+	
+  \subsection*{$C$ (constante de integração)}
+    \begin{compactdesc}
+	\item{Título:} constante de integração
+	\item{Símbolo:} $C$
+	\item{Valor:} <dinâmico>
+	\item{Descrição:} o ponto selecionado é, na verdade, uma representação da constante de integração, um valor constante que quando acrescentado à primitiva $F(x)$ não afeta a sua derivada, isto é, $f(x) = d/dx [F(x)+C]$. Quando essa constante é ajustada de modo que $F(a) + C = 0$, o valor $F(b)$ é igual à integral de $f$ no intervalo $[a,b]$.
+	\item{Interação:} você pode ajustar a constante de integração arrastando o gráfico da primitiva para cima ou para baixo no plano cartesiano, na tela 6.
+    \end{compactdesc}
+    
+  \subsection*{$f$ (integrando)}
+    \begin{compactdesc}
+	\item{Título:} integrando
+	\item{Símbolo:} $f$
+	\item{Valor:} <dinâmico: exibir a expressão da função $f$>
+	\item{Descrição:} gráfico da função que se quer integrar.
+	\item{Interação:} você pode escolher a função que será integrada na tela 1.
+    \end{compactdesc}
+    
+  \newpage
+    
+  \subsection*{$F$ (primitiva)}
+    \begin{compactdesc}
+	\item{Título:} primitiva
+	\item{Símbolo:} $F(x)+C$
+	\item{Valor:} <dinâmico: exibir a expressão da função $F$>
+	\item{Descrição:} a primitiva, ou antiderivada, de $f$ é a função $F$ cuja derivada é $f$. Ou seja, $f = dF/dx$. Como a derivada de uma constante é zero, podemos adicionar uma constante $C$ arbitrária a $F$ sem alterar a relação anterior. Isto é, $f = d/dx [F(x)+C]$. Em problemas aplicados a constante de integração é usada para ajustar a solução matemática ao problema que se quer resolver.
+	
+	Por exemplo, na determinação da área sob a curva $f$, a constante de integração deve ser ajustada de modo que $C = -F(a)$. Nesta condição, o valor $F(b)+C = F(b)-F(a)$ é precisamente a área procurada, ou ainda, a integral definida de $f$ no intervalo $[a,b]$.
+	\item{Interação:} a primitiva é automaticamente definida ao escolher $f$, na tela 1, mas a constante de integração pode ser definida arrastando o gráfico de $F$ para cima ou para baixo na tela 6.
+    \end{compactdesc}
+    
+  
+    
+  \subsection*{Soma de Riemann}
+    \begin{compactdesc}
+	\item{Título:} soma de Riemann
+	\item{Símbolo:} $\sum_{i=0}^{n} f(\zeta_i) \Delta x_i$
+	\item{Valor:} <dinâmico>
+	\item{Descrição:} a soma de Riemann é simplesmente a soma das áreas dos retângulos (elementos de área) de base $\Delta x_i$ e altura $f(\zeta_i)$. Quando $n$ tende ao infinito, a área de cada elemento de área tende a zero, enquanto a soma dessas áreas tende à área sob $f$. Esta é a integral de Riemann.
+	\item{Interação:} a soma de Riemann depende da função $f$ escolhida (tela 1), dos limites de integração (tela 2), dos pontos da partição (tela 4) e dos pontos de avaliação de $f$ (tela 5).
+    \end{compactdesc}
+	
+  \subsection*{$n$ (quantidade de sub-intervalos)}
+    \begin{compactdesc}
+	\item{Título:} quantidade de sub-intervalos
+	\item{Símbolo:} $n$
+	\item{Valor:} <dinâmico>
+	\item{Descrição:} $n \ge 1$ é a quantidade de divisões, ou sub-intervalos, do intervalo de integração $[a,b]$.
+	\item{Interação:} a quantidade de sub-intervalos pode ser controlada na tela 4.
+    \end{compactdesc}
+	
+  \subsection*{$F(a)$ (valor da primitiva em $x=a$)}
+    \begin{compactdesc}
+	\item{Título:} valor da primitiva em $x = a$
+	\item{Símbolo:} $F(a)$
+	\item{Valor:} <dinâmico>
+	\item{Descrição:} os valores da primitiva em $x = a$ e $x = b$ podem ser utilizados para determinar a integral definida de $f$ no intervalo $[a,b]$, conforme estabelece o Teorema Fundamental do Cálculo: $F(b)-F(a) = \int_a^b f(x) dx$. Por meio dele podemos evitar calcular a soma de Riemann se conhecermos a primitiva (ou antiderivada) de $f$, isto é, se conhecermos $F$.
+	\item{Interação:} o valor $F(a)$ depende de $f$ (tela 1), do limite inferior de integração $a$ (tela 2) e da constante de integração $C$ (tela 6), que por sua vez pode ser definida arrastando-se o gráfico de $F$ para cima ou para baixo no plano cartesiano (tela 6).
+    \end{compactdesc}
+	
+  
+  
+  \subsection*{$F(b)$ (valor da primitiva em $x=b$)}
+    \begin{compactdesc}
+	\item{Título:} valor da primitiva em $x = b$
+	\item{Símbolo:} $F(b)$
+	\item{Valor:} <dinâmico>
+	\item{Descrição:} os valores da primitiva em $x = a$ e $x = b$ podem ser utilizados para determinar a integral definida de $f$ no intervalo $[a,b]$, conforme estabelece o Teorema Fundamental do Cálculo: $F(b)-F(a) = \int_a^b f(x) dx$. Por meio dele podemos evitar calcular a soma de Riemann se conhecermos a primitiva (ou antiderivada) de $f$, isto é, se conhecermos $F$.
+	\item{Interação:} o valor $F(b)$ depende de $f$ (tela 1), do limite superior de integração $b$ (tela 2) e da constante de integração $C$ (tela 6), que por sua vez pode ser definida arrastando-se o gráfico de $F$ para cima ou para baixo no plano cartesiano (tela 6).
+    \end{compactdesc}
+    
+\end{document}
