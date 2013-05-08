@@ -831,6 +831,15 @@ package
 			bt.alpha = 1;
 		}
 		
+		private function getFb():Number
+		{
+			var oldPrimitiveConstanta:Number = primitiveConstant;
+			primitiveConstant = 0;
+			var fb:Number = -GraphFunction(functions[indexFunction][1]).value(grafico.getPtByLabel("a"));
+			primitiveConstant = oldPrimitiveConstanta;
+			return fb;
+		}
+		
 		/**
 		 * Carrega uma tela de acordo com a indicação.
 		 * @param	screen Tela a ser carregada.
@@ -877,6 +886,7 @@ package
 					if(grafico.n == -1){
 						grafico.addPoint( -5);
 						grafico.addPoint( 5);
+						grafico.setFb(getFb());
 					}
 					grafico.showhRects = false;
 					grafico.defineAB = true;
@@ -1380,6 +1390,7 @@ package
 				positionSelected.x += grafico.x;
 				setMark(positionSelected, false);
 			}
+			grafico.setFb(getFb());
 		}
 		
 		private var panClick:Point = new Point();
@@ -1453,9 +1464,13 @@ package
 						setMark(new Point(posClick.x, stageCoordsOfMouseX.y));
 						if (currentStrategy == PERSONAL) {
 							if(grafico.betweenAB(graphCoordsOfMouse.x)){
-								unlock(menu.plus);
-								if (grafico.getSelectedType() == Graph_model.TYPE_DIVISOR) unlock(menu.minus);
-								else lock(menu.minus);
+								if (grafico.getSelectedType() == Graph_model.TYPE_DIVISOR) {
+									unlock(menu.minus);
+									lock(menu.plus);
+								}else {
+									unlock(menu.plus);
+									lock(menu.minus);
+								}
 							}else {
 								lock(menu.plus);
 								lock(menu.minus);
@@ -1476,9 +1491,13 @@ package
 						setMark(new Point(posClick.x, stageCoordsOfMouseFunc.y));
 						if(currentStrategy == PERSONAL){
 							if(grafico.betweenAB(graphCoordsOfMouse.x)){
-								unlock(menu.plus);
-								if (grafico.getSelectedType() == Graph_model.TYPE_ALTURA || grafico.getSelectedType() == Graph_model.TYPE_RECTANGLE) unlock(menu.minus);
-								else lock(menu.minus);
+								if (grafico.getSelectedType() == Graph_model.TYPE_ALTURA || grafico.getSelectedType() == Graph_model.TYPE_RECTANGLE) {
+									unlock(menu.minus);
+									lock(menu.plus);
+								}else {
+									unlock(menu.plus);
+									lock(menu.minus);
+								}
 							}else {
 								lock(menu.plus);
 								lock(menu.minus);
@@ -1503,6 +1522,8 @@ package
 			var diff:Number = stage.mouseY - posClick.y;
 			posClick.y = stage.mouseY;
 			primitiveConstant += grafico.getDistanceFromOrigin(diff).y;
+			if (Math.abs(primitiveConstant - grafico.getFb()) < 0.15) grafico.showFB = true;
+			else grafico.showFB = false;
 			grafico.update();
 		}
 		
