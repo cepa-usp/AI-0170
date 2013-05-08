@@ -1,4 +1,4 @@
-package 
+﻿package 
 {
 	import cepa.graph.GraphFunction;
 	import com.eclecticdesignstudio.motion.Actuate;
@@ -394,16 +394,21 @@ package
 			tela3.inferior.gotoAndStop(1);
 			tela3.superior.gotoAndStop(1);
 			tela3.personal.gotoAndStop(1);
-			switch(MovieClip(e.target).name) {
+			//switch(MovieClip(e.target).name) {
+			trace(e.target.name);
+			switch(e.target.name) {
 				case "inferior":
+				case "inf":
 					currentStrategy = INFERIOR;
 					tela3.inferior.gotoAndStop(2);
 					break;
 				case "superior":
+				case "sup":
 					currentStrategy = SUPERIOR;
 					tela3.superior.gotoAndStop(2);
 					break;
 				case "personal":
+				case "per":
 					currentStrategy = PERSONAL;
 					tela3.personal.gotoAndStop(2);
 					break;
