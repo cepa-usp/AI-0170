@@ -1,4 +1,4 @@
-﻿package 
+package 
 {
 	import cepa.graph.GraphFunction;
 	import com.eclecticdesignstudio.motion.Actuate;
@@ -13,6 +13,7 @@
 	import flash.geom.Rectangle;
 	import flash.system.System;
 	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.Timer;
@@ -39,6 +40,7 @@
 		private var layer_info:Sprite;
 		private var layer_mark:Sprite;
 		private var layer_borda:Sprite;
+		private var layer_help:Sprite;
 		
 		//Indice telas:
 		private const INICIAL:int = 0;
@@ -78,6 +80,8 @@
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			
+			stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
+			
 			this.scrollRect = new Rectangle(0, 0, 800, 480);
 			//informacoes = new CaixaTextoNova();
 			//informacoes.nextButton.visible = false;
@@ -99,7 +103,6 @@
 			createFunctions();
 			createScreens();
 			//createGraph();
-			stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
 			
 			loadScreen(currentScreen);
 		}
@@ -120,12 +123,15 @@
 			layer_screen = new Sprite();
 			layer_mark = new Sprite();
 			layer_borda = new Sprite();
+			layer_help = new Sprite();
 			
 			addChild(layer_graph);
 			addChild(layer_mark);
 			addChild(layer_screen);
 			addChild(layer_menu);
 			addChild(layer_info);
+			addChild(layer_help);
+			layer_help.x = 60;
 			addChild(layer_borda);
 			
 			layer_borda.graphics.lineStyle(4, 0xCCCCCC);
@@ -149,6 +155,7 @@
 			makeButton(menu.minus, null);
 			//makeButton(menu.currentScreen, loadInfo);
 			menu.currentScreen.addEventListener(MouseEvent.CLICK, loadInfo);
+			menu.help.addEventListener(MouseEvent.CLICK, openAbout);
 			//menu.help.addEventListener(MouseEvent.CLICK, showHelp);
 			
 			subMenu = new SubMenu();
@@ -157,8 +164,108 @@
 			makeButton(subMenu.open, openFile);
 			makeButton(subMenu.save, save);
 			makeButton(subMenu.saveAs, saveAs);
-			makeButton(subMenu.language, null);
-			makeButton(subMenu.about, null);
+			//makeButton(subMenu.language, null);
+			makeButton(subMenu.about, openAbout);
+		}
+		
+		private var help:Ajuda = new Ajuda();
+		private var helpFormat:TextFormat = new TextFormat("arial", 14, 0x333333);
+		private function openAbout(e:MouseEvent):void 
+		{
+			if (layer_help.contains(help)) {
+				layer_help.removeChild(help);
+				return;
+			}
+			
+			if (grafico != null) {
+				var gPt:Point;
+				switch(grafico.getSelectedType()) {
+					case Graph_model.TYPE_ALTURA:
+						help.gotoAndStop(19);
+						gPt = grafico.getSelectedGraphPos();
+						//help.dinamico.defaultTextFormat = helpFormat;
+						help.dinamico.text = "(" + gPt.x.toFixed(2) + ", " + gPt.y.toFixed(2) + ")";
+						break;
+					case Graph_model.TYPE_ALTURA_X:
+						help.gotoAndStop(18);
+						gPt = grafico.getSelectedGraphPos();
+						//help.dinamico.embedFonts = true;
+						//help.dinamico.defaultTextFormat = helpFormat;
+						help.dinamico.text = "(" + gPt.x.toFixed(2) + ", " + gPt.y.toFixed(2) + ")";
+						break;
+					case Graph_model.TYPE_ALTURA_Y:
+						help.gotoAndStop(17);
+						gPt = grafico.getSelectedGraphPos();
+						//help.dinamico.embedFonts = true;
+						//help.dinamico.defaultTextFormat = helpFormat;
+						help.dinamico.text = "(" + gPt.x.toFixed(2) + ", " + gPt.y.toFixed(2) + ")";
+						break;
+					case Graph_model.TYPE_DIVISOR:
+						gPt = grafico.getSelectedGraphPos();
+						if (grafico.getSelectedLabel() == "a" || grafico.getSelectedLabel() == "A") {
+							help.gotoAndStop(14);
+						}else if (grafico.getSelectedLabel() == "b" || grafico.getSelectedLabel() == "B") {
+							help.gotoAndStop(15);
+						}else {
+							help.gotoAndStop(16);
+						}
+						//help.dinamico.embedFonts = true;
+						//help.dinamico.defaultTextFormat = helpFormat;
+						help.dinamico.text = "(" + gPt.x.toFixed(2) + ", " + gPt.y.toFixed(2) + ")";
+						break;
+					case Graph_model.TYPE_FUNCTION:
+						help.gotoAndStop(23);
+						break;
+					case Graph_model.TYPE_PRIMITIVE:
+						help.gotoAndStop(24);
+						break;
+					case Graph_model.TYPE_PRIMITIVE_C:
+						help.gotoAndStop(22);
+						break;
+					case Graph_model.TYPE_PRIMITIVE_A:
+						help.gotoAndStop(27);
+						break;
+					case Graph_model.TYPE_PRIMITIVE_B:
+						help.gotoAndStop(28);
+						break;
+					case Graph_model.TYPE_RECTANGLE:
+						help.gotoAndStop(21);
+						break;
+					case Graph_model.TYPE_NONE:
+						openAboutNone();
+						break;
+				}
+			}else {
+				openAboutNone();
+			}
+			
+			if (!layer_help.contains(help)) {
+				layer_help.addChild(help);
+			}
+		}
+		
+		private function openAboutNone():void 
+		{
+			switch(currentScreen) {
+				case CHOOSE_F:
+					help.gotoAndStop(4);
+					break;
+				case CHOOSE_AB:
+					help.gotoAndStop(5);
+					break;
+				case CHOOSE_SUM:
+					help.gotoAndStop(6);
+					break;
+				case PARTITION:
+					help.gotoAndStop(7);
+					break;
+				case RESULT:
+					help.gotoAndStop(8);
+					break;
+				case FINAL:
+					help.gotoAndStop(9);
+					break;
+			}
 		}
 		
 		private var subMenuOpen:Boolean = false;
@@ -891,7 +998,7 @@
 					if(grafico.n == -1){
 						grafico.addPoint( -5);
 						grafico.addPoint( 5);
-						grafico.setFb(getFb());
+						//grafico.setFb(getFb());
 					}
 					grafico.showhRects = false;
 					grafico.defineAB = true;
@@ -1300,6 +1407,10 @@
 		private var posClick:Point = new Point();
 		private function stageDown(e:MouseEvent):void 
 		{
+			if (layer_help.contains(help)) {
+				layer_help.removeChild(help);
+			}
+			
 			if (e.target != menu.openMenu) {
 				if (subMenuOpen) closeSubMenu();
 			}
@@ -1395,7 +1506,7 @@
 				positionSelected.x += grafico.x;
 				setMark(positionSelected, false);
 			}
-			grafico.setFb(getFb());
+			//grafico.setFb(getFb());
 		}
 		
 		private var panClick:Point = new Point();
@@ -1527,8 +1638,8 @@
 			var diff:Number = stage.mouseY - posClick.y;
 			posClick.y = stage.mouseY;
 			primitiveConstant += grafico.getDistanceFromOrigin(diff).y;
-			if (Math.abs(primitiveConstant - grafico.getFb()) < 0.15) grafico.showFB = true;
-			else grafico.showFB = false;
+			//if (Math.abs(primitiveConstant - grafico.getFb()) < 0.15) grafico.showFB = true;
+			//else grafico.showFB = false;
 			grafico.update();
 		}
 		

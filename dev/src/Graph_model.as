@@ -23,6 +23,8 @@ package
 		public static const TYPE_FUNCTION:String = "function";
 		public static const TYPE_PRIMITIVE:String = "primitive";
 		public static const TYPE_PRIMITIVE_C:String = "primitive_c";
+		public static const TYPE_PRIMITIVE_A:String = "primitive_a";
+		public static const TYPE_PRIMITIVE_B:String = "primitive_b";
 		public static const TYPE_PRIMITIVE_FB:String = "primitive_fb";
 		public static const TYPE_RECTANGLE:String = "rectangle";
 		public static const TYPE_ALTURA_X:String = "altura_x";
@@ -43,6 +45,7 @@ package
 		private var selectedType:String;
 		private var selectedIndex:int;
 		private var selectedValue:Number;
+		private var selectedLabel:String;
 		//private var primitiveConstante:Number;
 		private var _showPrimitive:Boolean = false;
 		private var showHpoints:Boolean = false;
@@ -618,7 +621,7 @@ package
 					objReturn.value = points[i].x;
 					objReturn.label = points[i].label;
 					
-					select(TYPE_DIVISOR, i, points[i].x);
+					select(TYPE_DIVISOR, i, points[i].x, points[i].label);
 					
 					return objReturn;
 				}
@@ -660,7 +663,31 @@ package
 			
 			//Busca no F
 			if (showPrimitive) {
-				//Busca F(B)
+				//Busca F(a)
+				var fa:Point = getStageCoords(ptA.x, F.value(ptA.x));
+				if (Point.distance(clickPoint, fa) < minDist) {
+					objReturn = new Object();
+						objReturn.type = TYPE_PRIMITIVE_A;
+						//objReturn.index = NaN;
+						//objReturn.value = NaN;
+						
+						select(TYPE_PRIMITIVE_A, NaN, NaN);
+						
+						return objReturn;
+				}
+				
+				//Busca F(b)
+				var fb:Point = getStageCoords(ptB.x, F.value(ptB.x));
+				if (Point.distance(clickPoint, fb) < minDist) {
+					objReturn = new Object();
+						objReturn.type = TYPE_PRIMITIVE_B;
+						//objReturn.index = NaN;
+						//objReturn.value = NaN;
+						
+						select(TYPE_PRIMITIVE_B, NaN, NaN);
+						
+						return objReturn;
+				}
 				
 				//Verifica proximidade com F
 				for (j = graph.xmin; j < graph.xmax; j+=(graph.xmax - graph.xmin)/100) 
@@ -771,11 +798,12 @@ package
 		 * @param	index Indice do objeto no vetor (caso seja uma função = NaN)
 		 * @param	value Valor do objeto selecionado (caso não haja valor = NaN)
 		 */
-		public function select(type:String, index:int, value:Number):void
+		public function select(type:String, index:int, value:Number, label = null):void
 		{
 			selectedIndex = index;
 			selectedType = type;
 			selectedValue = value;
+			selectedLabel = label;
 			
 			draw();
 		}
@@ -856,6 +884,37 @@ package
 		public function getSelectedType():String
 		{
 			return selectedType;
+		}
+		
+		public function getSelectedLabel():String
+		{
+			return selectedLabel;
+		}
+		
+		public function getSelectedIndex():int
+		{
+			return selectedIndex;
+		}
+		
+		public function getSelectedGraphPos():Point
+		{
+			switch (selectedType) {
+				case TYPE_DIVISOR:
+					return new Point(selectedValue, 0);
+					break;
+				case TYPE_ALTURA:
+					return new Point(selectedValue, f.value(selectedValue));
+					break;
+				case TYPE_ALTURA_X:
+					return new Point(0, f.value(selectedValue));
+					break;
+				case TYPE_ALTURA_Y:
+					return new Point(selectedValue, 0);
+					break;
+				//case TYPE_PRIMITIVE_C:
+				//	return getStageCoords(selectedValue, F.value(selectedValue));
+			}
+			return null;
 		}
 		
 		public function getSelectedPosition():Point
@@ -1087,12 +1146,22 @@ package
 				pt1 = getStageCoords(0, F.value(0));
 				drawPoint(pt1, selectedType == TYPE_PRIMITIVE_C);
 				
-				if (showFB) {
-					if (selectedType == TYPE_PRIMITIVE_FB) {
-						var ptFb:Point = getStageCoords(ptB.x, F.value(ptB.x));
-						drawPoint(ptFb, true);
-					}
+				if (selectedType == TYPE_PRIMITIVE_A) {
+					var ptFa:Point = getStageCoords(ptA.x, F.value(ptA.x));
+					drawPoint(ptFa, true);
 				}
+				
+				if (selectedType == TYPE_PRIMITIVE_B) {
+					var ptFb:Point = getStageCoords(ptB.x, F.value(ptB.x));
+					drawPoint(ptFb, true);
+				}
+				
+				//if (showFB) {
+					//if (selectedType == TYPE_PRIMITIVE_FB) {
+						//var ptFb:Point = getStageCoords(ptB.x, F.value(ptB.x));
+						//drawPoint(ptFb, true);
+					//}
+				//}
 			}
 			
 		}
@@ -1216,7 +1285,7 @@ package
 		
 		private var charA:TextField = new TextField();
 		private var charB:TextField = new TextField();
-		private var textStyle:TextFormat = new TextFormat("forte", 15, 0x000000);
+		private var textStyle:TextFormat = new TextFormat("arial", 18, 0x000000, false, true);
 		/**
 		 * Desenha o caractere do ponto (label);
 		 * @param	char Caractere a ser desenhado.
@@ -1231,11 +1300,11 @@ package
 					charA.autoSize = TextFieldAutoSize.CENTER;
 					//charA.height = 30;
 					charA.selectable = false;
-					charA.text = "A";
+					charA.text = "a";
 					layerPoints.addChild(charA);
 				}
 				charA.x = pt.x - charA.width/2;
-				charA.y = pt.y + 6;
+				charA.y = pt.y + 4;
 			}else if (char == "b" || char == "B") {
 				if (!layerPoints.contains(charB)) {
 					charB.defaultTextFormat = textStyle;
@@ -1243,11 +1312,11 @@ package
 					charB.autoSize = TextFieldAutoSize.CENTER;
 					//charB.height = 10;
 					charB.selectable = false;
-					charB.text = "B";
+					charB.text = "b";
 					layerPoints.addChild(charB);
 				}
 				charB.x = pt.x - charB.width/2;
-				charB.y = pt.y + 6;
+				charB.y = pt.y + 4;
 			}
 			
 			
