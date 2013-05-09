@@ -176,7 +176,7 @@ package
 				layer_help.removeChild(help);
 				return;
 			}
-			
+			help = new Ajuda();
 			if (grafico != null) {
 				var gPt:Point;
 				switch(grafico.getSelectedType()) {
