@@ -255,6 +255,10 @@ package
 					break;
 				case CHOOSE_SUM:
 					help.gotoAndStop(6);
+					var roll:BarraRolagem = new BarraRolagem(help.content, 400, new RollBar());
+					roll.x = 65;
+					roll.y = 45;
+					help.addChild(roll);
 					break;
 				case PARTITION:
 					help.gotoAndStop(7);
@@ -1380,6 +1384,7 @@ package
 			grafico = null;
 			
 			loadScreen(currentScreen, state.gs);
+			verificaAvancar();
 		}
 		
 		private function resizeAll(e:Event):void 
@@ -1407,8 +1412,11 @@ package
 		private var posClick:Point = new Point();
 		private function stageDown(e:MouseEvent):void 
 		{
+			if (e.target is RollBar) return;
+			
 			if (layer_help.contains(help)) {
 				layer_help.removeChild(help);
+				return;
 			}
 			
 			if (e.target != menu.openMenu) {

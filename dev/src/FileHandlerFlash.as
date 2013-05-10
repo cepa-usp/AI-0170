@@ -26,7 +26,7 @@ package
 			if (encrypt) this._content = compress(content);
 			else this._content = content;
 			
-			telaSave.saveText.selectable = true;
+			telaSave.saveText.selectable = false;
 			telaSave.saveText.text = _content;
 			telaSave.ok.addEventListener(MouseEvent.CLICK, closeSave);
 			telaSave.saveToClip.addEventListener(MouseEvent.CLICK, saveToClipboard);
