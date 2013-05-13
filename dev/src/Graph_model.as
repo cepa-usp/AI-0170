@@ -843,6 +843,11 @@ package
 			}
 		}
 		
+		public function removeSelection():void
+		{
+			select(TYPE_NONE, NaN, NaN);
+		}
+		
 		public function setValueToSelected(value:Number):void
 		{
 			var newPosX:Number = getGraphCoords(value, 0).x;

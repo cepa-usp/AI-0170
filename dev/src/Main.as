@@ -1414,8 +1414,14 @@ package
 		{
 			if (e.target is RollBar) return;
 			
+			if (e.target == menu.help) {
+				e.stopImmediatePropagation();
+				return;
+			}
+			
 			if (layer_help.contains(help)) {
 				layer_help.removeChild(help);
+				e.stopImmediatePropagation();
 				return;
 			}
 			
@@ -1567,6 +1573,7 @@ package
 		private function removeMark():void
 		{
 			if (layer_mark.contains(mark)) layer_mark.removeChild(mark);
+			if (grafico != null) grafico.removeSelection();
 		}
 		
 		//------------------------- Fim marcação palco ----------------------------------

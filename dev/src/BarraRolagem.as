@@ -49,7 +49,7 @@ package
 			addChild(content);
 			
 			if (content.height > maxHeight) {
-				rollBar.x = widthContent + 10;
+				rollBar.x = widthContent + 15;
 				rollBar.y = rollBar.height / 2;
 				addChild(rollBar);
 				rollBar.addEventListener(MouseEvent.MOUSE_DOWN, initScroll, false, 0, true);
