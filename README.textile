@@ -4,4 +4,6 @@ Este Recurso Educacional (RE) é uma ferramenta que permite ao educador e ao apr
 
 Veja este Recurso Educacional (RE) em ação "aqui":http://midia.atp.usp.br/atividades-interativas/AI-0170.
 
+"Página":http://cepa-usp.github.io/AI-0170
+
 h1. Riemann sum and integration
