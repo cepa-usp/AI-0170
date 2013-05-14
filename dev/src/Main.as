@@ -93,7 +93,6 @@ package
 			informacoes.y = 161;
 			informacoes.alpha = 0;
 			
-			//fileHandler = new FileHandlerAIR("ai170");
 			fileHandler = new FileHandlerFlash(stage);
 			
 			currentScreen = INICIAL;
@@ -166,6 +165,10 @@ package
 			makeButton(subMenu.saveAs, saveAs);
 			//makeButton(subMenu.language, null);
 			makeButton(subMenu.about, openAbout);
+			
+			subMenu.saveAs.visible = false;
+			subMenu.saveAs.mouseEnabled = false;
+			subMenu.about.y = subMenu.saveAs.y;
 		}
 		
 		private var help:Ajuda = new Ajuda();
@@ -230,6 +233,9 @@ package
 						break;
 					case Graph_model.TYPE_RECTANGLE:
 						help.gotoAndStop(21);
+						break;
+					case Graph_model.TYPE_INTERVAL:
+						help.gotoAndStop(20);
 						break;
 					case Graph_model.TYPE_NONE:
 						openAboutNone();
@@ -330,10 +336,10 @@ package
 			}
 			
 			tela1Accord.addAba(new MF1(), mcFunctions.slice(0, 10));
-			tela1Accord.addAba(new MF2(), mcFunctions.slice(11, 20));
-			tela1Accord.addAba(new MF3(), mcFunctions.slice(21, 26));
-			tela1Accord.addAba(new MF4(), mcFunctions.slice(27, 35));
-			tela1Accord.addAba(new MF5(), mcFunctions.slice(36, 42));
+			tela1Accord.addAba(new MF2(), mcFunctions.slice(10, 20));
+			//tela1Accord.addAba(new MF3(), mcFunctions.slice(20, 26));
+			tela1Accord.addAba(new MF4(), mcFunctions.slice(26, 35));
+			tela1Accord.addAba(new MF5(), mcFunctions.slice(35, 42));
 
 			tela1.addChild(tela1Accord);
 			

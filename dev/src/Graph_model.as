@@ -20,6 +20,7 @@ package
 	{
 		public static const TYPE_DIVISOR:String = "divisor";
 		public static const TYPE_ALTURA:String = "altura";
+		public static const TYPE_INTERVAL:String = "interval";
 		public static const TYPE_FUNCTION:String = "function";
 		public static const TYPE_PRIMITIVE:String = "primitive";
 		public static const TYPE_PRIMITIVE_C:String = "primitive_c";
@@ -627,6 +628,29 @@ package
 				}
 			}
 			
+			//Busca os intervalos
+			var posClickGraph:Point = getGraphCoords(clickPoint.x, clickPoint.y);
+			if (betweenAB(posClickGraph.x)) {
+				posStage = getStageCoords(posClickGraph.x, 0);
+				if (Point.distance(clickPoint, posStage) < minDist) {
+					for (i = 1; i < points.length; i++) 
+					{
+						if (posClickGraph.x < points[i].x) {
+							objReturn = new Object();
+							objReturn.type = TYPE_INTERVAL;
+							var interval:Number = points[i].x - points[i-1].x;
+							objReturn.value = interval;
+							objReturn.index = i;
+							
+							select(TYPE_INTERVAL, i, interval);
+							
+							return objReturn;
+						}
+					}
+					
+				}
+			}
+			
 			//Busca nos pontos de altura
 			if(showhRects){
 				for (i = 0; i < points.length; i++) 
@@ -858,7 +882,6 @@ package
 			else points[selectedIndex].x = newPosX;
 			
 			selectedValue = points[selectedIndex].x;
-			trace(points[selectedIndex].label);
 			
 			if (points[selectedIndex].label != null) {
 				if (points[selectedIndex].label == "a" || points[selectedIndex].label == "A") {
@@ -1125,6 +1148,14 @@ package
 					}
 					
 				}
+			}
+			
+			if (selectedType == TYPE_INTERVAL) {
+				pt1 = getStageCoords(points[selectedIndex - 1].x, 0);
+				pt2 = getStageCoords(points[selectedIndex].x, 0);
+				layerRects.graphics.lineStyle(5, 0xFF0000, 0.5);
+				layerRects.graphics.moveTo(pt1.x, pt1.y);
+				layerRects.graphics.lineTo(pt2.x, pt2.y);
 			}
 			
 			if (selectedType == TYPE_FUNCTION) {
