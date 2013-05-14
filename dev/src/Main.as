@@ -154,8 +154,7 @@ package
 			makeButton(menu.minus, null);
 			//makeButton(menu.currentScreen, loadInfo);
 			menu.currentScreen.addEventListener(MouseEvent.CLICK, loadInfo);
-			menu.help.addEventListener(MouseEvent.CLICK, openAbout);
-			//menu.help.addEventListener(MouseEvent.CLICK, showHelp);
+			menu.help.addEventListener(MouseEvent.CLICK, showHelp);
 			
 			subMenu = new SubMenu();
 			subMenu.x = -subMenu.width + 60;
@@ -171,14 +170,25 @@ package
 			subMenu.about.y = subMenu.saveAs.y;
 		}
 		
+		private var about:Sobre = new Sobre();
+		private function openAbout(e:MouseEvent):void 
+		{
+			e.stopImmediatePropagation();
+			if (layer_help.contains(about)) layer_help.removeChild(about);
+			else layer_help.addChild(about);
+			
+			if (subMenuOpen) closeSubMenu();
+		}
+		
 		private var help:Ajuda = new Ajuda();
 		private var helpFormat:TextFormat = new TextFormat("arial", 14, 0x333333);
-		private function openAbout(e:MouseEvent):void 
+		private function showHelp(e:MouseEvent):void 
 		{
 			if (layer_help.contains(help)) {
 				layer_help.removeChild(help);
 				return;
 			}
+			if (subMenuOpen) closeSubMenu();
 			help = new Ajuda();
 			if (grafico != null) {
 				var gPt:Point;
@@ -1423,6 +1433,7 @@ package
 			
 			if (e.target == menu.help) {
 				if (layer_info.contains(informacoes)) closeInfoText();
+				if (layer_help.contains(about)) layer_help.removeChild(about);
 				e.stopImmediatePropagation();
 				return;
 			}
@@ -1430,6 +1441,7 @@ package
 			if (layer_help.contains(help)) {
 				layer_help.removeChild(help);
 				if (layer_info.contains(informacoes)) closeInfoText();
+				if (layer_help.contains(about)) layer_help.removeChild(about);
 				e.stopImmediatePropagation();
 				return;
 			}
@@ -1438,10 +1450,11 @@ package
 				if (subMenuOpen) closeSubMenu();
 			}
 			
+			if (layer_info.contains(informacoes)) closeInfoText();
+			if (layer_help.contains(about)) layer_help.removeChild(about);
+			
 			if (menu.hitTestPoint(stage.mouseX, stage.mouseY)) return;
 			if (subMenu.hitTestPoint(stage.mouseX, stage.mouseY)) return;
-			
-			if (layer_info.contains(informacoes)) closeInfoText();
 			
 			if (grafico == null) return;
 			
