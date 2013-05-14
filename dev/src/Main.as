@@ -1244,6 +1244,7 @@ package
 		{
 			removeMark();
 			closeInfoText();
+			if (grafico != null) grafico.removeSelection();
 			switch (screen) {
 				case INICIAL:
 					layer_screen.removeChild(tela0);
@@ -1415,12 +1416,14 @@ package
 			if (e.target is RollBar) return;
 			
 			if (e.target == menu.help) {
+				if (layer_info.contains(informacoes)) closeInfoText();
 				e.stopImmediatePropagation();
 				return;
 			}
 			
 			if (layer_help.contains(help)) {
 				layer_help.removeChild(help);
+				if (layer_info.contains(informacoes)) closeInfoText();
 				e.stopImmediatePropagation();
 				return;
 			}
@@ -1438,7 +1441,7 @@ package
 			
 			if(layer_graph.contains(grafico)){
 				var objClicked:Object = grafico.searchElement(new Point(grafico.mouseX, grafico.mouseY));
-				//trace(objClicked.type);
+				//trace(objClicked.label);
 				
 				switch (objClicked.type) {
 					case Graph_model.TYPE_PRIMITIVE_C:
@@ -1573,7 +1576,7 @@ package
 		private function removeMark():void
 		{
 			if (layer_mark.contains(mark)) layer_mark.removeChild(mark);
-			if (grafico != null) grafico.removeSelection();
+			//if (grafico != null) grafico.removeSelection();
 		}
 		
 		//------------------------- Fim marcação palco ----------------------------------
