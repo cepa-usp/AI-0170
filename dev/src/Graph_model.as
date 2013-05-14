@@ -858,7 +858,6 @@ package
 			else points[selectedIndex].x = newPosX;
 			
 			selectedValue = points[selectedIndex].x;
-			trace(points[selectedIndex].label);
 			
 			if (points[selectedIndex].label != null) {
 				if (points[selectedIndex].label == "a" || points[selectedIndex].label == "A") {

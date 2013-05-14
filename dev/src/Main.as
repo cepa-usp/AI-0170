@@ -93,8 +93,7 @@ package
 			informacoes.y = 161;
 			informacoes.alpha = 0;
 			
-			//fileHandler = new FileHandlerAIR("ai170");
-			fileHandler = new FileHandlerFlash(stage);
+			fileHandler = new FileHandlerAIR("ai170");
 			
 			currentScreen = INICIAL;
 			
