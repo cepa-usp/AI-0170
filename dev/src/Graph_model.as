@@ -63,6 +63,7 @@ package
 		private var _lockAB:Boolean = false;
 		private var _defineAB:Boolean = false;
 		private var _abDefined:Boolean = false;
+		private var _searchInterval:Boolean = false;
 		
 		private var ptA:Object;
 		private var ptB:Object;
@@ -628,29 +629,6 @@ package
 				}
 			}
 			
-			//Busca os intervalos
-			var posClickGraph:Point = getGraphCoords(clickPoint.x, clickPoint.y);
-			if (betweenAB(posClickGraph.x)) {
-				posStage = getStageCoords(posClickGraph.x, 0);
-				if (Point.distance(clickPoint, posStage) < minDist) {
-					for (i = 1; i < points.length; i++) 
-					{
-						if (posClickGraph.x < points[i].x) {
-							objReturn = new Object();
-							objReturn.type = TYPE_INTERVAL;
-							var interval:Number = points[i].x - points[i-1].x;
-							objReturn.value = interval;
-							objReturn.index = i;
-							
-							select(TYPE_INTERVAL, i, interval);
-							
-							return objReturn;
-						}
-					}
-					
-				}
-			}
-			
 			//Busca nos pontos de altura
 			if(showhRects){
 				for (i = 0; i < points.length; i++) 
@@ -752,6 +730,31 @@ package
 					select(TYPE_ALTURA_X, selectedIndex, selectedValue);
 					
 					return objReturn;
+				}
+			}
+			
+			//Busca os intervalos
+			if(searchInterval){
+				var posClickGraph:Point = getGraphCoords(clickPoint.x, clickPoint.y);
+				if (betweenAB(posClickGraph.x)) {
+					posStage = getStageCoords(posClickGraph.x, 0);
+					if (Point.distance(clickPoint, posStage) < minDist) {
+						for (i = 1; i < points.length; i++) 
+						{
+							if (posClickGraph.x < points[i].x) {
+								objReturn = new Object();
+								objReturn.type = TYPE_INTERVAL;
+								var interval:Number = points[i].x - points[i-1].x;
+								objReturn.value = interval;
+								objReturn.index = i;
+								
+								select(TYPE_INTERVAL, i, interval);
+								
+								return objReturn;
+							}
+						}
+						
+					}
 				}
 			}
 			
@@ -1472,6 +1475,16 @@ package
 		{
 			_showhRects = value;
 			draw();
+		}
+		
+		public function get searchInterval():Boolean 
+		{
+			return _searchInterval;
+		}
+		
+		public function set searchInterval(value:Boolean):void 
+		{
+			_searchInterval = value;
 		}
 		
 	}

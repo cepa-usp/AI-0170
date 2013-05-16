@@ -51,6 +51,7 @@ package
 			if (content.height > maxHeight) {
 				rollBar.x = widthContent + 15;
 				rollBar.y = rollBar.height / 2;
+				rollBar.buttonMode = true;
 				addChild(rollBar);
 				rollBar.addEventListener(MouseEvent.MOUSE_DOWN, initScroll, false, 0, true);
 				stage.addEventListener(MouseEvent.MOUSE_WHEEL, wheelScroll, false, 0, true);

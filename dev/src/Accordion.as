@@ -100,6 +100,7 @@ package
 			if (!this.contains(rollBar)) {
 				rollBar.x = layerAbas.width + 10;
 				rollBar.y = rollBar.height / 2;
+				rollBar.buttonMode = true;
 				
 				this.addEventListener(MouseEvent.MOUSE_DOWN, initScroll);
 				if (stage) stage.addEventListener(MouseEvent.MOUSE_WHEEL, wheelScroll);

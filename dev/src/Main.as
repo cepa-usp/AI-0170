@@ -154,6 +154,7 @@ package
 			makeButton(menu.minus, null);
 			//makeButton(menu.currentScreen, loadInfo);
 			menu.currentScreen.addEventListener(MouseEvent.CLICK, loadInfo);
+			//menu.currentScreen.buttonMode = true;
 			menu.help.addEventListener(MouseEvent.CLICK, showHelp);
 			
 			subMenu = new SubMenu();
@@ -1023,6 +1024,7 @@ package
 					grafico.showhRects = false;
 					grafico.defineAB = true;
 					grafico.showPrimitive = false;
+					grafico.searchInterval = false;
 					grafico.x = 60;
 					grafico.gColor = 0x808080;
 					if (state != null) grafico.restoreState(state);
@@ -1058,6 +1060,7 @@ package
 					grafico.lockAB = true;
 					grafico.showPrimitive = false;
 					grafico.showhRects = false;
+					grafico.searchInterval = false;
 					grafico.x = 60;
 					grafico.gColor = 0x000000;
 					if (state != null) grafico.restoreState(state);
@@ -1096,6 +1099,7 @@ package
 					grafico.lockAB = true;
 					grafico.showPrimitive = false;
 					grafico.showhRects = true;
+					grafico.searchInterval = true;
 					grafico.x = 60;
 					grafico.gColor = 0x000000;
 					removeMark();
@@ -1142,6 +1146,7 @@ package
 					grafico.x = 60;
 					grafico.gColor = 0x000000;
 					grafico.showPrimitive = true;
+					grafico.searchInterval = true;
 					if (state != null) grafico.restoreState(state);
 					layer_graph.addChild(grafico);
 					//stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
@@ -1450,11 +1455,12 @@ package
 				if (subMenuOpen) closeSubMenu();
 			}
 			
-			if (layer_info.contains(informacoes)) closeInfoText();
 			if (layer_help.contains(about)) layer_help.removeChild(about);
 			
 			if (menu.hitTestPoint(stage.mouseX, stage.mouseY)) return;
 			if (subMenu.hitTestPoint(stage.mouseX, stage.mouseY)) return;
+			
+			if (layer_info.contains(informacoes)) closeInfoText();
 			
 			if (grafico == null) return;
 			
