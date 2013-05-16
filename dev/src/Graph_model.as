@@ -120,10 +120,17 @@ package
 		}
 		
 		private var graphColor:uint = 0x000000;
+		private var graphStroke:int = 2;
 		
 		public function set gColor(cor:uint):void
 		{
 			graphColor = cor;
+			draw();
+		}
+		
+		public function set gStroke(stroke:uint):void
+		{
+			graphStroke = stroke;
 			draw();
 		}
 		
@@ -136,10 +143,10 @@ package
 			var style:DataStyle = new DataStyle();
 			if (selected) {
 				style.color = 0xFF0000;
-				style.stroke = 5;
+				style.stroke = graphStroke + 3;
 			}else{
 				style.color = graphColor;
-				style.stroke = 2;
+				style.stroke = graphStroke;
 			}
 			graph.addFunction(f, style);
 			graph.draw();
@@ -671,9 +678,9 @@ package
 					objReturn = new Object();
 						objReturn.type = TYPE_PRIMITIVE_A;
 						//objReturn.index = NaN;
-						//objReturn.value = NaN;
+						objReturn.value = F.value(ptA.x);
 						
-						select(TYPE_PRIMITIVE_A, NaN, NaN);
+						select(TYPE_PRIMITIVE_A, NaN, F.value(ptA.x));
 						
 						return objReturn;
 				}
@@ -684,9 +691,9 @@ package
 					objReturn = new Object();
 						objReturn.type = TYPE_PRIMITIVE_B;
 						//objReturn.index = NaN;
-						//objReturn.value = NaN;
+						objReturn.value = F.value(ptB.x);
 						
-						select(TYPE_PRIMITIVE_B, NaN, NaN);
+						select(TYPE_PRIMITIVE_B, NaN, F.value(ptB.x));
 						
 						return objReturn;
 				}
@@ -776,10 +783,12 @@ package
 											if (clickOnGraph.y > altura && clickOnGraph.y < 0) {
 												objReturn = new Object();
 												objReturn.type = TYPE_RECTANGLE;
-												objReturn.index = i-1;
-												//objReturn.value = NaN;
+												objReturn.index = i - 1;
+												var base:Number = points[i].x - points[i - 1].x;
+												var area:Number = Math.abs(base * altura);
+												objReturn.value = area;
 												
-												select(TYPE_RECTANGLE, i - 1, NaN);
+												select(TYPE_RECTANGLE, i - 1, area);
 												
 												return objReturn;
 											}else {
@@ -789,10 +798,12 @@ package
 											if (clickOnGraph.y < altura && clickOnGraph.y > 0) {
 												objReturn = new Object();
 												objReturn.type = TYPE_RECTANGLE;
-												objReturn.index = i-1;
-												//objReturn.value = NaN;
+												objReturn.index = i - 1;
+												base = points[i].x - points[i - 1].x;
+												area = Math.abs(base * altura);
+												objReturn.value = area;
 												
-												select(TYPE_RECTANGLE, i - 1, NaN);
+												select(TYPE_RECTANGLE, i - 1, area);
 												
 												return objReturn;
 											}else {
@@ -947,6 +958,11 @@ package
 				//	return getStageCoords(selectedValue, F.value(selectedValue));
 			}
 			return null;
+		}
+		
+		public function getSelectedValue():Number
+		{
+			return selectedValue;
 		}
 		
 		public function getSelectedPosition():Point
@@ -1137,8 +1153,8 @@ package
 					
 					//Desenha o ponto na função
 					altura = getStageCoords(points[i].h, f.value(points[i].h));
-					if (showHpoints) drawFunctionPoint(altura, (selectedIndex == i && selectedType == TYPE_ALTURA));
-					else if (selectedIndex == i && (selectedType == TYPE_ALTURA || selectedType == TYPE_ALTURA_X || selectedType == TYPE_ALTURA_Y)) drawFunctionPoint(altura, false);
+					if (showHpoints) drawFunctionPoint(altura);
+					else if (selectedIndex == i && (selectedType == TYPE_ALTURA || selectedType == TYPE_ALTURA_X || selectedType == TYPE_ALTURA_Y)) drawFunctionPoint(altura);
 					
 					//if (selectedIndex == i && (selectedType == TYPE_ALTURA_X || selectedType == TYPE_ALTURA_Y)) {
 						//drawRefPoints(altura);
@@ -1229,11 +1245,11 @@ package
 		 * @param	ptf Ponto onde será desenhado o ponto.
 		 * @param	selected Indica se o ponto está selecionado ou não.
 		 */
-		private function drawFunctionPoint(ptf:Point, selected:Boolean):void
+		private function drawFunctionPoint(ptf:Point):void
 		{
 			drawRefPoints(ptf);
 			layerPoints.graphics.lineStyle(1, 0x000000);
-			if (selected) {
+			if (selectedType == TYPE_ALTURA) {
 				layerPoints.graphics.beginFill(0xFF0000);
 				layerPoints.graphics.drawCircle(ptf.x, ptf.y, 5);
 			}else{
@@ -1336,6 +1352,8 @@ package
 			if (char == "a" || char == "A") {
 				if (!layerPoints.contains(charA)) {
 					charA.defaultTextFormat = textStyle;
+					charA.background = true;
+					charA.backgroundColor = 0xFFFFFF;
 					charA.width = 20;
 					charA.autoSize = TextFieldAutoSize.CENTER;
 					//charA.height = 30;
@@ -1348,6 +1366,8 @@ package
 			}else if (char == "b" || char == "B") {
 				if (!layerPoints.contains(charB)) {
 					charB.defaultTextFormat = textStyle;
+					charB.background = true;
+					charB.backgroundColor = 0xFFFFFF;
 					charB.width = 20;
 					charB.autoSize = TextFieldAutoSize.CENTER;
 					//charB.height = 10;
