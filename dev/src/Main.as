@@ -205,14 +205,14 @@ package
 						gPt = grafico.getSelectedGraphPos();
 						//help.dinamico.embedFonts = true;
 						//help.dinamico.defaultTextFormat = helpFormat;
-						help.dinamico.text = gPt.y.toFixed(2).replace(".", ",");
+						help.dinamico.text = "(" + gPt.x.toFixed(2) + ", " + gPt.y.toFixed(2) + ")";
 						break;
 					case Graph_model.TYPE_ALTURA_Y:
 						help.gotoAndStop(17);
 						gPt = grafico.getSelectedGraphPos();
 						//help.dinamico.embedFonts = true;
 						//help.dinamico.defaultTextFormat = helpFormat;
-						help.dinamico.text = gPt.x.toFixed(2).replace(".", ",");
+						help.dinamico.text = "(" + gPt.x.toFixed(2) + ", " + gPt.y.toFixed(2) + ")";
 						break;
 					case Graph_model.TYPE_DIVISOR:
 						gPt = grafico.getSelectedGraphPos();
@@ -225,36 +225,28 @@ package
 						}
 						//help.dinamico.embedFonts = true;
 						//help.dinamico.defaultTextFormat = helpFormat;
-						help.dinamico.text = gPt.x.toFixed(2).replace(".", ",");
+						help.dinamico.text = "(" + gPt.x.toFixed(2) + ", " + gPt.y.toFixed(2) + ")";
 						break;
 					case Graph_model.TYPE_FUNCTION:
 						help.gotoAndStop(23);
-						//TO DO: Mandar o movieclip das funções para o indice da funcao selecionada.
 						break;
 					case Graph_model.TYPE_PRIMITIVE:
 						help.gotoAndStop(24);
-						//TO DO: Mandar o movieclip das primitivas para o indice da funcao selecionada.
 						break;
 					case Graph_model.TYPE_PRIMITIVE_C:
 						help.gotoAndStop(22);
-						//TO DO: Indicar o valor da constante de integracao
-						help.dinamico.text = primitiveConstant.toFixed(2).replace(".", ",");
 						break;
 					case Graph_model.TYPE_PRIMITIVE_A:
 						help.gotoAndStop(27);
-						help.dinamico.text = grafico.getSelectedValue().toFixed(2).replace(".", ",");
 						break;
 					case Graph_model.TYPE_PRIMITIVE_B:
 						help.gotoAndStop(28);
-						help.dinamico.text = grafico.getSelectedValue().toFixed(2).replace(".", ",");
 						break;
 					case Graph_model.TYPE_RECTANGLE:
 						help.gotoAndStop(21);
-						help.dinamico.text = grafico.getSelectedValue().toFixed(2).replace(".", ",");
 						break;
 					case Graph_model.TYPE_INTERVAL:
 						help.gotoAndStop(20);
-						help.dinamico.text = grafico.getSelectedValue().toFixed(2).replace(".", ",");
 						break;
 					case Graph_model.TYPE_NONE:
 						openAboutNone();
@@ -1035,7 +1027,6 @@ package
 					grafico.searchInterval = false;
 					grafico.x = 60;
 					grafico.gColor = 0x808080;
-					grafico.gStroke = 2;
 					if (state != null) grafico.restoreState(state);
 					layer_graph.addChild(grafico);
 					stage.addEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
@@ -1072,7 +1063,6 @@ package
 					grafico.searchInterval = false;
 					grafico.x = 60;
 					grafico.gColor = 0x000000;
-					grafico.gStroke = 2;
 					if (state != null) grafico.restoreState(state);
 					layer_graph.addChild(grafico);
 					removeMark();
@@ -1112,7 +1102,6 @@ package
 					grafico.searchInterval = true;
 					grafico.x = 60;
 					grafico.gColor = 0x000000;
-					grafico.gStroke = 2;
 					removeMark();
 					switch (currentStrategy) {
 						case INFERIOR:
@@ -1155,8 +1144,7 @@ package
 					grafico.defineAB = false;
 					grafico.lockAB = true;
 					grafico.x = 60;
-					grafico.gColor = 0xCFCFCF;
-					grafico.gStroke = 1;
+					grafico.gColor = 0x000000;
 					grafico.showPrimitive = true;
 					grafico.searchInterval = true;
 					if (state != null) grafico.restoreState(state);
