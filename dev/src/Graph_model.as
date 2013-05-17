@@ -611,16 +611,18 @@ package
 			if (MovieClip(txtSoma).hitTestPoint(clickPoint.x + 60, clickPoint.y)) {
 				objReturn = new Object();
 				objReturn.type = TYPE_SOMA;
+				objReturn.value = Number(txtSoma.texto.text);
 				
-				select(TYPE_SOMA, NaN, NaN);
+				select(TYPE_SOMA, NaN, Number(txtSoma.texto.text));
 				return objReturn;
 			}
 			
 			if (MovieClip(txtN).hitTestPoint(clickPoint.x + 60, clickPoint.y)) {
 				objReturn = new Object();
 				objReturn.type = TYPE_N;
+				objReturn.value = Number(txtN.texto.text);
 				
-				select(TYPE_N, NaN, NaN);
+				select(TYPE_N, NaN, Number(txtN.texto.text));
 				return objReturn;
 			}
 			
