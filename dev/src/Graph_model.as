@@ -5,6 +5,7 @@ package
 	import cepa.graph.rectangular.AxisX;
 	import cepa.graph.rectangular.AxisY;
 	import cepa.graph.rectangular.SimpleGraph;
+	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.geom.Point;
 	import flash.text.TextField;
@@ -31,6 +32,8 @@ package
 		public static const TYPE_ALTURA_X:String = "altura_x";
 		public static const TYPE_ALTURA_Y:String = "altura_y";
 		public static const TYPE_NONE:String = "none";
+		public static const TYPE_N:String = "n";
+		public static const TYPE_SOMA:String = "soma";
 		
 		private var layerGraph:Sprite;
 		private var layerRects:Sprite;
@@ -49,16 +52,19 @@ package
 		private var selectedLabel:String;
 		//private var primitiveConstante:Number;
 		private var _showPrimitive:Boolean = false;
-		private var showHpoints:Boolean = false;
+		private var showHpoints:Boolean = true;
 		
 		private var _showhRects:Boolean = true;
 		
 		private var _graphSize:Point = new Point(740, 480);
 		
-		private var txtSomaDTF:TextFormat = new TextFormat("arial", 15, 0x000000, true);
-		private var txtSoma:TextField;
-		private var txtNDTF:TextFormat = new TextFormat("arial", 15, 0x000000, true);
-		private var txtN:TextField;
+		//private var txtSomaDTF:TextFormat = new TextFormat("arial", 15, 0x000000, true);
+		//private var txtSoma:TextField;
+		//private var txtNDTF:TextFormat = new TextFormat("arial", 15, 0x000000, true);
+		//private var txtN:TextField;
+		
+		private var txtSoma:Selecaosoma = new Selecaosoma();
+		private var txtN:Selecaon = new Selecaon();
 		
 		private var _lockAB:Boolean = false;
 		private var _defineAB:Boolean = false;
@@ -93,26 +99,34 @@ package
 		
 		private function createTexts():void 
 		{
-			txtSoma = new TextField();
-			txtSomaDTF.align = TextFormatAlign.RIGHT;
-			txtSoma.defaultTextFormat = txtSomaDTF;
-			txtSoma.width = 200;
-			txtSoma.height = 25;
-			txtSoma.x = 800 - 60 - 205;
-			txtSoma.y = 5;
-			txtSoma.selectable = false;
+			//txtSoma = new TextField();
+			//txtSomaDTF.align = TextFormatAlign.RIGHT;
+			//txtSoma.defaultTextFormat = txtSomaDTF;
+			//txtSoma.width = 200;
+			//txtSoma.height = 25;
+			//txtSoma.x = 800 - 60 - 205;
+			txtSoma.x = 800 - 60-53;
+			txtSoma.y = 5 + 13;
+			//txtSoma.selectable = false;
 			//txtSoma.border = true;
+			
+			txtSoma.gotoAndStop(2);
+			
+			txtSoma.mouseChildren = false;
 			layerTextos.addChild(txtSoma);
 			
-			txtN = new TextField();
-			txtNDTF.align = TextFormatAlign.RIGHT;
-			txtN.defaultTextFormat = txtNDTF;
-			txtN.width = 200;
-			txtN.height = 25;
-			txtN.x = 800-60-205;
-			txtN.y = 30;
-			txtN.selectable = false;
+			//txtN = new TextField();
+			//txtNDTF.align = TextFormatAlign.RIGHT;
+			//txtN.defaultTextFormat = txtNDTF;
+			//txtN.width = 200;
+			//txtN.height = 25;
+			//txtN.x = 800-60-205;
+			txtN.x = 800-60-53;
+			txtN.y = 30 + 13;
+			//txtN.selectable = false;
 			//txtN.border = true;
+			txtN.gotoAndStop(2);
+			txtN.mouseChildren = false;
 			layerTextos.addChild(txtN);
 			
 			hideSum();
@@ -461,8 +475,11 @@ package
 			
 			if (ptA > ptB) sum *= -1;
 			
-			txtSoma.text = "soma = " + sum.toPrecision(2);
-			txtN.text = "n = " + (points.length - 1);
+			//txtSoma.text = "soma = " + sum.toPrecision(2);
+			//txtN.text = "n = " + (points.length - 1);
+			
+			txtSoma.texto.text = "soma = " + sum.toPrecision(2);
+			txtN.texto.text = "n = " + (points.length - 1);
 		}
 		
 		public function betweenAB(n:Number):Boolean
@@ -486,10 +503,12 @@ package
 			txtSoma.visible = true;
 			txtN.visible = true;
 			
-			layerTextos.graphics.clear();
-			layerTextos.graphics.beginFill(0xFFFFFF, 0.8);
-			layerTextos.graphics.drawRect(800 - 150, 2, 150, 50);
-			layerTextos.graphics.endFill();
+			draw();
+			
+			//layerTextos.graphics.clear();
+			//layerTextos.graphics.beginFill(0xFFFFFF, 0.8);
+			//layerTextos.graphics.drawRect(800 - 150, 2, 150, 50);
+			//layerTextos.graphics.endFill();
 		}
 		
 		public function hideSum():void
@@ -497,7 +516,7 @@ package
 			txtSoma.visible = false;
 			txtN.visible = false;
 			
-			layerTextos.graphics.clear();
+			//layerTextos.graphics.clear();
 		}
 		
 		/**
@@ -588,6 +607,22 @@ package
 			var j:Number;
 			var posStage:Point;
 			var objReturn:Object;
+			
+			if (MovieClip(txtSoma).hitTestPoint(clickPoint.x + 60, clickPoint.y)) {
+				objReturn = new Object();
+				objReturn.type = TYPE_SOMA;
+				
+				select(TYPE_SOMA, NaN, NaN);
+				return objReturn;
+			}
+			
+			if (MovieClip(txtN).hitTestPoint(clickPoint.x + 60, clickPoint.y)) {
+				objReturn = new Object();
+				objReturn.type = TYPE_N;
+				
+				select(TYPE_N, NaN, NaN);
+				return objReturn;
+			}
 			
 			//Busca no F(0)
 			if(graph.hasFunction(F)){
@@ -971,11 +1006,13 @@ package
 				case TYPE_DIVISOR:
 					return getStageCoords(selectedValue, 0);
 				case TYPE_ALTURA:
-				case TYPE_ALTURA_X:
-				case TYPE_ALTURA_Y:
 					return getStageCoords(selectedValue, f.value(selectedValue));
-				//case TYPE_PRIMITIVE_C:
-				//	return getStageCoords(selectedValue, F.value(selectedValue));
+				case TYPE_ALTURA_X:
+					return getStageCoords(0, f.value(selectedValue));
+				case TYPE_ALTURA_Y:
+					return getStageCoords(selectedValue, 0);
+				case TYPE_PRIMITIVE_C:
+					return getStageCoords(0, F.value(0));
 			}
 			
 			return null;
@@ -1142,6 +1179,12 @@ package
 			layerPoints.graphics.clear();
 			layerFunctions.graphics.clear();
 			
+			if (selectedType == TYPE_N) txtN.gotoAndStop(1);
+			else txtN.gotoAndStop(2);
+			
+			if (selectedType == TYPE_SOMA) txtSoma.gotoAndStop(1);
+			else txtSoma.gotoAndStop(2);
+			
 			for (i = 0; i < points.length; i++) 
 			{
 				//Desenha o ponto
@@ -1153,8 +1196,8 @@ package
 					
 					//Desenha o ponto na função
 					altura = getStageCoords(points[i].h, f.value(points[i].h));
-					if (showHpoints) drawFunctionPoint(altura);
-					else if (selectedIndex == i && (selectedType == TYPE_ALTURA || selectedType == TYPE_ALTURA_X || selectedType == TYPE_ALTURA_Y)) drawFunctionPoint(altura);
+					if (selectedIndex == i && (selectedType == TYPE_ALTURA || selectedType == TYPE_ALTURA_X || selectedType == TYPE_ALTURA_Y)) drawFunctionPoint(altura, true, true);
+					else drawFunctionPoint(altura, false);
 					
 					//if (selectedIndex == i && (selectedType == TYPE_ALTURA_X || selectedType == TYPE_ALTURA_Y)) {
 						//drawRefPoints(altura);
@@ -1231,10 +1274,10 @@ package
 		{
 			layerPoints.graphics.lineStyle(1, 0x000000);
 			if (selected) {
-				layerPoints.graphics.beginFill(0xFF0000);
+				layerPoints.graphics.beginFill(selectedColor);
 				layerPoints.graphics.drawCircle(pt1.x, pt1.y, 5);
 			}else{
-				layerPoints.graphics.beginFill(0x804000);
+				layerPoints.graphics.beginFill(normalColor);
 				layerPoints.graphics.drawCircle(pt1.x, pt1.y, 3);
 			}
 			layerPoints.graphics.endFill();
@@ -1245,18 +1288,130 @@ package
 		 * @param	ptf Ponto onde será desenhado o ponto.
 		 * @param	selected Indica se o ponto está selecionado ou não.
 		 */
-		private function drawFunctionPoint(ptf:Point):void
+		private function drawFunctionPoint(ptf:Point, selected:Boolean, all:Boolean = false):void
 		{
-			drawRefPoints(ptf);
+			//if(all) drawRefPoints(ptf);
+			//
+			//layerPoints.graphics.lineStyle(1, 0x000000);
+			//if (selectedType == TYPE_ALTURA) {
+				//layerPoints.graphics.beginFill(0xFF0000);
+				//layerPoints.graphics.drawCircle(ptf.x, ptf.y, 5);
+			//}else{
+				//layerPoints.graphics.beginFill(0x00FF00);
+				//layerPoints.graphics.drawCircle(ptf.x, ptf.y, 3);
+			//}
+			//layerPoints.graphics.endFill();
+			
+			
+			var origin:Point = getStageCoords(0, 0);
+			var ptOnGraph:Point = getGraphCoords(ptf.x, ptf.y);
+			
+			if (all) {
+				dashTo(layerFunctions, ptf.x, ptf.y, ptf.x, origin.y, 5, 5);
+				dashTo(layerFunctions, ptf.x, ptf.y, origin.x, ptf.y, 5, 5);
+				
+				drawHpoint(ptf, selected);
+				drawHXpoint(ptf, origin, ptOnGraph.x, selected);
+				drawHYpoint(ptf, origin, ptOnGraph.y, selected);
+				
+			}else {
+				drawHYpoint(ptf, origin, ptOnGraph.y, selected);
+			}
+		}
+		
+		private function drawHpoint(ptf:Point, selected:Boolean):void
+		{
 			layerPoints.graphics.lineStyle(1, 0x000000);
-			if (selectedType == TYPE_ALTURA) {
-				layerPoints.graphics.beginFill(0xFF0000);
+			if (selectedType == TYPE_ALTURA && selected) {
+				layerPoints.graphics.beginFill(selectedColor);
 				layerPoints.graphics.drawCircle(ptf.x, ptf.y, 5);
 			}else{
-				layerPoints.graphics.beginFill(0x00FF00);
+				layerPoints.graphics.beginFill(normalColor);
 				layerPoints.graphics.drawCircle(ptf.x, ptf.y, 3);
 			}
 			layerPoints.graphics.endFill();
+		}
+		
+		private function drawHXpoint(ptf:Point, origin:Point, value:Number, selected:Boolean):void
+		{
+			layerFunctions.graphics.lineStyle(1, 0x000000);
+			
+			if (selectedType == TYPE_ALTURA_X && selected) {
+				layerFunctions.graphics.beginFill(selectedColor);
+				//layerFunctions.graphics.drawCircle(origin.x, ptf.y, 5);
+				layerFunctions.graphics.moveTo(origin.x, ptf.y);
+				if (value > 0) {
+					layerFunctions.graphics.lineTo(origin.x - distToAxis, ptf.y);
+					layerFunctions.graphics.lineTo(origin.x - distToAxis - hPointH * propSelected, ptf.y - hPointW/2 * propSelected);
+					layerFunctions.graphics.lineTo(origin.x - distToAxis - hPointH * propSelected, ptf.y + hPointW/2 * propSelected);
+					layerFunctions.graphics.lineTo(origin.x - distToAxis, ptf.y);
+				}else {
+					layerFunctions.graphics.lineTo(origin.x + distToAxis, ptf.y);
+					layerFunctions.graphics.lineTo(origin.x + distToAxis + hPointH * propSelected, ptf.y - hPointW/2 * propSelected);
+					layerFunctions.graphics.lineTo(origin.x + distToAxis + hPointH * propSelected, ptf.y + hPointW/2 * propSelected);
+					layerFunctions.graphics.lineTo(origin.x + distToAxis, ptf.y);
+				}
+			}else {			
+				layerFunctions.graphics.beginFill(normalColor);
+				//layerFunctions.graphics.drawCircle(origin.x, ptf.y, 3);
+				layerFunctions.graphics.moveTo(origin.x, ptf.y);
+				if (value > 0) {
+					layerFunctions.graphics.lineTo(origin.x - distToAxis, ptf.y);
+					layerFunctions.graphics.lineTo(origin.x - distToAxis - hPointH, ptf.y - hPointW/2);
+					layerFunctions.graphics.lineTo(origin.x - distToAxis - hPointH, ptf.y + hPointW/2);
+					layerFunctions.graphics.lineTo(origin.x - distToAxis, ptf.y);
+				}else {
+					layerFunctions.graphics.lineTo(origin.x + distToAxis, ptf.y);
+					layerFunctions.graphics.lineTo(origin.x + distToAxis + hPointH, ptf.y - hPointW/2);
+					layerFunctions.graphics.lineTo(origin.x + distToAxis + hPointH, ptf.y + hPointW/2);
+					layerFunctions.graphics.lineTo(origin.x + distToAxis, ptf.y);
+				}
+			}
+			layerFunctions.graphics.endFill();
+		}
+		
+		private var hPointH:Number = 8;
+		private var hPointW:Number = 6;
+		private var distToAxis:Number = 4;
+		private var propSelected:Number = 1.3;
+		private var normalColor:uint = 0xFFFFFF;
+		private var selectedColor:uint = 0xFF0000;
+		private function drawHYpoint(ptf:Point, origin:Point, value:Number, selected:Boolean):void
+		{
+			layerFunctions.graphics.lineStyle(1, 0x000000);
+			
+			if (selectedType == TYPE_ALTURA_Y && selected) {
+				layerFunctions.graphics.beginFill(selectedColor);
+				//layerFunctions.graphics.drawCircle(ptf.x, origin.y, 5);
+				layerFunctions.graphics.moveTo(ptf.x, origin.y);
+				if (value > 0) {
+					layerFunctions.graphics.lineTo(ptf.x, origin.y + distToAxis);
+					layerFunctions.graphics.lineTo(ptf.x - hPointW * propSelected / 2, origin.y + hPointH * propSelected + distToAxis);
+					layerFunctions.graphics.lineTo(ptf.x + hPointW * propSelected / 2, origin.y + hPointH * propSelected + distToAxis);
+					layerFunctions.graphics.lineTo(ptf.x, origin.y + distToAxis);
+				}else {
+					layerFunctions.graphics.lineTo(ptf.x, origin.y - distToAxis);
+					layerFunctions.graphics.lineTo(ptf.x - hPointW * propSelected / 2, origin.y - hPointH * propSelected - distToAxis);
+					layerFunctions.graphics.lineTo(ptf.x + hPointW * propSelected / 2, origin.y - hPointH * propSelected - distToAxis);
+					layerFunctions.graphics.lineTo(ptf.x, origin.y - distToAxis);
+				}
+			}else {			
+				layerFunctions.graphics.beginFill(normalColor);
+				//layerFunctions.graphics.drawCircle(ptf.x, origin.y, 3);
+				layerFunctions.graphics.moveTo(ptf.x, origin.y);
+				if (value > 0) {
+					layerFunctions.graphics.lineTo(ptf.x, origin.y + distToAxis);
+					layerFunctions.graphics.lineTo(ptf.x - hPointW / 2, origin.y + hPointH + distToAxis);
+					layerFunctions.graphics.lineTo(ptf.x + hPointW / 2, origin.y + hPointH + distToAxis);
+					layerFunctions.graphics.lineTo(ptf.x, origin.y + distToAxis);
+				}else {
+					layerFunctions.graphics.lineTo(ptf.x, origin.y - distToAxis);
+					layerFunctions.graphics.lineTo(ptf.x - hPointW / 2, origin.y - hPointH - distToAxis);
+					layerFunctions.graphics.lineTo(ptf.x + hPointW / 2, origin.y - hPointH - distToAxis);
+					layerFunctions.graphics.lineTo(ptf.x, origin.y - distToAxis);
+				}
+			}
+			layerFunctions.graphics.endFill();
 		}
 		
 		private function drawRefPoints(ptf:Point):void

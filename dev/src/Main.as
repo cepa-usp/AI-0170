@@ -1483,6 +1483,7 @@ package
 				switch (objClicked.type) {
 					case Graph_model.TYPE_PRIMITIVE_C:
 					case Graph_model.TYPE_PRIMITIVE:
+						posClick.x = stage.mouseX;
 						posClick.y = stage.mouseY;
 						stage.addEventListener(MouseEvent.MOUSE_MOVE, movingPrimitive);
 						stage.addEventListener(MouseEvent.MOUSE_UP, stopMovingPrimitive);
@@ -1541,6 +1542,9 @@ package
 						break;
 					default:
 						//removeMark();
+						posClick.x = stage.mouseX;
+						posClick.y = stage.mouseY;
+						stage.addEventListener(MouseEvent.MOUSE_UP, stopPanning);
 						break;
 				}
 			}
@@ -1578,6 +1582,7 @@ package
 		
 		private var mark:Mark = new Mark();
 		private var posMarkGraph:Point = new Point();
+		private var markTimer:Timer = new Timer(5 * 1000, 1);
 		private function setMark(position:Point, snap:Boolean = true):void
 		{
 			if (currentScreen == CHOOSE_AB) {
@@ -1598,6 +1603,16 @@ package
 			posMarkGraph.x = markGraph.x;
 			posMarkGraph.y = markGraph.y;
 			
+			if (markTimer.running) {
+				markTimer.stop();
+				markTimer.reset();
+				markTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, removeMark);
+			}
+			markTimer.addEventListener(TimerEvent.TIMER_COMPLETE, removeMark);
+			markTimer.start();
+			
+			mark.setPosition(grafico.getGraphCoords(mark.x - grafico.x, mark.y));
+			
 			if (!layer_mark.contains(mark)) layer_mark.addChild(mark);
 		}
 		
@@ -1610,8 +1625,12 @@ package
 			}
 		}
 		
-		private function removeMark():void
+		private function removeMark(e:TimerEvent = null):void
 		{
+			markTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, removeMark);
+			markTimer.stop();
+			markTimer.reset();
+			
 			if (layer_mark.contains(mark)) layer_mark.removeChild(mark);
 			//if (grafico != null) grafico.removeSelection();
 		}
@@ -1648,7 +1667,8 @@ package
 							}
 						}
 					}else {
-						setMark(posClick);
+						//setMark(posClick);
+						addMark();
 						if(currentStrategy == PERSONAL){
 							lock(menu.plus);
 							lock(menu.minus);
@@ -1659,7 +1679,8 @@ package
 					var stageCoordsOfMouseFunc:Point = grafico.getStageCoords(graphCoordsOfMouse.x, functions[indexFunction][0].value(graphCoordsOfMouse.x));
 					
 					if (Point.distance(posMouse, stageCoordsOfMouseFunc) < 5) {
-						setMark(new Point(posClick.x, stageCoordsOfMouseFunc.y));
+						if(grafico.getSelectedType() == Graph_model.TYPE_FUNCTION) setMark(new Point(posClick.x, stageCoordsOfMouseFunc.y));
+						else addMark();
 						if(currentStrategy == PERSONAL){
 							if(grafico.betweenAB(graphCoordsOfMouse.x)){
 								if (grafico.getSelectedType() == Graph_model.TYPE_ALTURA || grafico.getSelectedType() == Graph_model.TYPE_RECTANGLE) {
@@ -1675,7 +1696,8 @@ package
 							}
 						}
 					}else {
-						setMark(posClick);
+						//setMark(posClick);
+						addMark();
 						if(currentStrategy == PERSONAL){
 							lock(menu.plus);
 							if (grafico.getSelectedType() == Graph_model.TYPE_ALTURA || grafico.getSelectedType() == Graph_model.TYPE_RECTANGLE) unlock(menu.minus);
@@ -1683,8 +1705,30 @@ package
 						}
 					}
 				}else if (currentScreen == CHOOSE_AB || currentScreen == FINAL) {
-					setMark(posClick);
+					addMark();
 				}
+			}
+		}
+		
+		private function addMark():void
+		{
+			switch(grafico.getSelectedType()) {
+				case Graph_model.TYPE_ALTURA:
+				case Graph_model.TYPE_ALTURA_X:
+				case Graph_model.TYPE_ALTURA_Y:
+				case Graph_model.TYPE_DIVISOR:
+				case Graph_model.TYPE_PRIMITIVE_C:
+					var markPos:Point = grafico.getSelectedPosition();
+					markPos.x += grafico.x;
+					setMark(markPos);
+					break;
+				case Graph_model.TYPE_N:
+				case Graph_model.TYPE_SOMA:
+					removeMark();
+					break;
+				default:
+					setMark(posClick);
+					break;
 			}
 		}
 		
@@ -1702,6 +1746,7 @@ package
 		{
 			stage.removeEventListener(MouseEvent.MOUSE_MOVE, movingPrimitive);
 			stage.removeEventListener(MouseEvent.MOUSE_UP, stopMovingPrimitive);
+			setMark(new Point(stage.mouseX, stage.mouseY));
 		}
 		
 	}
