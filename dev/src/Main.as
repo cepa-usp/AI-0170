@@ -200,14 +200,14 @@ package
 						//help.dinamico.defaultTextFormat = helpFormat;
 						help.dinamico.text = "(" + gPt.x.toFixed(2) + ", " + gPt.y.toFixed(2) + ")";
 						break;
-					case Graph_model.TYPE_ALTURA_X:
+					case Graph_model.TYPE_ALTURA_Y:
 						help.gotoAndStop(18);
 						gPt = grafico.getSelectedGraphPos();
 						//help.dinamico.embedFonts = true;
 						//help.dinamico.defaultTextFormat = helpFormat;
 						help.dinamico.text = gPt.y.toFixed(2).replace(".", ",");
 						break;
-					case Graph_model.TYPE_ALTURA_Y:
+					case Graph_model.TYPE_ALTURA_X:
 						help.gotoAndStop(17);
 						gPt = grafico.getSelectedGraphPos();
 						//help.dinamico.embedFonts = true;
@@ -230,10 +230,14 @@ package
 					case Graph_model.TYPE_FUNCTION:
 						help.gotoAndStop(23);
 						//TO DO: Mandar o movieclip das funções para o indice da funcao selecionada.
+						help.expressao.gotoAndStop(indexFunction);
 						break;
 					case Graph_model.TYPE_PRIMITIVE:
 						help.gotoAndStop(24);
 						//TO DO: Mandar o movieclip das primitivas para o indice da funcao selecionada.
+						help.expressao.gotoAndStop(indexFunction);
+						help.cValue.x = help.expressao.x + help.expressao.width;
+						help.cValue.text = primitiveConstant.toFixed(2).replace(".", ",");
 						break;
 					case Graph_model.TYPE_SOMA:
 						help.gotoAndStop(25);
@@ -1363,9 +1367,13 @@ package
 					break;
 				case Keyboard.P:
 					//Adiciona um ponto
-					if(currentScreen == PARTITION && currentStrategy == PERSONAL) grafico.addPoint(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
+					if (currentScreen == PARTITION && currentStrategy == PERSONAL) grafico.addPoint(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
+					else if (currentScreen == RESULT && currentStrategy == PERSONAL) {
+						grafico.addPointM(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
+						verificaAvancar();
+					}
 					break;
-				case Keyboard.M:
+				/*case Keyboard.M:
 					//Adiciona uma altura
 					if (currentScreen == RESULT && currentStrategy == PERSONAL) {
 						grafico.addPointM(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
@@ -1380,10 +1388,13 @@ package
 						grafico.removePointM(grafico.getGraphCoords(grafico.mouseX, grafico.mouseY).x);
 						verificaAvancar();
 					}
-					break;
+					break;*/
 				case Keyboard.DELETE:
 					if(currentScreen == PARTITION && currentStrategy == PERSONAL) grafico.deleteSelected([Graph_model.TYPE_DIVISOR]);
-					if(currentScreen == RESULT && currentStrategy == PERSONAL) grafico.deleteSelected([Graph_model.TYPE_ALTURA, Graph_model.TYPE_RECTANGLE]);
+					else if (currentScreen == RESULT && currentStrategy == PERSONAL) {
+						grafico.deleteSelected([Graph_model.TYPE_ALTURA, Graph_model.TYPE_RECTANGLE]);
+						verificaAvancar();
+					}
 					break;
 				
 			}
@@ -1721,12 +1732,12 @@ package
 		private function addMark():void
 		{
 			switch(grafico.getSelectedType()) {
-				case Graph_model.TYPE_ALTURA:
 				case Graph_model.TYPE_ALTURA_X:
 				case Graph_model.TYPE_ALTURA_Y:
+				case Graph_model.TYPE_ALTURA:
 				case Graph_model.TYPE_DIVISOR:
 				case Graph_model.TYPE_PRIMITIVE_C:
-					var markPos:Point = grafico.getSelectedPosition();
+					var markPos:Point = grafico.getSelectedPosition(true);
 					markPos.x += grafico.x;
 					setMark(markPos);
 					break;

@@ -478,8 +478,8 @@ package
 			//txtSoma.text = "soma = " + sum.toPrecision(2);
 			//txtN.text = "n = " + (points.length - 1);
 			
-			txtSoma.texto.text = "soma = " + sum.toPrecision(2);
-			txtN.texto.text = "n = " + (points.length - 1);
+			txtSoma.texto.text = sum.toPrecision(2);
+			txtN.texto.text = String(points.length - 1);
 		}
 		
 		public function betweenAB(n:Number):Boolean
@@ -602,11 +602,11 @@ package
 			//layerFunctions.graphics.beginFill(0xFFFF00);
 			//layerFunctions.graphics.drawCircle(clickPoint.x, clickPoint.y, 2);
 			//layerFunctions.graphics.endFill();
-			
 			var i:int;
 			var j:Number;
 			var posStage:Point;
 			var objReturn:Object;
+			var origin:Point = getStageCoords(0, 0);
 			
 			if (MovieClip(txtSoma).hitTestPoint(clickPoint.x + 60, clickPoint.y)) {
 				objReturn = new Object();
@@ -688,6 +688,21 @@ package
 						
 						return objReturn;
 					}
+					
+					
+					if (f.value(points[i].h) > 0) posStage.y = origin.y + 10;
+					else posStage.y = origin.y - 10;
+					if (Point.distance(clickPoint, posStage) < minDist) {
+						objReturn = new Object();
+						objReturn.type = TYPE_ALTURA_X;
+						objReturn.index = i;
+						objReturn.value = points[i].h;
+						
+						select(TYPE_ALTURA_X, i, points[i].h);
+						
+						return objReturn;
+					}
+					
 				}
 			}
 			
@@ -754,24 +769,23 @@ package
 			
 			//Busca nos pontos que formam um ponto de altura
 			if (selectedType == TYPE_ALTURA || selectedType == TYPE_ALTURA_X || selectedType == TYPE_ALTURA_Y) {
-				var origin:Point = getStageCoords(0, 0);
 				
-				if (Point.distance(clickPoint, new Point(getSelectedPosition().x, origin.y)) < minDist) {
+				if (Point.distance(clickPoint, new Point(getSelectedPosition().x, origin.y + (f.value(selectedValue) > 0 ? 10 : -10))) < minDist) {
 					objReturn = new Object();
 					objReturn.type = TYPE_ALTURA_X;
 					objReturn.index = selectedIndex;
 					objReturn.value = selectedValue;
 					
-					select(TYPE_ALTURA_Y, selectedIndex, selectedValue);
+					select(TYPE_ALTURA_X, selectedIndex, selectedValue);
 					
 					return objReturn;
-				}else if (Point.distance(clickPoint, new Point(origin.x, getSelectedPosition().y)) < minDist) {
+				}else if (Point.distance(clickPoint, new Point(origin.x + (selectedValue > 0 ? -10 : 10), getSelectedPosition().y)) < minDist) {
 					objReturn = new Object();
 					objReturn.type = TYPE_ALTURA_Y;
 					objReturn.index = selectedIndex;
 					objReturn.value = selectedValue;
 					
-					select(TYPE_ALTURA_X, selectedIndex, selectedValue);
+					select(TYPE_ALTURA_Y, selectedIndex, selectedValue);
 					
 					return objReturn;
 				}
@@ -985,10 +999,10 @@ package
 				case TYPE_ALTURA:
 					return new Point(selectedValue, f.value(selectedValue));
 					break;
-				case TYPE_ALTURA_X:
+				case TYPE_ALTURA_Y:
 					return new Point(0, f.value(selectedValue));
 					break;
-				case TYPE_ALTURA_Y:
+				case TYPE_ALTURA_X:
 					return new Point(selectedValue, 0);
 					break;
 				//case TYPE_PRIMITIVE_C:
@@ -1002,17 +1016,19 @@ package
 			return selectedValue;
 		}
 		
-		public function getSelectedPosition():Point
+		public function getSelectedPosition(external:Boolean = false):Point
 		{
 			switch (selectedType) {
 				case TYPE_DIVISOR:
 					return getStageCoords(selectedValue, 0);
 				case TYPE_ALTURA:
 					return getStageCoords(selectedValue, f.value(selectedValue));
-				case TYPE_ALTURA_X:
-					return getStageCoords(0, f.value(selectedValue));
 				case TYPE_ALTURA_Y:
-					return getStageCoords(selectedValue, 0);
+					if(external) return getStageCoords(0, f.value(selectedValue));
+					else return getStageCoords(selectedValue, f.value(selectedValue));
+				case TYPE_ALTURA_X:
+					if (external) return getStageCoords(selectedValue, 0);
+					else return getStageCoords(selectedValue, f.value(selectedValue));
 				case TYPE_PRIMITIVE_C:
 					return getStageCoords(0, F.value(0));
 			}
@@ -1338,7 +1354,7 @@ package
 		{
 			layerFunctions.graphics.lineStyle(1, 0x000000);
 			
-			if (selectedType == TYPE_ALTURA_X && selected) {
+			if (selectedType == TYPE_ALTURA_Y && selected) {
 				layerFunctions.graphics.beginFill(selectedColor);
 				//layerFunctions.graphics.drawCircle(origin.x, ptf.y, 5);
 				layerFunctions.graphics.moveTo(origin.x, ptf.y);
@@ -1382,7 +1398,7 @@ package
 		{
 			layerFunctions.graphics.lineStyle(1, 0x000000);
 			
-			if (selectedType == TYPE_ALTURA_Y && selected) {
+			if (selectedType == TYPE_ALTURA_X && selected) {
 				layerFunctions.graphics.beginFill(selectedColor);
 				//layerFunctions.graphics.drawCircle(ptf.x, origin.y, 5);
 				layerFunctions.graphics.moveTo(ptf.x, origin.y);
@@ -1424,14 +1440,14 @@ package
 			
 			layerFunctions.graphics.lineStyle(1, 0x000000);
 			
-			if (selectedType == TYPE_ALTURA_X) {
+			if (selectedType == TYPE_ALTURA_Y) {
 				layerFunctions.graphics.beginFill(0xFF0000);
 				layerFunctions.graphics.drawCircle(origin.x, ptf.y, 5);
 				layerFunctions.graphics.endFill();
 				layerFunctions.graphics.beginFill(0x00FF00);
 				layerFunctions.graphics.drawCircle(ptf.x, origin.y, 3);
 				
-			}else if (selectedType == TYPE_ALTURA_Y) {
+			}else if (selectedType == TYPE_ALTURA_X) {
 				layerFunctions.graphics.beginFill(0xFF0000);
 				layerFunctions.graphics.drawCircle(ptf.x, origin.y, 5);
 				layerFunctions.graphics.endFill();
