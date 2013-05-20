@@ -68,6 +68,7 @@ package
 		
 		//private var informacoes:CaixaTextoNova;
 		private var informacoes:InfoBar;
+		private var airVersion:Boolean = true;
 		
 		public function Main():void 
 		{
@@ -87,14 +88,15 @@ package
 			//informacoes.nextButton.visible = false;
 			//informacoes.closeButton.addEventListener(MouseEvent.CLICK, closeInfo);
 			informacoes = new InfoBar();
+			informacoes.info.embedFonts = true;
 			informacoes.info.autoSize = TextFieldAutoSize.LEFT
 			informacoes.info.width = 330;
 			informacoes.x = 62;
 			informacoes.y = 161;
 			informacoes.alpha = 0;
 			
-			fileHandler = new FileHandlerFlash(stage);
-			//fileHandler = new FileHandlerAIR("ai170");
+			if (airVersion) fileHandler = new FileHandlerAIR("ai170");
+			else fileHandler = new FileHandlerFlash(stage);
 			
 			currentScreen = INICIAL;
 			
@@ -168,9 +170,11 @@ package
 			//makeButton(subMenu.language, null);
 			makeButton(subMenu.about, openAbout);
 			
-			subMenu.saveAs.visible = false;
-			subMenu.saveAs.mouseEnabled = false;
-			subMenu.about.y = subMenu.saveAs.y;
+			if(!airVersion){
+				subMenu.saveAs.visible = false;
+				subMenu.saveAs.mouseEnabled = false;
+				subMenu.about.y = subMenu.saveAs.y;
+			}
 		}
 		
 		private var about:Sobre = new Sobre();
@@ -200,6 +204,7 @@ package
 						help.gotoAndStop(19);
 						gPt = grafico.getSelectedGraphPos();
 						//help.dinamico.defaultTextFormat = helpFormat;
+						help.dinamico.embedFonts = true;
 						help.dinamico.text = "(" + gPt.x.toFixed(2) + ", " + gPt.y.toFixed(2) + ")";
 						break;
 					case Graph_model.TYPE_ALTURA_Y:
@@ -207,6 +212,7 @@ package
 						gPt = grafico.getSelectedGraphPos();
 						//help.dinamico.embedFonts = true;
 						//help.dinamico.defaultTextFormat = helpFormat;
+						help.dinamico.embedFonts = true;
 						help.dinamico.text = gPt.y.toFixed(2).replace(".", ",");
 						break;
 					case Graph_model.TYPE_ALTURA_X:
@@ -214,6 +220,7 @@ package
 						gPt = grafico.getSelectedGraphPos();
 						//help.dinamico.embedFonts = true;
 						//help.dinamico.defaultTextFormat = helpFormat;
+						help.dinamico.embedFonts = true;
 						help.dinamico.text = gPt.x.toFixed(2).replace(".", ",");
 						break;
 					case Graph_model.TYPE_DIVISOR:
@@ -227,6 +234,7 @@ package
 						}
 						//help.dinamico.embedFonts = true;
 						//help.dinamico.defaultTextFormat = helpFormat;
+						help.dinamico.embedFonts = true;
 						help.dinamico.text = gPt.x.toFixed(2).replace(".", ",");
 						break;
 					case Graph_model.TYPE_FUNCTION:
@@ -238,36 +246,44 @@ package
 						help.gotoAndStop(24);
 						//TO DO: Mandar o movieclip das primitivas para o indice da funcao selecionada.
 						help.expressao.gotoAndStop(indexFunction);
+						help.cValue.embedFonts = true;
 						help.cValue.x = help.expressao.x + help.expressao.width;
 						help.cValue.text = primitiveConstant.toFixed(2).replace(".", ",");
 						break;
 					case Graph_model.TYPE_SOMA:
 						help.gotoAndStop(25);
+						help.dinamico.embedFonts = true;
 						help.dinamico.text = grafico.getSelectedValue().toFixed(2).replace(".", ",");
 						break;
 					case Graph_model.TYPE_N:
 						help.gotoAndStop(26);
+						help.dinamico.embedFonts = true;
 						help.dinamico.text = String(grafico.getSelectedValue());
 						break;
 					case Graph_model.TYPE_PRIMITIVE_C:
 						help.gotoAndStop(22);
 						//TO DO: Indicar o valor da constante de integracao
+						help.dinamico.embedFonts = true;
 						help.dinamico.text = primitiveConstant.toFixed(2).replace(".", ",");
 						break;
 					case Graph_model.TYPE_PRIMITIVE_A:
 						help.gotoAndStop(27);
+						help.dinamico.embedFonts = true;
 						help.dinamico.text = grafico.getSelectedValue().toFixed(2).replace(".", ",");
 						break;
 					case Graph_model.TYPE_PRIMITIVE_B:
 						help.gotoAndStop(28);
+						help.dinamico.embedFonts = true;
 						help.dinamico.text = grafico.getSelectedValue().toFixed(2).replace(".", ",");
 						break;
 					case Graph_model.TYPE_RECTANGLE:
 						help.gotoAndStop(21);
+						help.dinamico.embedFonts = true;
 						help.dinamico.text = grafico.getSelectedValue().toFixed(2).replace(".", ",");
 						break;
 					case Graph_model.TYPE_INTERVAL:
 						help.gotoAndStop(20);
+						help.dinamico.embedFonts = true;
 						help.dinamico.text = grafico.getSelectedValue().toFixed(2).replace(".", ",");
 						break;
 					case Graph_model.TYPE_NONE:
