@@ -94,6 +94,7 @@ package
 			informacoes.alpha = 0;
 			
 			fileHandler = new FileHandlerFlash(stage);
+			//fileHandler = new FileHandlerAIR("ai170");
 			
 			currentScreen = INICIAL;
 			
@@ -153,8 +154,9 @@ package
 			makeButton(menu.plus, null);
 			makeButton(menu.minus, null);
 			//makeButton(menu.currentScreen, loadInfo);
-			menu.currentScreen.addEventListener(MouseEvent.CLICK, loadInfo);
-			//menu.currentScreen.buttonMode = true;
+			menu.cs.addEventListener(MouseEvent.CLICK, loadInfo);
+			menu.cs.mouseChildren = false;
+			menu.cs.buttonMode = true;
 			menu.help.addEventListener(MouseEvent.CLICK, showHelp);
 			
 			subMenu = new SubMenu();
@@ -878,7 +880,7 @@ package
 			unloadScreen(currentScreen);
 			currentScreen = 1;
 			loadScreen(currentScreen);
-			menu.currentScreen.text = currentScreen.toString();
+			menu.cs.currentScreen.text = currentScreen.toString();
 		}
 		
 		private function cancelNew(e:MouseEvent):void
@@ -999,7 +1001,7 @@ package
 		 */
 		private function loadScreen(screen:int, state:Object = null):void 
 		{
-			menu.currentScreen.text = screen.toString();
+			menu.cs.currentScreen.text = screen.toString();
 			switch (screen) {
 				case INICIAL:
 					if (layer_menu.numChildren > 0){
@@ -1373,6 +1375,18 @@ package
 						verificaAvancar();
 					}
 					break;
+				case Keyboard.A:
+					if (grafico != null) {
+						grafico.zoomInPtPixel(new Point(grafico.mouseX, grafico.mouseY));
+						updateMarkPosition();
+					}
+					break;
+				case Keyboard.D:
+					if(grafico != null){
+						grafico.zoomOutPtPixel(new Point(grafico.mouseX, grafico.mouseY));
+						updateMarkPosition();
+					}
+					break;
 				/*case Keyboard.M:
 					//Adiciona uma altura
 					if (currentScreen == RESULT && currentStrategy == PERSONAL) {
@@ -1452,7 +1466,7 @@ package
 			if (e.delta > 0) {
 				//Zoom in
 				grafico.zoomInPtPixel(new Point(grafico.mouseX, grafico.mouseY));
-				updateMarkPosition()
+				updateMarkPosition();
 				//grafico.zoomInCenter();
 			}else {
 				//Zoon out

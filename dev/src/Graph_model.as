@@ -629,7 +629,7 @@ package
 			//Busca no F(0)
 			if(graph.hasFunction(F)){
 				posStage = getStageCoords(0, F.value(0));
-				if (Point.distance(clickPoint, posStage) < minDist) {
+				/*if (Point.distance(clickPoint, posStage) < minDist) {
 					objReturn = new Object();
 					objReturn.type = TYPE_PRIMITIVE_C;
 					//objReturn.index = NaN;
@@ -638,7 +638,7 @@ package
 					select(TYPE_PRIMITIVE_C, NaN, NaN);
 					
 					return objReturn;
-				}
+				}*/
 				
 				//Busca no F(B)
 				if (showFB) {
@@ -1260,8 +1260,8 @@ package
 			
 			
 			if (graph.hasFunction(F)) {
-				pt1 = getStageCoords(0, F.value(0));
-				drawPoint(pt1, selectedType == TYPE_PRIMITIVE_C);
+				//pt1 = getStageCoords(0, F.value(0));
+				//drawPoint(pt1, selectedType == TYPE_PRIMITIVE_C);
 				
 				if (selectedType == TYPE_PRIMITIVE_A) {
 					var ptFa:Point = getStageCoords(ptA.x, F.value(ptA.x));
@@ -1525,8 +1525,8 @@ package
 			if (char == "a" || char == "A") {
 				if (!layerPoints.contains(charA)) {
 					charA.defaultTextFormat = textStyle;
-					charA.background = true;
-					charA.backgroundColor = 0xFFFFFF;
+					//charA.background = true;
+					//charA.backgroundColor = 0xFFFFFF;
 					charA.width = 20;
 					charA.autoSize = TextFieldAutoSize.CENTER;
 					//charA.height = 30;
@@ -1539,8 +1539,8 @@ package
 			}else if (char == "b" || char == "B") {
 				if (!layerPoints.contains(charB)) {
 					charB.defaultTextFormat = textStyle;
-					charB.background = true;
-					charB.backgroundColor = 0xFFFFFF;
+					//charB.background = true;
+					//charB.backgroundColor = 0xFFFFFF;
 					charB.width = 20;
 					charB.autoSize = TextFieldAutoSize.CENTER;
 					//charB.height = 10;
