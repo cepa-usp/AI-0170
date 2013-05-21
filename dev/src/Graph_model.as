@@ -107,6 +107,7 @@ package
 			//txtSoma.x = 800 - 60 - 205;
 			txtSoma.x = 800 - 60-53;
 			txtSoma.y = 5 + 13;
+			//txtSoma.texto.selectable = true;
 			//txtSoma.selectable = false;
 			//txtSoma.border = true;
 			
@@ -156,7 +157,7 @@ package
 		{
 			var style:DataStyle = new DataStyle();
 			if (selected) {
-				style.color = 0xFF0000;
+				style.color = selectedColor;
 				style.stroke = graphStroke + 3;
 			}else{
 				style.color = graphColor;
@@ -181,10 +182,10 @@ package
 		{
 			var style2:DataStyle = new DataStyle();
 			if (selected) {
-				style2.color = 0xFF0000;
+				style2.color = selectedColor;
 				style2.stroke = 5;
 			}else{
-				style2.color = 0x0000A0;
+				style2.color = 0x2BBAFF;
 				style2.stroke = 2;
 			}
 			graph.addFunction(F, style2);
@@ -1357,14 +1358,15 @@ package
 			if (selectedType == TYPE_ALTURA_Y && selected) {
 				layerFunctions.graphics.beginFill(selectedColor);
 				//layerFunctions.graphics.drawCircle(origin.x, ptf.y, 5);
-				layerFunctions.graphics.moveTo(origin.x, ptf.y);
+				//layerFunctions.graphics.moveTo(origin.x, ptf.y);
+				layerFunctions.graphics.moveTo(origin.x - distToAxis, ptf.y);
 				if (value > 0) {
-					layerFunctions.graphics.lineTo(origin.x - distToAxis, ptf.y);
+					//layerFunctions.graphics.lineTo(origin.x - distToAxis, ptf.y);
 					layerFunctions.graphics.lineTo(origin.x - distToAxis - hPointH * propSelected, ptf.y - hPointW/2 * propSelected);
 					layerFunctions.graphics.lineTo(origin.x - distToAxis - hPointH * propSelected, ptf.y + hPointW/2 * propSelected);
 					layerFunctions.graphics.lineTo(origin.x - distToAxis, ptf.y);
 				}else {
-					layerFunctions.graphics.lineTo(origin.x + distToAxis, ptf.y);
+					//layerFunctions.graphics.lineTo(origin.x + distToAxis, ptf.y);
 					layerFunctions.graphics.lineTo(origin.x + distToAxis + hPointH * propSelected, ptf.y - hPointW/2 * propSelected);
 					layerFunctions.graphics.lineTo(origin.x + distToAxis + hPointH * propSelected, ptf.y + hPointW/2 * propSelected);
 					layerFunctions.graphics.lineTo(origin.x + distToAxis, ptf.y);
@@ -1372,14 +1374,15 @@ package
 			}else {			
 				layerFunctions.graphics.beginFill(normalColor);
 				//layerFunctions.graphics.drawCircle(origin.x, ptf.y, 3);
-				layerFunctions.graphics.moveTo(origin.x, ptf.y);
+				//layerFunctions.graphics.moveTo(origin.x, ptf.y);
+				layerFunctions.graphics.moveTo(origin.x - distToAxis, ptf.y);
 				if (value > 0) {
-					layerFunctions.graphics.lineTo(origin.x - distToAxis, ptf.y);
+					//layerFunctions.graphics.lineTo(origin.x - distToAxis, ptf.y);
 					layerFunctions.graphics.lineTo(origin.x - distToAxis - hPointH, ptf.y - hPointW/2);
 					layerFunctions.graphics.lineTo(origin.x - distToAxis - hPointH, ptf.y + hPointW/2);
 					layerFunctions.graphics.lineTo(origin.x - distToAxis, ptf.y);
 				}else {
-					layerFunctions.graphics.lineTo(origin.x + distToAxis, ptf.y);
+					//layerFunctions.graphics.lineTo(origin.x + distToAxis, ptf.y);
 					layerFunctions.graphics.lineTo(origin.x + distToAxis + hPointH, ptf.y - hPointW/2);
 					layerFunctions.graphics.lineTo(origin.x + distToAxis + hPointH, ptf.y + hPointW/2);
 					layerFunctions.graphics.lineTo(origin.x + distToAxis, ptf.y);
@@ -1388,12 +1391,12 @@ package
 			layerFunctions.graphics.endFill();
 		}
 		
-		private var hPointH:Number = 8;
-		private var hPointW:Number = 6;
-		private var distToAxis:Number = 4;
+		private var hPointW:Number = 8;
+		private var hPointH:Number = 8 * Math.sqrt(3)/2;
+		private var distToAxis:Number = 2;
 		private var propSelected:Number = 1.3;
 		private var normalColor:uint = 0xFFFFFF;
-		private var selectedColor:uint = 0xFF0000;
+		private var selectedColor:uint = 0xE48605;
 		private function drawHYpoint(ptf:Point, origin:Point, value:Number, selected:Boolean):void
 		{
 			layerFunctions.graphics.lineStyle(1, 0x000000);
@@ -1401,14 +1404,15 @@ package
 			if (selectedType == TYPE_ALTURA_X && selected) {
 				layerFunctions.graphics.beginFill(selectedColor);
 				//layerFunctions.graphics.drawCircle(ptf.x, origin.y, 5);
-				layerFunctions.graphics.moveTo(ptf.x, origin.y);
+				//layerFunctions.graphics.moveTo(ptf.x, origin.y);
+				layerFunctions.graphics.moveTo(ptf.x, origin.y + distToAxis);
 				if (value > 0) {
-					layerFunctions.graphics.lineTo(ptf.x, origin.y + distToAxis);
+					//layerFunctions.graphics.lineTo(ptf.x, origin.y + distToAxis);
 					layerFunctions.graphics.lineTo(ptf.x - hPointW * propSelected / 2, origin.y + hPointH * propSelected + distToAxis);
 					layerFunctions.graphics.lineTo(ptf.x + hPointW * propSelected / 2, origin.y + hPointH * propSelected + distToAxis);
 					layerFunctions.graphics.lineTo(ptf.x, origin.y + distToAxis);
 				}else {
-					layerFunctions.graphics.lineTo(ptf.x, origin.y - distToAxis);
+					//layerFunctions.graphics.lineTo(ptf.x, origin.y - distToAxis);
 					layerFunctions.graphics.lineTo(ptf.x - hPointW * propSelected / 2, origin.y - hPointH * propSelected - distToAxis);
 					layerFunctions.graphics.lineTo(ptf.x + hPointW * propSelected / 2, origin.y - hPointH * propSelected - distToAxis);
 					layerFunctions.graphics.lineTo(ptf.x, origin.y - distToAxis);
@@ -1416,14 +1420,15 @@ package
 			}else {			
 				layerFunctions.graphics.beginFill(normalColor);
 				//layerFunctions.graphics.drawCircle(ptf.x, origin.y, 3);
-				layerFunctions.graphics.moveTo(ptf.x, origin.y);
+				//layerFunctions.graphics.moveTo(ptf.x, origin.y);
+				layerFunctions.graphics.moveTo(ptf.x, origin.y + distToAxis);
 				if (value > 0) {
-					layerFunctions.graphics.lineTo(ptf.x, origin.y + distToAxis);
+					//layerFunctions.graphics.lineTo(ptf.x, origin.y + distToAxis);
 					layerFunctions.graphics.lineTo(ptf.x - hPointW / 2, origin.y + hPointH + distToAxis);
 					layerFunctions.graphics.lineTo(ptf.x + hPointW / 2, origin.y + hPointH + distToAxis);
 					layerFunctions.graphics.lineTo(ptf.x, origin.y + distToAxis);
 				}else {
-					layerFunctions.graphics.lineTo(ptf.x, origin.y - distToAxis);
+					//layerFunctions.graphics.lineTo(ptf.x, origin.y - distToAxis);
 					layerFunctions.graphics.lineTo(ptf.x - hPointW / 2, origin.y - hPointH - distToAxis);
 					layerFunctions.graphics.lineTo(ptf.x + hPointW / 2, origin.y - hPointH - distToAxis);
 					layerFunctions.graphics.lineTo(ptf.x, origin.y - distToAxis);
@@ -1472,7 +1477,7 @@ package
 		 * gap = length of gap between dashes
 		 */
 		private function dashTo (sprite:Sprite, startx:Number, starty:Number, endx:Number, endy:Number, len:Number, gap:Number) : void {
-			sprite.graphics.lineStyle(2, 0x000000);
+			sprite.graphics.lineStyle(1, 0x4A4A4A);
 			// init vars
 			var seglength, delta, deltax, deltay, segs, cx, cy, radians;
 			// calculate the legnth of a segment
@@ -1594,10 +1599,10 @@ package
 				layerRects.graphics.lineTo(pt2.x, stage.stageHeight);
 				
 				layerRects.graphics.lineStyle(2, 0x000000);
-				layerRects.graphics.beginFill(0x800000, 0.6);
+				layerRects.graphics.beginFill(selectedColor, 0.6);
 			}else{
 				layerRects.graphics.lineStyle(1, 0x000000);
-				layerRects.graphics.beginFill(0xFF8000, 0.6);
+				layerRects.graphics.beginFill(0xC0C0C0, 0.6);
 			}
 			layerRects.graphics.moveTo(pt1.x, pt1.y);
 			layerRects.graphics.lineTo(pt1.x, altura.y);

@@ -19,7 +19,7 @@ package
 		
 		public function Mark() 
 		{
-			this.graphics.lineStyle(2, 0x808000);
+			this.graphics.lineStyle(1, 0x000000);
 			this.graphics.moveTo( -lenX, -lenY);
 			this.graphics.lineTo(lenX, lenY);
 			this.graphics.moveTo( -lenX, lenY);
@@ -30,7 +30,7 @@ package
 			pos.height = 10;
 			pos.autoSize = TextFieldAutoSize.CENTER;
 			pos.selectable = false;
-			pos.y = 10;
+			pos.y = 8;
 			addChild(pos);
 		}
 		
