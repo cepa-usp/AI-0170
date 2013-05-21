@@ -1192,6 +1192,7 @@ package
 					if (state != null) grafico.restoreState(state);
 					layer_graph.addChild(grafico);
 					//stage.addEventListener(MouseEvent.MOUSE_DOWN, stageDown);
+					stage.addEventListener(KeyboardEvent.KEY_DOWN, keyboardHandler);
 					stage.addEventListener(MouseEvent.MOUSE_WHEEL, wheelHandler);
 					break;
 				
