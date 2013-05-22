@@ -984,6 +984,9 @@ package
 						else lock(menu.next);
 					}
 					break;
+				case FINAL:
+					lock(menu.next);
+					break;
 				default:
 					unlock(menu.next);
 					break;
@@ -1031,7 +1034,7 @@ package
 						layer_menu.addChild(subMenu);
 						layer_menu.addChild(menu);
 					}
-					menu.next.visible = true;
+					unlock(menu.next);
 					menu.plus.visible = false;
 					menu.minus.visible = false;
 					layer_screen.addChild(tela1);
@@ -1048,7 +1051,7 @@ package
 						layer_menu.addChild(subMenu);
 						layer_menu.addChild(menu);
 					}
-					menu.next.visible = true;
+					unlock(menu.next);
 					removeMark();
 					menu.plus.visible = false;
 					menu.minus.visible = false;
@@ -1077,7 +1080,7 @@ package
 						layer_menu.addChild(subMenu);
 						layer_menu.addChild(menu);
 					}
-					menu.next.visible = true;
+					unlock(menu.next);
 					menu.plus.visible = false;
 					menu.minus.visible = false;
 					layer_screen.addChild(tela3);
@@ -1092,7 +1095,7 @@ package
 						layer_menu.addChild(subMenu);
 						layer_menu.addChild(menu);
 					}
-					menu.next.visible = true;
+					unlock(menu.next);
 					if (grafico == null) grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
 					grafico.hideSum();
 					grafico.defineAB = false;
@@ -1132,7 +1135,8 @@ package
 						layer_menu.addChild(subMenu);
 						layer_menu.addChild(menu);
 					}
-					menu.next.visible = true;
+					//menu.next.visible = true;
+					unlock(menu.next);
 					if (grafico == null) grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
 					grafico.showSum();
 					grafico.defineAB = false;
@@ -1177,7 +1181,8 @@ package
 						layer_menu.addChild(subMenu);
 						layer_menu.addChild(menu);
 					}
-					menu.next.visible = false;
+					//menu.next.visible = false;
+					lock(menu.next);
 					menu.plus.visible = false;
 					menu.minus.visible = false;
 					if (grafico == null) grafico = new Graph_model(functions[indexFunction][0], functions[indexFunction][1]);
@@ -1515,6 +1520,8 @@ package
 			
 			if (e.target != menu.openMenu) {
 				if (subMenuOpen) closeSubMenu();
+			}else {
+				if (layer_info.contains(informacoes)) closeInfoText();
 			}
 			
 			if (layer_help.contains(about)) layer_help.removeChild(about);
@@ -1577,6 +1584,8 @@ package
 					case Graph_model.TYPE_ALTURA:
 					case Graph_model.TYPE_ALTURA_X:
 					case Graph_model.TYPE_ALTURA_Y:
+					case Graph_model.TYPE_PRIMITIVE_A:
+					case Graph_model.TYPE_PRIMITIVE_B:
 						//pos = grafico.getSelectedPosition();
 						//pos.x += grafico.x;
 						posClick.x = stage.mouseX;
@@ -1768,6 +1777,8 @@ package
 				case Graph_model.TYPE_ALTURA:
 				case Graph_model.TYPE_DIVISOR:
 				case Graph_model.TYPE_PRIMITIVE_C:
+				case Graph_model.TYPE_PRIMITIVE_A:
+				case Graph_model.TYPE_PRIMITIVE_B:
 					var markPos:Point = grafico.getSelectedPosition(true);
 					markPos.x += grafico.x;
 					setMark(markPos);

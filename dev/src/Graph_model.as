@@ -105,13 +105,13 @@ package
 			//txtSoma.width = 200;
 			//txtSoma.height = 25;
 			//txtSoma.x = 800 - 60 - 205;
-			txtSoma.x = 800 - 60-53;
+			txtSoma.x = 800 - 60-txtSoma.width/2 - 5;
 			txtSoma.y = 5 + 13;
 			//txtSoma.texto.selectable = true;
 			//txtSoma.selectable = false;
 			//txtSoma.border = true;
 			
-			txtSoma.gotoAndStop(2);
+			txtSoma.gotoAndStop(1);
 			
 			txtSoma.mouseChildren = false;
 			layerTextos.addChild(txtSoma);
@@ -122,11 +122,11 @@ package
 			//txtN.width = 200;
 			//txtN.height = 25;
 			//txtN.x = 800-60-205;
-			txtN.x = 800-60-53;
+			txtN.x = 800-60-txtN.width/2 - 5;
 			txtN.y = 30 + 13;
 			//txtN.selectable = false;
 			//txtN.border = true;
-			txtN.gotoAndStop(2);
+			txtN.gotoAndStop(1);
 			txtN.mouseChildren = false;
 			layerTextos.addChild(txtN);
 			
@@ -479,8 +479,8 @@ package
 			//txtSoma.text = "soma = " + sum.toPrecision(2);
 			//txtN.text = "n = " + (points.length - 1);
 			
-			txtSoma.texto.text = sum.toPrecision(2);
-			txtN.texto.text = String(points.length - 1);
+			txtSoma.texto.text = "soma=" + sum.toPrecision(2);
+			txtN.texto.text = "n=" + String(points.length - 1);
 		}
 		
 		public function betweenAB(n:Number):Boolean
@@ -612,18 +612,18 @@ package
 			if (MovieClip(txtSoma).hitTestPoint(clickPoint.x + 60, clickPoint.y)) {
 				objReturn = new Object();
 				objReturn.type = TYPE_SOMA;
-				objReturn.value = Number(txtSoma.texto.text);
+				objReturn.value = Number(txtSoma.texto.text.replace("soma=", ""));
 				
-				select(TYPE_SOMA, NaN, Number(txtSoma.texto.text));
+				select(TYPE_SOMA, NaN, Number(txtSoma.texto.text.replace("soma=", "")));
 				return objReturn;
 			}
 			
 			if (MovieClip(txtN).hitTestPoint(clickPoint.x + 60, clickPoint.y)) {
 				objReturn = new Object();
 				objReturn.type = TYPE_N;
-				objReturn.value = Number(txtN.texto.text);
+				objReturn.value = Number(txtN.texto.text.replace("n=", ""));
 				
-				select(TYPE_N, NaN, Number(txtN.texto.text));
+				select(TYPE_N, NaN, Number(txtN.texto.text.replace("n=", "")));
 				return objReturn;
 			}
 			
@@ -1032,6 +1032,10 @@ package
 					else return getStageCoords(selectedValue, f.value(selectedValue));
 				case TYPE_PRIMITIVE_C:
 					return getStageCoords(0, F.value(0));
+				case TYPE_PRIMITIVE_A:
+					return getStageCoords(ptA.x, F.value(ptA.x));
+				case TYPE_PRIMITIVE_B:
+					return getStageCoords(ptB.x, F.value(ptB.x));
 			}
 			
 			return null;
@@ -1181,6 +1185,9 @@ package
 			F.setRange(graph.xmin, graph.xmax);
 		}
 		
+		private var normalText:TextFormat = new TextFormat("arial", 16, 0x808080);
+		private var selectedText:TextFormat = new TextFormat("arial", 16, 0xFFFFFF);
+		
 		/**
 		 * Redesenha todo o gráfico da atividade.
 		 * Função chamada sempre que algum mobjeto é modificado.
@@ -1198,11 +1205,27 @@ package
 			layerPoints.graphics.clear();
 			layerFunctions.graphics.clear();
 			
-			if (selectedType == TYPE_N) txtN.gotoAndStop(1);
-			else txtN.gotoAndStop(2);
+			if (selectedType == TYPE_N) {
+				//txtN.texto.defaultTextFormat = selectedText;
+				//txtN.texto.text = txtN.texto.text;
+				txtN.gotoAndStop(2);
+			}
+			else {
+				//txtN.texto.defaultTextFormat = normalText;
+				//txtN.texto.text = txtN.texto.text;
+				txtN.gotoAndStop(1);
+			}
 			
-			if (selectedType == TYPE_SOMA) txtSoma.gotoAndStop(1);
-			else txtSoma.gotoAndStop(2);
+			if (selectedType == TYPE_SOMA) {
+				//txtSoma.texto.defaultTextFormat = selectedText;
+				//txtSoma.texto.text = txtSoma.texto.text;
+				txtSoma.gotoAndStop(2);
+			}
+			else {
+				//txtSoma.texto.defaultTextFormat = normalText;
+				//txtSoma.texto.text = txtSoma.texto.text;
+				txtSoma.gotoAndStop(1);
+			}
 			
 			for (i = 0; i < points.length; i++) 
 			{
@@ -1234,7 +1257,7 @@ package
 			if (selectedType == TYPE_INTERVAL) {
 				pt1 = getStageCoords(points[selectedIndex - 1].x, 0);
 				pt2 = getStageCoords(points[selectedIndex].x, 0);
-				layerRects.graphics.lineStyle(5, 0xFF0000, 0.5);
+				layerRects.graphics.lineStyle(5, selectedColor, 0.5);
 				layerRects.graphics.moveTo(pt1.x, pt1.y);
 				layerRects.graphics.lineTo(pt2.x, pt2.y);
 			}
