@@ -240,12 +240,12 @@ package
 					case Graph_model.TYPE_FUNCTION:
 						help.gotoAndStop(23);
 						//TO DO: Mandar o movieclip das funções para o indice da funcao selecionada.
-						help.expressao.gotoAndStop(indexFunction);
+						help.expressao.gotoAndStop(indexFunction + 1);
 						break;
 					case Graph_model.TYPE_PRIMITIVE:
 						help.gotoAndStop(24);
 						//TO DO: Mandar o movieclip das primitivas para o indice da funcao selecionada.
-						help.expressao.gotoAndStop(indexFunction);
+						help.expressao.gotoAndStop(indexFunction + 1);
 						help.cValue.embedFonts = true;
 						help.cValue.x = help.expressao.x + help.expressao.width;
 						help.cValue.text = primitiveConstant.toFixed(2);
