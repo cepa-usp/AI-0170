@@ -279,6 +279,13 @@ package
 				if (points.length == 2 && !lockAB) lockAB = true;
 				lookAdd: for (var i:int = 0; i < points.length; i++) 
 				{
+					var nStage:Point = getStageCoords(n, 0);
+					var xPointStage:Point = getStageCoords(points[i].x, 0);
+					if (Point.distance(nStage, xPointStage) < 2 * raioPonto) {
+						//trace("ponto igual");
+						return;
+					}
+					
 					if (n < points[i].x) {
 						if(i > 0){
 							var oldPoint:Object = points[i-1];
@@ -479,7 +486,8 @@ package
 			//txtSoma.text = "soma = " + sum.toPrecision(2);
 			//txtN.text = "n = " + (points.length - 1);
 			
-			txtSoma.texto.text = "soma=" + sum.toPrecision(2);
+			if(sum < 1) txtSoma.texto.text = "soma=" + sum.toPrecision(2);
+			else txtSoma.texto.text = "soma=" + sum.toFixed(2);
 			txtN.texto.text = "n=" + String(points.length - 1);
 		}
 		
@@ -555,6 +563,7 @@ package
 			
 			for (var i:int = 0; i < state.n; i++) 
 			{
+				trace(state[i].x);
 				var obj:Object = new Object();
 				obj.x = state[i].x;
 				obj.h = state[i].h;
@@ -1106,8 +1115,10 @@ package
 		
 		public function get allElements():Boolean
 		{
+			trace(points.length);
 			for (var i:int = 0; i < points.length - 1; i++) 
 			{
+				trace(points[i].x, points[i].h);
 				if (points[i].h == null) return false;
 			}
 			
@@ -1307,6 +1318,7 @@ package
 			
 		}
 		
+		private var raioPonto:int = 3;
 		/**
 		 * Desenha um ponto nas coordenadas dadas.
 		 * @param	pt1 Ponto onde será desenhado o ponto.
