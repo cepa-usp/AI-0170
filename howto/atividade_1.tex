@@ -1,19 +1,26 @@
 \documentclass[a4paper,12pt]{scrartcl}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{gfsartemisia-euler}
-\usepackage[brazil]{babel}
-\usepackage{paralist}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{geometry}
-\usepackage{hyperref}
-\usepackage[squaren]{SIunits}
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+  \usepackage{gfsartemisia-euler}
+  \usepackage[brazil]{babel}
+  \usepackage{paralist}
+  \usepackage{amsmath}
+  \usepackage{amssymb}
+  \usepackage{geometry}
+  \usepackage{hyperref}
+  \usepackage[squaren]{SIunits}
+  \usepackage{indentfirst}
+  \usepackage{graphicx}
 
-\title{Proposta de atividade}
-\subtitle{com o objeto educacional \emph{Integral de Riemann}}
-\author{R. S. Morais, S. N. Dezidério, I. R. Pagnossin}
+  \newenvironment{howto}{\begin{quotation}\footnotesize\sffamily}{\end{quotation}}
+  
+  
+  \title{Proposta de atividade}
+  \subtitle{com o recurso educacional \emph{Integral de Riemann}}
+  \author{R. S. Morais, S. N. Dezidério, I. R. Pagnossin}
 
+  \hyphenation{pro-ble-ma pri-mi-ti-va}
+  
 \begin{document}
 
 \maketitle
@@ -30,61 +37,129 @@
 \section*{Roteiro de aula}
 
   \begin{quotation}
-    Nesta proposta de atividade de aprendizagem utilizaremos o objeto educacional digital (OED) ``Integral de Riemann'' (disponível \href{http://cepa-usp.github.io/AI-0170/}{aqui}), desenvolvido pelo CEPA (Centro de Ensino e Pesquisa Aplicada) da USP, em parceria com os professores Dr. Ivan Ramos Pagnossin, Ms. Rosilda dos Santos Morais e Ms. Shirlei Nabarrete Dezidério. Para instruções sobre como utilizar o OED, veja \href{http://www.youtube.com/watch?v=PJlPleMYuG4&t=22}{este tutorial}.
+    Nesta proposta de atividade de aprendizagem utilizaremos o recurso educacional (RE) interativo ``Integral de Riemann'' (disponível \href{http://cepa-usp.github.io/AI-0170/}{aqui}),  Para instruções sobre como utilizar o OED, veja \href{http://www.youtube.com/watch?v=PJlPleMYuG4&t=22}{este tutorial}.
   \end{quotation}
+  
+  \subsection*{Objetivos}
+  
+    Ao final desta atividade, espera-se que os alunos:
+    \begin{compactitem}
+      \item Compreendam o significado o termo \emph{soma de Riemann}.
+      \item Compreendam a importância do \emph{teorema fundamental do Cálculo}.
+      \item Compreendam a relação entre os dois conceitos acima.
+    \end{compactitem}
 
   \subsection*{Desenvolvimento da aula}
-
-    Plotar o gráfico da \emph{função afim} $f(x) = 2x + 1$ no OED. Para isso, escolha esta função na tela 1. Em seguida, avance para a tela 2.
+  
+    Nesta proposta de atividade, construiremos uma soma de Riemann da \emph{função afim} $f(x) = 2x + 1$, cuja área sob ela pode ser calculada com base em argumentos geométricos (áreas do triângulo, do retângulo e do trapézio), conhecidos do aluno. Deste modo e utilizando implicitamente o \emph{teorema do valor médio} para integrais, poderemos construir uma soma de Riemann com poucos elementos de área e mostrar como o resultado da soma equipara-se ao cálculo analítico da integral definida, evidenciando assim o \emph{teorema fundamental do Cálculo}.
     
-    Na tela 2, arraste os pontos $a$ e $b$ para definir o intervalo de integração $[a,b] = [0,3]$. Feito isso, avance para a tela 3.
+    Neste processo, é importante que os alunos sejam estimulados a participar, propondo o próximo passo na solução do problema que queremos resolver, a saber: encontrar o valor da área entre $f$ e o eixo $0x$ (a ``área sob $f$''), no intervalo $[a,b]$.
     
-    Na tela 3, opte por ``soma personalizada'' e avance para a tela 4.
-    
-    Na tela 4 haverá, inicialmente, apenas os limites inferior ($a$) e superior ($b$) de integração. Sobre essa região, questionar os alunos:
-    
-      \paragraph{Estratégia 1:} questionar os alunos sobre como proceder para calcular a área sob o gráfico da função $f(x) = 2x + 1$ no intervalo escolhido.
+    Vejamos como fazer isso, passo-a-passo:
+  
+    \begin{compactenum}
+  
+      \item Utilize o RE para desenhar o gráfico da \emph{função afim} $f(x) = 2x + 1$. Para isso, escolha esta função na tela 1 do software, no grupo ``funções polinomiais'', e avance para a tela 2 (figura~\ref{fig:f}).
             
-      A área da região no intervalo $[a,b] = [0,3]$ sob $f$ é um trapézio cuja base maior tem medida de \unit{7}{un} (unidades do gráfico), base menor de \unit{1}{un} e altura de \unit{3}{un}.
+      \begin{figure}
+	\begin{minipage}[t]{0.49\textwidth}
+	  \includegraphics[width=\textwidth]{f.png}	  
+	\end{minipage}
+	\hfill
+	\begin{minipage}[t]{0.49\textwidth}
+	  \includegraphics[width=\textwidth]{grafico-f.png}
+	\end{minipage}
+	\caption{selecione a função $f(x) = 2x + 1$ na tela 1 (à esquerda) e avance para a tela 2, onde seu gráfico será automaticamente desenhado.}
+	\label{fig:f}
+      \end{figure}
       
-      \paragraph{Solução 1:} utilizar a fórmula da área do trapézio.
-      \paragraph{Solução 2:} calcular a área do retângulo de dimensões \unit{3}{un} e \unit{1}{un} e somá-la à área do triângulo de base \unit{6}{un} e altura \unit{3}{un}
+      \item Escolha o intervalo de integração $[a,b]=[0,3]$: na tela 2, arraste o ponto $a$ para a abscissa $x = 0$ e o ponto $b$, para $x = 3$. Feito isso, avance para a tela 3.
       
-      \paragraph{Estratégia 2:} Questionar os alunos sobre como proceder para calcular a área desejada usando apenas a fórmula que calcula a área do retângulo. Espera-se que eles sugiram a inserção de retângulos abaixo do gráfico da $f$ (soma inferior) ou acima (soma superior) no intervalo $[a,b] = [0,3]$, a fim de obter a área desejada, ou uma área bem próxima dela. Provavelmente os alunos questionarão o porquê dessa necessidade, quando se conhece as fórmulas da Geometria Euclidiana Plana, vista acima (estratégia 1), que são imediatas. Se isso ocorrer, questioná-los sobre como calcular áreas de regiões curvas, já direcionando a discussão para o objetivo da aula: somas de Riemann e teorema fundamental do Cálculo.
+      \item Escolha a opção ``soma personalizada'' na tela 3, o que lhe dará mais flexibilidade para construir a soma de Riemann. Avance para a tela 4.
       
-    Após a discussão acima, ainda na tela 4, escolher a partição, isto é, um conjunto de pontos sobre o exiso das abscissas que, juntamente com os pontos $a$ e $b$, dividem o intervalo de integração em $n$ subintervalos. Procure escolher os pontos $x_i$ de modo que a distância entre eles ($\Delta x_i$) varie.
-    
-    Ao clicar no eixo das abscissas, o sinal de $+$ estará ativo no canto esquerdo da tela. Clicar nele para marcar o ponto. Repetir isso para todos os pontos e, em seguida, avançar para a tela 5.
-    
-    Na tela 5, clicar no gráfico de $f$, no intervalo $[a,b] = [0,3]$, para marcar as alturas dos retângulos. Ao clicar num determinado ponto da função (no intervalo de integração), você estará marcando as alturas $f(\xi_i)$ dos retângulos. Após clicar no gráfico de $f$, o sinal $+$ estará ativo no canto esquerdo da tela. Ao clicar sobre ele, o OED irá desenhar o retântulo. Faça isso de modo que haja um retângulo (elemento de área) para cada subintervalo de integração.
-    
-    Escolher a altura aleatoriamente sem se preocupar com o \emph{valor médio}, pois um dos objetivos da atividade é que esse ajuste seja feito manualmente.
-    
-    Questionar os alunos sobre se a área encontrada, por meio dos retângulos, é boa. Nessa etapa temos um elemento importante.
+      \item \label{step:area} Na tela 4 haverá, inicialmente, apenas os limites inferior ($a$) e superior ($b$) de integração. Questione os alunos sobre como calcular a área sob o gráfico de $f(x) = 2x + 1$ no intervalo escolhido. Espera-se que eles proponham utilizar a fórmula da área do trapézio de altura $b - a = 3$ e bases $f(a) = 1$ e $f(b) = 7$. Neste caso a área será
+      \begin{equation*}
+	\text{Área sob $f$} = \frac{1}{2}\left[f(a) + f(b)\right](b - a).
+      \end{equation*}
+      
+      Alternativamente, os alunos podem sugerir somar a área do retângulo de lados $b - a$ e $f(a)$ com a área do triângulo de base $b - a$ e altura $f(b) - f(a)$. Neste caso, a área será dada por
+      \begin{equation*}
+       \text{Área sob $f$} = (b - a)f(a) + \frac{1}{2}(b - a)\left[f(b) - f(a)\right].
+      \end{equation*}
+      
+      Obviamente as duas expressões resultam no mesmo valor: 12.
 
-    Ainda na tela 5, vê-se nos retângulos que $\Delta x_i$ varia de um retângulo para outro. De acordo com a altura escolhida, vê-se que há áreas em excesso e em falta. Deve-se buscar por uma altura $f(\xi)$ do retângulo tal que as áreas em excesso (ou a falta) sejam mínimas ou se anulem. Isto é, uma compensa a outra. Para isso, colocar o cursor próximo do valor médio e pressionar a tecla $p$ em seu teclado, buscando a melhor altura. Se a altura do retângulo estiver bem próxima do valor médio, a área do retângulo será bem próxima da área procurada.
+      \item Após determinar a área sob $f$ no intervalo $[a,b]$, questionar os alunos sobre como obter um valor \emph{aproximado} dessa área utilizando apenas retângulos. Espera-se que eles sugiram a inserção de vários retângulos abaixo do gráfico de $f$ (soma inferior) ou acima dele (soma superior), no intervalo de integração.
+      
+      Provavelmente os alunos questionarão o porquê dessa necessidade, haja vista que as fórmulas da Geometria Euclidiana Plana resolvem o problema, como visto no passo anterior. Se isso ocorrer, questione-os sobre como calcular áreas de regiões curvas, já direcionando a discussão para o objetivo da aula: somas de Riemann e o teorema fundamental do Cálculo.
     
-    Deve-se observar o valor da soma de Riemann, no canto superior direito da tela, bem como o número $n$ de retângulos. À medida que se procura pelo valor médio, nota-se que a área se aproxima cada vez mais da área procurada (calculada anteriormente, na estratégia 1). Essa condição será verificada na integral, que será mostrada na tela 6, pois quanto melhor for a escolha da altura dos retângulso, melhor será essa área.
-    
-    Vá para a tela 6: ajuste a constante de integração.
-    
-    Desejando conhecer essa função, ou sua expressão analítica, basta clicar sobre ela e, em seguida, em ?, que está no canto esquerdo da tela. Na janela aberta, no campo ``valor'', você conhecerá a expressão analítica da $F(x)$, que, nesse caso, é a $F(x) = x^2/2 + x + C$, ou seja, a função primitiva de $f(x) = 2x + 1$, ou ainda, a anti-derivada de $f$.
-    
-    Arraste a função primitiva para cima e para baixo na direção do eixo $0y$. Ao clicar no ? verifica-se o valor da constante de integração, que varia a cada movimento que se faz com a $F(x)$. Para cada ponto, uma nova constante $C$ aparecerá no campo ``valor'' (logo após a expressão da função). Essa etapa da atividade mostra que, ao integrar uma função, sua primitiva será $F(x) + C$, que é, na verdade, uma família de funções, pois para cada valor de $C$, tem-se uma nova função.
-    
-    Desde o início da atividade, desejou-se calcular a área sob a $f$ no intervalo de integração $[a,b] = [0,3]$, que é o mesmo que calcular a integral de $a$ até $b$. Viu-se que essa área calculada pela soma de Riemann era de, aproximadamente, \unit{12}{\squaren un}. Agora, na tela 6, pode-se ver a antiderivada de $f$ e, inclusive, calcular a integral, pelo teorema fundamental do Clálculo, confirmando o que já foi verificado pela soma de Riemann.
-    
-    O que se quer calcular é a integral de $a$ até $b$.
-    
-    A partir da primitiva, pode-se: clicar no elemento de área superior que o OED alongará os lados deste elemento, interceptando $F(x)$. Dessa forma, você encontrará $F(b)$ e poderá verificar seu valor, clicando no botão ? quando $F(b)$ estiver selecionado. Faça o mesmo no elemento de área inferior. Verifique o valor de $F(a)$ e calcule $F(b) - F(a)$. Essa diferença é a \emph{integral definida} de $a$ até $b$, pelo teorema fundamental do Cálculo, no intervalo $[a,b]$, que deve ser igual ou muito próxima da área calculada pela soma de Riemann.
-    
-    A integral definida de $a$ até $b$ pode ser calculada com o botão ?.
-    
-    Outra forma de calcular, também pelo teorema fundamental do Cálculo, mas de forma mais imediata, é deslocando a primitiva sobre o eixo $0y$, de tal modo que no ponto $a$ ela seja igual a zero ($F(a) = 0$). Assim, $F(b)$ será a área procurada.
-    
-    Em ambos os casos, a constante de integração é irrelevante: imagine que $F(x) = G(x) + C$. Então, $F(b) - F(a) = G(b) + C - G(a) - C = G(b) - G(a)$.
-    
-    Deve-se chamar a atenção dos alunos nessa etapa, no que se refere à passagem \emph{matemática discreta}, utilizada na soma de Riemann, com a inserção de $n$ retângulos, para a \emph{matemática contínua}, pois, nessa última, quando o número de retângulso $n$ tende ao infinido ($n \to \infty$), as áreas em excesso ou em falta tendem a zero. Esse é sem dúvida o nosso objetivo maior da aula. Os alunos precisam perceber que a soma de Riemann e o teorema fundamental do Cálculo respondem à pergunta levantada no início da atividade: qual é a área sob $f$?
+      \item Após a discussão acima, ainda na tela 4, crie uma partição do intervalo $[a,b]$. Ou seja, escolha um conjunto de pontos sobre o exiso das abscissas que, juntamente com os pontos $a$ e $b$, dividem o intervalo de integração em $n = 5$ (ou mais) subintervalos. 
+      
+      Para criar um ponto da partição, clique com o mouse sobre o eixo das abscissas, na posição $x_i \in ]a,b[$ em que se quer criar o ponto. Em seguida, pressione o botão $+$ (mais), na barra de ferramentas, à esquerda da tela. Alternativamente, \emph{posicione} o mouse sobre o ponto desejado e pressione a tecla \textit{p}. Para remover este ponto, clique com o mouse sobre ele para selecioná-lo e pressione o botão $-$ (menos), ou pressione ``delete'' no teclado.
+      
+      Repita esse procedimento mais algumas vezes, procurando escolher os pontos $x_i$ de modo que a distância entre eles ($\Delta x_i$) varie, como ilustrado na figura \ref{fig:particao}. Feito isso, avance para a tela 5.
+      
+      \begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{particao.png}
+	\caption{exemplo de partição do intervalo $[a,b] = [0,3]$. Note como os pontos $x_i$ da partição foram escolhidos de modo que a distância entre eles varia. Isso é importante para mostrar a arbitrariedade inerente à construção de uma soma de Riemann.}
+	\label{fig:particao}
+      \end{figure}
+
+      \item Na tela 5, construa os elementos de área, isto é, os retângulos de base $\Delta x_i = x_{i+1} - x_i$ e altura $f(\xi_i)$, onde $\xi_i$ é um número \emph{arbitrário} do subintervalo $[x_i, x_{i+1}]$ e $i = 0,1,\ldots,n-1$. Note que a área do $i$-ésimo elemento de área é igual a $f(\xi_i)\Delta x_i$.
+      
+      Para criar um elemento de área na ferramenta, clique no gráfico de $f$ em algum $\xi_i \in [x_i,x_{i+1}]$. Ao fazer isso, aparecerá o símbolo $\times$ sobre o gráfico de $f$, destacando o ponto $\left(\xi_i, f(\xi_i)\right)$. Neste momento, pressione o botão $+$ (mais) ou a tecla \textit{p} para que o elemento de área (um retângulo) seja automaticamente desenhado na tela. Se você repetir esse procedimento para um $\xi_i$ diferente do mesmo subintervalo, um novo elemento de área será criado no lugar do anterior. Para remover um elemento de área, clique sobre ele e pressione o botão $-$ (menos) ou a tecla ``delete''.
+      
+      Repita o procedimento acima para cada subintervalo, \emph{sem se preocupar com o critério de escolha de $\xi_i$}, pois um dos objetivos desta atividade é que esse ajuste seja feito manualmente.
+      
+      \item Ainda na tela 5, com todos os elementos de área presentes, questione os alunos sobre se a área encontrada, por meio dos retângulos, é uma boa aproximação. Note que você pode comparar a área exata ($=12$), calculada no passo \ref{step:area}, com a soma das áreas dos elementos de área, que é exibida no canto superior direito da tela.
+      
+      \item Motive os alunos a melhorar a aproximação. Para isso, chame a atenção para o fato de que em cada subintervalo há áreas ``sobrando'' (à esquerda de $\xi_i$) e ``faltando'' (à direita), e que a escolha de $\xi_i$ é arbitrária. Espera-se que os alunos proponham escolher $\xi_i$ de modo que, em cada subintervalo, o excesso de área à esquerda compense a falta dela à direita.
+      
+      Para fazer isso com o software, mova o mouse pelo subintervalo enquanto pressiona a tecla \textit{p} várias vezes, reconstruindo assim o elemento de área para vários $\xi_i$. Faça isso até que, \textbf{visualmente}, o excesso de área à esquerda de $\xi_i$ compense a falta à direita.\footnote{\textbf{Dica:} ao clicar sobre um elemento de área, aparecem duas retas verticais, uma à esquerda e outra à direita dele, que podem servir de guias para avaliar as áreas que faltam e que sobram.} Neste caso, $f(\xi_i)$ será o \emph{valor médio} de $f$ no subintervalo $[x_i, x_{i+1}]$.
+      
+      \paragraph{Observação:} quando escolhemos os $\xi_i$ de modo que $f(\xi_i)$ seja mínimo em cada subintervalo $[x_i,x_{i+1}]$, ao somar os elementos de área obtemos a chamada ``soma inferior'', que subestima a área sob $f$. Por outro lado, quando escolhemos $\xi_i$ de modo $f(\xi_i)$ seja máximo, obtemos a ``soma superior'', na qual a área é superestimada.
+      
+      \item Ajuste cada um dos $\xi_i$ conforme o critério do passo anterior. No final, compare novamente a soma das áreas dos elementos de área, no canto superior direito da tela, com a área obtida com argumentos geométricos (passo \ref{step:area}).
+      
+      Avance para a tela 6, tomando o cuidado de verificar se a quantidade de elementos de área desenhados é igual à quantidade $n$ de subintervalos: apenas nesta condição o software permitirá avançar.
+      
+      \item Na tela 6 o RE exibirá o gráfico da primitiva (ou anti-derivada) de $f$, a função $F$, sobreposta à construção realizada até aqui. Se quiser ver a expressão analítica dela, clique sobre $F$ para selecioná-la e pressione o botão ? (ajuda), no canto inferior esquerdo da tela. Nessa proposta, $F(x) = x^2/2 + x + C$, onde $C$ é a \emph{constante de integração}.
+      
+      \item Arraste $F$ para cima e para baixo, o que corresponde a variar $C$ (note que o valor da constante de integração varia conforme você faz isso: consulte o valor pressionando novamente o botão de ajuda, com a função $F$ selecionada). Argumente que essa ação não afeta a relação entre $f$ e $F$, isto é, $f = dF/dx$, pois a derivada de uma constante é nula.
+      
+      Essa etapa da atividade mostra que, ao integrar uma função, sua primitiva será, na verdade, uma família de funções, pois para cada valor de $C$, tem-se uma nova função.
+      
+      \item \label{step:C} Arraste $F$ para baixo, até que seu vértice aproxime-se de $y = -5$ (neste caso, $C \approx -4,7$). O intuito desse passo é apenas facilitar o passo seguinte.
+      
+      \item Obtenha o valor de $F(a)$: clique próximo do ponto $\left(a,F(a)\right)$ para destacá-lo no plano cartesiano, como ilustrado na figura \ref{fig:F(a)}. Em seguida, pressione o botão ? (ajuda) para ler o valor de $F(a)$ na janela de ajuda.
+      
+      \begin{figure}
+	\begin{minipage}[t]{0.49\textwidth}
+	  \includegraphics[width=\textwidth]{F(a).png}	  
+	  \caption{selecione o ponto $\left(a,F(a)\right)$ e acesse a janela de ajuda para conhecer o valor de $F(a)$.}
+	  \label{fig:F(a)}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[t]{0.49\textwidth}
+	  \includegraphics[width=\textwidth]{linhas-guia.png}
+	  \caption{utilize as linhas-guia verticais para selecionar o ponto $\left(b,F(b)\right)$.}
+	  \label{fig:linhas-guia}
+	\end{minipage}	
+      \end{figure}
+      
+      \item Obtenha o valor de $F(b)$, como no passo anterior.
+      
+      Em alguns casos pode ser difícil acertar o clique sobre $\left(b,F(b)\right)$.\footnote{Especialmente se você não fez $C \approx 4,7$, como instruido no passo \ref{step:C}.} Para simplificar essa tarefa, selecione o elemento de área mais à direita para que o software desenhe as linhas-guia verticais nas laterais dele (fig~\ref{fig:linhas-guia}). Deste modo, basta clicar sobre a intersecção da linha vertical mais à direita com $F$ para obter $F(b)$.
+      
+      \item Calcule $F(b) - F(a)$ e compare o resultado com os valores da soma de Riemann, no canto superior direito, e da área obtida com argumentos geométricos (passo \ref{step:area}). O resultado desses três procedimentos deve ser o mesmo, igual a (ou aproximadamente) 12. Esta é uma evidência do \emph{teorema fundamental do Cálculo}, a saber:
+      \begin{equation*}
+       \text{Área sob $f$ em $[a,b]$} = \int_a^b f(x)\,dx = F(b) - F(a).
+      \end{equation*}
+      
+      É fundamental chamar a atenção dos alunos para os dois últimos procedimentos: no primeiro, aproximamos a área sob $f$ pela soma da área de $n$ retângulos (\emph{matemática discreta}); no segundo, utilizamos a anti-derivada $F$ para calcular $F(b) - F(a)$ (\emph{matemática contínua}). A equivalência entre esses dois resultados é o teorema fundamental do Cálculo, que nos permite obter a \emph{integral definida de $f$ em $[a,b]$} (a área sob $f$) sem efetuar a laboriosa soma de Riemann.
+
+    \end{compactenum}
 
 
 \section*{Nomenclatura}
@@ -107,6 +182,10 @@
  
  \item O \emph{teorema fundamental do Cálculo} (TFC) diz que, se $f$ for contínua em $[a,b]$, então $\int_a^b f(x)\,dx = F(b) - F(a)$, onde $F$ é qualquer antiderivada de $f$, isto é, uma função tal que $F' = f$.
 \end{compactitem}
+
+  \section{Créditos}
+  
+desenvolvido pelo CEPA (Centro de Ensino e Pesquisa Aplicada) da USP, em parceria com os professores Dr. Ivan Ramos Pagnossin, Ms. Rosilda dos Santos Morais e Ms. Shirlei Nabarrete Dezidério.  
 
 
 \end{document}
