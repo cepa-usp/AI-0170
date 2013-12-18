@@ -11,12 +11,12 @@
   \usepackage[squaren]{SIunits}
   \usepackage{indentfirst}
   \usepackage{graphicx}
-
-  \newenvironment{howto}{\begin{quotation}\footnotesize\sffamily}{\end{quotation}}
+  \usepackage[font=small,format=plain]{caption}
+  \usepackage{icomma}
   
   
-  \title{Proposta de atividade}
-  \subtitle{com o recurso educacional \emph{Integral de Riemann}}
+  \title{Proposta de atividade 1:}
+  \subtitle{o teorema fundamental do Cálculo}
   \author{R. S. Morais, S. N. Dezidério, I. R. Pagnossin}
 
   \hyphenation{pro-ble-ma pri-mi-ti-va}
@@ -25,33 +25,26 @@
 
   \setlength\parindent{2em}
 
-\maketitle
+  \maketitle
 
-\begin{abstract}
-  Roteiro de aula para a introdução dos conceitos:
-  \begin{compactitem}
-   \item Soma de Riemann
-   \item Teorema fundamental do Cálculo (TFC)
-   \item Teorema do valor médio para integrais (TVM)
-  \end{compactitem}
-\end{abstract}
-
-\section*{Roteiro de aula}
-
-  \begin{quotation}
-    Nesta proposta de atividade de aprendizagem utilizaremos o recurso educacional (RE) interativo ``Integral de Riemann'' (disponível \href{http://cepa-usp.github.io/AI-0170/}{aqui}), Para instruções sobre como utilizar o OED, veja \href{http://www.youtube.com/watch?v=PJlPleMYuG4&t=22}{este tutorial}.
-  \end{quotation}
+  \begin{abstract}
+    Este trabalho apresenta uma proposta de atividade de aprendizagem que utiliza o recurso educacional interativo ``Integral de Riemann'' (disponível \href{http://cepa-usp.github.io/AI-0170/}{aqui}) para abordar o \emph{teorema fundamental do Cálculo}: utilizamos o software para construir uma soma de Riemann arbitrária, com o intuito de aproximar a área sob o gráfico de uma função afim $f$ no intervalo $[a,b]$ e comparamos o resultado com a área exata, que pode ser obtida geometricamente. Finalmente, utilizamos a anti-derivada $F$ para evidenciar a equivalência desses resultados com $F(b) - F(a)$.
+    
+    Como o software oferece bastante flexibilidade na construção das somas de Riemann, podemos aproximar a área sob $f$ utilizando uma quantidade finita de elementos de área, fundamentado no \emph{teorema do valor médio} para integrais (que não é abordado explicitamente). Por isso, propomos uma atividade com foco na participação dos alunos, baseando todo o processo em conhecimentos prévios deles.
+    
+    Para mais instruções sobre como utilizar o recurso educacional, veja \href{http://www.youtube.com/watch?v=PJlPleMYuG4&t=22}{este tutorial}.
+  \end{abstract}
   
-  \subsection*{Objetivos}
+  \section*{Objetivos específicos}
   
-    Ao final desta atividade, espera-se que os alunos:
+    Ao final desta atividade, espera-se que os alunos saibam:
     \begin{compactitem}
-      \item Compreendam o significado o termo \emph{soma de Riemann}.
-      \item Compreendam a importância do \emph{teorema fundamental do Cálculo}.
-      \item Compreendam a relação entre os dois conceitos acima.
+      \item explicar o significado o termo \emph{soma de Riemann}.
+      \item explicar a importância do \emph{teorema fundamental do Cálculo}.
+      \item explicar a relação entre os dois conceitos acima.
     \end{compactitem}
 
-  \subsection*{Desenvolvimento da aula}
+  \section*{Desenvolvimento da aula}
   
     Nesta proposta de atividade, construiremos uma soma de Riemann da \emph{função afim} $f(x) = 2x + 1$, cuja área sob ela pode ser calculada com base em argumentos geométricos (áreas do triângulo, do retângulo e do trapézio), conhecidos do aluno. Deste modo e utilizando implicitamente o \emph{teorema do valor médio} para integrais, poderemos construir uma soma de Riemann com poucos elementos de área e mostrar como o resultado da soma equipara-se ao cálculo analítico da integral definida, evidenciando assim o \emph{teorema fundamental do Cálculo}.
     
@@ -64,13 +57,13 @@
 	\setlength\leftmargin{0cm}%
 	\setlength\itemindent\parindent%
 	\setlength\listparindent{\parindent}%
-        \setlength\labelwidth{1.5em}%
-        \setlength\labelsep{0.5em}%
+        \setlength\labelwidth{1.3em}%
+        \setlength\labelsep{0.7em}%        
         \refstepcounter{steps}%
         \usecounter{steps}%
     }
   
-      \item Utilize o RE para desenhar o gráfico da \emph{função afim} $f(x) = 2x + 1$. Para isso, escolha esta função na tela 1 do software, no grupo ``funções polinomiais'', e avance para a tela 2 (figura~\ref{fig:f}).
+      \item Utilize o recurso educacional para desenhar o gráfico da \emph{função afim} $f(x) = 2x + 1$. Para isso, escolha esta função na tela 1 do software, no grupo ``funções polinomiais'', e avance para a tela 2 (figura~\ref{fig:f}).
             
       \begin{figure}
 	\begin{minipage}[t]{0.49\textwidth}
@@ -80,7 +73,7 @@
 	\begin{minipage}[t]{0.49\textwidth}
 	  \includegraphics[width=\textwidth]{grafico-f.png}
 	\end{minipage}
-	\caption{selecione a função $f(x) = 2x + 1$ na tela 1 (à esquerda) e avance para a tela 2, onde seu gráfico será automaticamente desenhado.}
+	\caption{selecione a função $f(x) = 2x + 1$ na tela 1 (à esquerda) e avance para a tela 2, onde seu gráfico será automaticamente desenhado (à direita).}
 	\label{fig:f}
       \end{figure}
       
@@ -104,7 +97,7 @@
       
       Provavelmente os alunos questionarão o porquê dessa necessidade, haja vista que as fórmulas da Geometria Euclidiana Plana resolvem o problema, como visto no passo anterior. Se isso ocorrer, questione-os sobre como calcular áreas de regiões curvas, já direcionando a discussão para o objetivo da aula: somas de Riemann e o teorema fundamental do Cálculo.
     
-      \item Após a discussão acima, ainda na tela 4, crie uma partição do intervalo $[a,b]$. Ou seja, escolha um conjunto de pontos sobre o exiso das abscissas que, juntamente com os pontos $a$ e $b$, dividem o intervalo de integração em $n = 5$ (ou mais) subintervalos. 
+      \item Após a discussão acima, ainda na tela 4, crie uma partição do intervalo $[a,b]$. Ou seja, escolha um conjunto de pontos sobre o eixo das abscissas que, juntamente com os pontos $a$ e $b$, dividem o intervalo de integração em $n = 5$ (ou mais) subintervalos. 
       
       Para criar um ponto da partição, clique com o mouse sobre o eixo das abscissas, na posição $x_i \in ]a,b[$ em que se quer criar o ponto. Em seguida, pressione o botão $+$ (mais), na barra de ferramentas, à esquerda da tela. Alternativamente, \emph{posicione} o mouse sobre o ponto desejado e pressione a tecla \textit{p}. Para remover este ponto, clique com o mouse sobre ele para selecioná-lo e pressione o botão $-$ (menos), ou pressione ``delete'' no teclado.
       
@@ -119,7 +112,7 @@
 
       \item Na tela 5, construa os elementos de área, isto é, os retângulos de base $\Delta x_i = x_{i+1} - x_i$ e altura $f(\xi_i)$, onde $\xi_i$ é um número \emph{arbitrário} do subintervalo $[x_i, x_{i+1}]$ e $i = 0,1,\ldots,n-1$. Note que a área do $i$-ésimo elemento de área é igual a $f(\xi_i)\Delta x_i$.
       
-      Para criar um elemento de área na ferramenta, clique no gráfico de $f$ em algum $\xi_i \in [x_i,x_{i+1}]$. Ao fazer isso, aparecerá o símbolo $\times$ sobre o gráfico de $f$, destacando o ponto $\left(\xi_i, f(\xi_i)\right)$. Neste momento, pressione o botão $+$ (mais) ou a tecla \textit{p} para que o elemento de área (um retângulo) seja automaticamente desenhado na tela. Se você repetir esse procedimento para um $\xi_i$ diferente do mesmo subintervalo, um novo elemento de área será criado no lugar do anterior. Para remover um elemento de área, clique sobre ele e pressione o botão $-$ (menos) ou a tecla ``delete''.
+      Para criar um elemento de área no software, clique no gráfico de $f$ em algum $\xi_i \in [x_i,x_{i+1}]$. Ao fazer isso, aparecerá o símbolo $\times$ sobre o gráfico de $f$, destacando o ponto $\left(\xi_i, f(\xi_i)\right)$. Neste momento, pressione o botão $+$ (mais) ou a tecla \textit{p} para que o elemento de área (um retângulo) seja automaticamente desenhado na tela. Se você repetir esse procedimento para um $\xi_i$ diferente do mesmo subintervalo, um novo elemento de área será criado no lugar do anterior. Para remover um elemento de área, clique sobre ele e pressione o botão $-$ (menos) ou a tecla ``delete''.
       
       Repita o procedimento acima para cada subintervalo, \emph{sem se preocupar com o critério de escolha de $\xi_i$}, pois um dos objetivos desta atividade é que esse ajuste seja feito manualmente.
       
@@ -135,7 +128,7 @@
       
       Avance para a tela 6, tomando o cuidado de verificar se a quantidade de elementos de área desenhados é igual à quantidade $n$ de subintervalos: apenas nesta condição o software permitirá avançar.
       
-      \item Na tela 6 o RE exibirá o gráfico da primitiva (ou anti-derivada) de $f$, a função $F$, sobreposta à construção realizada até aqui. Se quiser ver a expressão analítica dela, clique sobre $F$ para selecioná-la e pressione o botão ? (ajuda), no canto inferior esquerdo da tela. Nessa proposta, $F(x) = x^2/2 + x + C$, onde $C$ é a \emph{constante de integração}.
+      \item Na tela 6 o software exibirá o gráfico da primitiva (ou anti-derivada) de $f$, a função $F$, sobreposta à construção realizada até aqui. Se quiser ver a expressão analítica dela, clique sobre $F$ para selecioná-la e pressione o botão ? (ajuda), no canto inferior esquerdo da tela. Nessa proposta, $F(x) = x^2/2 + x + C$, onde $C$ é a \emph{constante de integração}.
       
       \item Arraste $F$ para cima e para baixo, o que corresponde a variar $C$ (note que o valor da constante de integração varia conforme você faz isso: consulte o valor pressionando novamente o botão de ajuda, com a função $F$ selecionada). Argumente que essa ação não afeta a relação entre $f$ e $F$, isto é, $f = dF/dx$, pois a derivada de uma constante é nula.
       
@@ -172,31 +165,30 @@
 
     \end{list}
 
+  \section*{Nomenclatura}
+    \begin{compactitem}
+      \item Uma \emph{partição} $P$ do intervalo de integração é um conjunto de pontos $x_i$ sobre o eixo das abscissas que dividem o intervalo de integração em $n$ subintervalos, com $i = 0, 1, \ldots, n$. Os limites inferior (representado por $a$) e superior ($b$) compõem o primeiro e último desses pontos, respectivamente. Ou seja, $P = \{x_0 = a, x_1, \ldots, x_n = b\}$.
+      
+      \item $x_i$ é o $i$-ésimo ponto da partição do interalo $[a,b]$.
+      
+      \item $\Delta x_i = x_{i+1} - x_i$ é a amplitude do $i$-ésimo subintervalo de integração.
+      
+      \item $\Delta a_i = f(\xi_i) \Delta x_i$ é a área do $i$-ésimo \emph{elemento de área}, um retângulo de base $\Delta x_i$ e altura $f(\xi_i)$, onde $\xi_i$ é um ponto qualquer do subintervalo de integração $[x_i, x_{i + 1}]$.
 
-\section*{Nomenclatura}
-\begin{compactitem}
- \item {\bfseries Partição} é o conjunto de pontos sobre o eixo das abscissas que dividem o intervalo de integração em $n$ subintervalos. Os limites inferior (representado por $a$) e superior ($b$) compõem o primeiro e último desses pontos, respectivamente.
- 
- \item {\bfseries Teorema do valor médio para integrais (TVM):} se $f$ for uma função contínua em $[a,b]$, então existirá ao menos um $c \in \mathbb{R}$ tal que $\int_a^b f(x)\,dx = f(c)\cdot(b-a)$.
- 
- \item A \emph{primitiva} de uma função $f$ é a a função $F$ tal que $f = \frac{dF}{dx} = \frac{d}{dx}\left[F(x) + C\right]$, onde $C$ é a \emph{constante de integração}.
- 
- \item $x_i$ é o $i$-ésimo ponto da partição do interalo $[a,b]$.
- 
- \item $\Delta x_i$ é a amplitude do $i$-ésimo subintervalo de integração.
- 
- \item $\Delta a_i = f(\xi) \Delta x_i$ é o $i$-ésimo \emph{elemento de área}, um retângulo de base $\Delta x_i$ e altura $f(\xi_i)$, onde $\xi_i$ é um ponto do subintervalo de integração $[x_i, x_i + \Delta x_i]$.
- 
- \item A \emph{soma de Riemann} $S_n$ é a soma de todos os elementos de área. Ou seja, $S_n = \sum_{i=1}{n} f(\xi_i) \Delta x_i$.
- 
- \item A \emph{integral de Riemann} é o limite da soma de Riemann quando $n$ tende ao infinito. Ou seja, $I = \lim_{n \to \infty} S_n$.
- 
- \item O \emph{teorema fundamental do Cálculo} (TFC) diz que, se $f$ for contínua em $[a,b]$, então $\int_a^b f(x)\,dx = F(b) - F(a)$, onde $F$ é qualquer antiderivada de $f$, isto é, uma função tal que $F' = f$.
-\end{compactitem}
+      \item \emph{Teorema do valor médio} para integrais (TVM): se $f$ for uma função contínua em $[a,b]$, então existirá ao menos um $\xi \in [a,b]$ tal que $\int_a^b f(x)\,dx = (b-a) f(\xi)$, onde $f(\xi)$ é o valor médio de $f$ em $[a,b]$.
 
-  \section{Créditos}
+      \item Uma \emph{primitiva}, ou \emph{anti-derivada} da função $f$ é a função $F$ tal que $f = \frac{dF}{dx} = \frac{d}{dx}\left(F + C\right)$, onde $C$ é a \emph{constante de integração}.
+
+      \item A \emph{soma de Riemann} $S_n$ é a soma de todos os elementos de área. Ou seja, $S_n = \sum_{i=1}^{n} f(\xi_i) \Delta x_i$.
+
+      \item A \emph{integral de Riemann} é o limite da soma de Riemann quando $n$ tende ao infinito. Ou seja, $I = \lim_{n \to \infty} S_n$. Neste limite, o critério de escolha de $\xi_i$ (soma superior, soma inferior ou personalizada, como usamos nesta proposta) é irrelevante para o resultado: $I = \int_a^b f(x)\, dx$.
+
+      \item O \emph{teorema fundamental do Cálculo} diz que, se $f$ for contínua em $[a,b]$, então $\int_a^b f(x)\,dx = F(b) - F(a)$, onde $F$ é qualquer anti-derivada de $f$.
+    \end{compactitem}
+
+  \section*{Créditos}
   
-desenvolvido pelo CEPA (Centro de Ensino e Pesquisa Aplicada) da USP, em parceria com os professores Dr. Ivan Ramos Pagnossin, Ms. Rosilda dos Santos Morais e Ms. Shirlei Nabarrete Dezidério.  
+  O recurso educacional interativo utilizado nesta proposta foi inicialmente desenvolvido para a disciplina ``Fundamentos de Matemática'' (\href{https://uspdigital.usp.br/jupiterweb/obterDisciplina?sgldis=plc0001&nomdis=}{PLC0001}) do curso de graduação semi-presencial em Licenciatura em Ciências do convênio USP/Univesp (Universidade Virtual do Estado de São Paulo), numa parceria dos autores com o Centro de Ensino e Pesquisa Aplicada (\href{http://cepa.if.usp.br}{CEPA}) da USP.
 
 
 \end{document}
