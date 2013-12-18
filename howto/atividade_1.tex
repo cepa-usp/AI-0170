@@ -23,6 +23,8 @@
   
 \begin{document}
 
+  \setlength\parindent{2em}
+
 \maketitle
 
 \begin{abstract}
@@ -37,7 +39,7 @@
 \section*{Roteiro de aula}
 
   \begin{quotation}
-    Nesta proposta de atividade de aprendizagem utilizaremos o recurso educacional (RE) interativo ``Integral de Riemann'' (disponível \href{http://cepa-usp.github.io/AI-0170/}{aqui}),  Para instruções sobre como utilizar o OED, veja \href{http://www.youtube.com/watch?v=PJlPleMYuG4&t=22}{este tutorial}.
+    Nesta proposta de atividade de aprendizagem utilizaremos o recurso educacional (RE) interativo ``Integral de Riemann'' (disponível \href{http://cepa-usp.github.io/AI-0170/}{aqui}), Para instruções sobre como utilizar o OED, veja \href{http://www.youtube.com/watch?v=PJlPleMYuG4&t=22}{este tutorial}.
   \end{quotation}
   
   \subsection*{Objetivos}
@@ -57,7 +59,16 @@
     
     Vejamos como fazer isso, passo-a-passo:
   
-    \begin{compactenum}
+    \newcounter{steps}
+    \begin{list}{\arabic{steps}.}{
+	\setlength\leftmargin{0cm}%
+	\setlength\itemindent\parindent%
+	\setlength\listparindent{\parindent}%
+        \setlength\labelwidth{1.5em}%
+        \setlength\labelsep{0.5em}%
+        \refstepcounter{steps}%
+        \usecounter{steps}%
+    }
   
       \item Utilize o RE para desenhar o gráfico da \emph{função afim} $f(x) = 2x + 1$. Para isso, escolha esta função na tela 1 do software, no grupo ``funções polinomiais'', e avance para a tela 2 (figura~\ref{fig:f}).
             
@@ -159,7 +170,7 @@
       
       É fundamental chamar a atenção dos alunos para os dois últimos procedimentos: no primeiro, aproximamos a área sob $f$ pela soma da área de $n$ retângulos (\emph{matemática discreta}); no segundo, utilizamos a anti-derivada $F$ para calcular $F(b) - F(a)$ (\emph{matemática contínua}). A equivalência entre esses dois resultados é o teorema fundamental do Cálculo, que nos permite obter a \emph{integral definida de $f$ em $[a,b]$} (a área sob $f$) sem efetuar a laboriosa soma de Riemann.
 
-    \end{compactenum}
+    \end{list}
 
 
 \section*{Nomenclatura}
