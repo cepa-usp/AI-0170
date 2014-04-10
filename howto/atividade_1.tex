@@ -35,7 +35,13 @@
     Para mais instruções sobre como utilizar o recurso educacional, veja \href{http://www.youtube.com/watch?v=PJlPleMYuG4&t=22}{este tutorial}.
   \end{abstract}
   
-  \section*{Objetivos específicos}
+  \section*{Parte 1}
+  
+    Nesta primeira parte da atividade, construiremos uma soma de Riemann da \emph{função afim} $f(x) = 2x + 1$, cuja área sob ela pode ser calculada com base em argumentos geométricos (áreas do triângulo, do retângulo e do trapézio), conhecidos do aluno. Deste modo e utilizando implicitamente o \emph{teorema do valor médio} para integrais, poderemos construir uma soma de Riemann com poucos elementos de área e mostrar como o resultado da soma equipara-se ao cálculo analítico da integral definida, evidenciando assim o \emph{teorema fundamental do Cálculo}.
+    
+    Neste processo, é importante que os alunos sejam estimulados a participar, propondo o próximo passo na solução do problema que queremos resolver, a saber: encontrar o valor da área da região delimiteada por $x = a$, $x = b$, $y = 0 $ e $y = f(x)$ (a ``área sob $f$'').
+  
+    \subsection*{Objetivos específicos}
   
     Ao final desta atividade, espera-se que os alunos saibam:
     \begin{compactitem}
@@ -43,14 +49,8 @@
       \item explicar a importância do \emph{teorema fundamental do Cálculo}.
       \item explicar a relação entre os dois conceitos acima.
     \end{compactitem}
-
-  \section*{Desenvolvimento da aula}
   
-    Nesta proposta de atividade, construiremos uma soma de Riemann da \emph{função afim} $f(x) = 2x + 1$, cuja área sob ela pode ser calculada com base em argumentos geométricos (áreas do triângulo, do retângulo e do trapézio), conhecidos do aluno. Deste modo e utilizando implicitamente o \emph{teorema do valor médio} para integrais, poderemos construir uma soma de Riemann com poucos elementos de área e mostrar como o resultado da soma equipara-se ao cálculo analítico da integral definida, evidenciando assim o \emph{teorema fundamental do Cálculo}.
-    
-    Neste processo, é importante que os alunos sejam estimulados a participar, propondo o próximo passo na solução do problema que queremos resolver, a saber: encontrar o valor da área entre $f$ e o eixo $0x$ (a ``área sob $f$''), no intervalo $[a,b]$.
-    
-    Vejamos como fazer isso, passo-a-passo:
+    \subsection*{Roteiro}
   
     \newcounter{steps}
     \begin{list}{\arabic{steps}.}{
@@ -95,7 +95,8 @@
 
       \item Após determinar a área sob $f$ no intervalo $[a,b]$, questionar os alunos sobre como obter um valor \emph{aproximado} dessa área utilizando apenas retângulos. Espera-se que eles sugiram a inserção de vários retângulos abaixo do gráfico de $f$ (soma inferior) ou acima dele (soma superior), no intervalo de integração.
       
-      Provavelmente os alunos questionarão o porquê dessa necessidade, haja vista que as fórmulas da Geometria Euclidiana Plana resolvem o problema, como visto no passo anterior. Se isso ocorrer, questione-os sobre como calcular áreas de regiões curvas, já direcionando a discussão para o objetivo da aula: somas de Riemann e o teorema fundamental do Cálculo.
+      Provavelmente os alunos questionarão o porquê dessa necessidade, haja vista que as fórmulas da Geometria Euclidiana Plana resolvem o problema.
+      Este é um bom momento para propor que eles pensem em como \emph{aproxiar} a área sob a função $x^2$ no mesmo intervalo de integração.
     
       \item Após a discussão acima, ainda na tela 4, crie uma partição do intervalo $[a,b]$. Ou seja, escolha um conjunto de pontos sobre o eixo das abscissas que, juntamente com os pontos $a$ e $b$, dividem o intervalo de integração em $n = 5$ (ou mais) subintervalos. 
       
@@ -157,14 +158,102 @@
       Em alguns casos pode ser difícil acertar o clique sobre $\left(b,F(b)\right)$.\footnote{Especialmente se você não fez $C \approx 4,7$, como instruido no passo \ref{step:C}.} Para simplificar essa tarefa, selecione o elemento de área mais à direita para que o software desenhe as linhas-guia verticais nas laterais dele (fig~\ref{fig:linhas-guia}). Deste modo, basta clicar sobre a intersecção da linha vertical mais à direita com $F$ para obter $F(b)$.
       
       \item Calcule $F(b) - F(a)$ e compare o resultado com os valores da soma de Riemann, no canto superior direito, e da área obtida com argumentos geométricos (passo \ref{step:area}). O resultado desses três procedimentos deve ser o mesmo, igual a (ou aproximadamente) 12. Esta é uma evidência do \emph{teorema fundamental do Cálculo}, a saber:
-      \begin{equation*}
+      \begin{equation}\label{eq:TFC}
        \text{Área sob $f$ em $[a,b]$} = \int_a^b f(x)\,dx = F(b) - F(a).
-      \end{equation*}
+      \end{equation}
       
       É fundamental chamar a atenção dos alunos para os dois últimos procedimentos: no primeiro, aproximamos a área sob $f$ pela soma da área de $n$ retângulos (\emph{matemática discreta}); no segundo, utilizamos a anti-derivada $F$ para calcular $F(b) - F(a)$ (\emph{matemática contínua}). A equivalência entre esses dois resultados é o teorema fundamental do Cálculo, que nos permite obter a \emph{integral definida de $f$ em $[a,b]$} (a área sob $f$) sem efetuar a laboriosa soma de Riemann.
-
+      
+      \paragraph{Atenção:} este é um bom momento para distinguir a ``área sob $f$'' da ``integral de $f$''.
+      Rigorosamente, a ``área sob $f$'' é de fato a área da \emph{região} delimitada por $x = a$, $x = b$, $y = 0$ e $y = f(x)$.
+      Por exemplo, a \emph{integral} de $f(x) = x$ no intervalo $[1,-1]$ é igual a zero:
+      \begin{equation*}
+	\int_{1}^{-1} x\, dx = \left[\frac{x^2}{2}\right]_{1}^{-1} = 0,
+      \end{equation*}
+      mas a ``\emph{área} sob $f$'' nesse intervalo é igual a um:
+      \begin{equation*}
+	\left|\int_{1}^{-1}|x|\,dx\right| = \left|\int_{1}^{0}(-x)\, dx + \int_{0}^{-1}x\, dx\right| = 1.
+      \end{equation*}
+      
+      Assim, embora a \emph{integral} possa ser positiva ou negativa, a \emph{área} só pode ser positiva.
+      
+      Note na última expressão que, para calcular a área, integramos $|x|$ ao invés de $x$, visando garantir que o integrando seja sempre positivo.
+      Além disso, tomamos o módulo da integral para evitar o sinal negativo oriundo da orientação do intervalo de integração ($dx < 0$).
+      
     \end{list}
-
+    
+    \section*{Parte 2}
+    
+      Nesta segunda parte, aplicaremos os dois conceitos explorados na parte anterior (soma de Riemann e teorema fundamental do Cálculo)
+      para encontrar a integral de $f(x) = x^2$ no intervalo $[0,3]$. Note que não poderemos utilizar a Geometria Euclidiana Plana.
+    
+      \subsection*{Objetivos específicos}
+  
+      Ao final desta parte, espera-se que os alunos saibam:
+      \begin{compactitem}
+	\item explicar o significado dos termos \emph{soma inferior} e \emph{soma superior}.
+	\item relacionar o aumento na quantidade de elementos de área com a melhoria na aproximação da área pela soma de Riemann.
+      \end{compactitem}
+      
+      \subsection*{Roteiro}
+           
+      \begin{list}{\arabic{steps}.}{
+	\setlength\leftmargin{0cm}%
+	\setlength\itemindent\parindent%
+	\setlength\listparindent{\parindent}%
+        \setlength\labelwidth{1.3em}%
+        \setlength\labelsep{0.7em}%        
+        \refstepcounter{steps}%
+        \usecounter{steps}%
+      }
+    
+	\item calcular integral de $f$
+	\item selecionar $f(x) = x^2$
+	\item selecionar $[a,b] = [0,3]$
+	\item selecionar ``soma inferior'' (``soma superior'')
+	\item chamar a atenção para o erro ``para menos'' (``para mais'')
+	\item aumentar/reduzir o número de elementos de área, chamando a atenção para a progressão da somatória, cada vez mais próxima da integral.
+	\item No limite em que $n \to \infty$, abordar a transição do discreto para o contínuo.
+    
+      \end{list}
+      
+    \subsection*{Parte 3}
+    
+      Na parte final desta atividade os alunos replicarão o que foi exposto para outras funções simples.
+    
+    \subsection*{Objetivos específicos}
+  
+      Ao final desta parte, espera-se que os alunos saibam:
+      \begin{compactitem}
+	\item calcular uma integral simples pelo teorema fundamental do Cálculo.
+	\item construir a soma de Riemann associada utilizando o recurso educacional interativo.
+      \end{compactitem}
+      
+      \begin{list}{\arabic{steps}.}{
+	\setlength\leftmargin{0cm}%
+	\setlength\itemindent\parindent%
+	\setlength\listparindent{\parindent}%
+        \setlength\labelwidth{1.3em}%
+        \setlength\labelsep{0.7em}%        
+        \refstepcounter{steps}%
+        \usecounter{steps}%
+      }
+      
+	\item separar a classe em grupos de 5 alunos
+	\item atribuir uma função da lista do recurso educacional interativo para cada grupo (informar também a primitiva)\footnote{Isto é importante, pois
+	ainda não abordamos as propriedades da integral, de modo que os alunos não sabem como tratar soma de funções, multiplicação por constante etc.}
+	\item instruir cada grupo a efetuar a integração
+	\item chamar, um grupo por vez, para o computador do professor, para efetur a construção da soma de Riemann (fica a critério dos alunos escolher o
+	tipo de soma que quiser).
+	\item o professor escreve no quadro uma tabela contendo os grupos nas linhas e, nas colunas, o resultado da integração via teorema fundamental do
+	Cálculo e via soma de Riemann. Cada grupo fica responsável por preencher sua linha da tabela. Enquanto um grupo vai na frente construir a somar
+	de Riemann, os demais fazem o cálculo pelo teorema fundamental, e vice-versa.
+	\item no final da atividade, que deve demorar aproximadamente 5 minutos por grupo, a tabela evidenciará a equivalência entre os resultados.
+	Caso não dê tempo de todos os grupos participarem, proponha que eles terminem o exercício por conta própria, acessando o recurso educacional 
+	por meio do AVA.
+      
+      \end{list}
+    
   \section*{Nomenclatura}
     \begin{compactitem}
       \item Uma \emph{partição} $P$ do intervalo de integração é um conjunto de pontos $x_i$ sobre o eixo das abscissas que dividem o intervalo de integração em $n$ subintervalos, com $i = 0, 1, \ldots, n$. Os limites inferior (representado por $a$) e superior ($b$) compõem o primeiro e último desses pontos, respectivamente. Ou seja, $P = \{x_0 = a, x_1, \ldots, x_n = b\}$.
