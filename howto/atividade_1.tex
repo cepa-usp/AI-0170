@@ -13,7 +13,7 @@
   \usepackage{graphicx}
   \usepackage[font=small,format=plain]{caption}
   \usepackage{icomma}
-  
+  \usepackage{booktabs}
   
   \title{Proposta de atividade 1:}
   \subtitle{o teorema fundamental do Cálculo}
@@ -307,7 +307,29 @@
 	pelo TFC, no caderno, e pela soma de Riemann \emph{personalizada}, no computador do professor (ou do grupo, se houver).
 	Os resultados serão compilados numa tabela, para que todos possam apreciá-los.
 	
-	\item Atribua uma função $f$, dentre aquelas disponíveis no software (tela 1), e um intervalo $[a,b]$ para cada grupo.
+	\item Atribua uma função $f$, dentre aquelas disponíveis no software (tela 1), e um intervalo $[a,b]$ para cada grupo (veja sugestões na tabela \ref{tab:parte3}).
+	
+	\begin{table}
+	  \centering
+	  \caption{sugestões de funções e intervalos para a atividade em grupo}
+	  \label{tab:parte3}
+	  \begin{tabular}{ccc}
+	    \toprule
+	    $f(x)$    & $[a,b]$   & $\int_a^b f(x)\, dx$ \\
+	    \midrule
+	    $x$       & $[-1,0]$  & $-1/2 = -0,5$ \\
+	    $x+1$     & $[-5,-2]$ & $-7/2 = -3,5$ \\
+	    $x^2+1$   & $[-1,1]$  & $8/3 \approx 2,7$ \\
+	    $x^2+x$   & $[-1,3]$  & $40/3 \approx 13,3$ \\
+	    $x^2+x+1$ & $[-2,1]$  & $27/6 \approx 4,5$ \\
+	    $e^x$     & $[-2,1]$  & $e(1-e) \approx -4,7$ \\
+	    $e^{-x}$  & $[-2,-1]$ & $e(e-1) \approx 4,7$ \\
+	    $e^x+1$   & $[0,2]$   & $e^2+1 \approx 8,4$ \\
+	    $\sin(x)$ & $[-1,3]$  & $\cos(1)-\cos(3) \approx 1,5$ \\
+	    $\cos(x)$ & $[-1,3]$  & $\sin(1)+\sin(3) \approx 1,0$ \\
+	    \bottomrule
+	  \end{tabular}
+	\end{table}
 	
 	Informe também a primitiva de $f$. Isto é importante porque, até este momento, os alunos não tiveram contato com as propriedades das integrais,
 	de modo que eles não têm condições de integrar, por exemplo, $f(x) = x + 1$, ainda que eles saibam identificar as primitivas de $x$ e de $1$.
@@ -329,9 +351,11 @@
 	\hfill
 	\begin{tabular}{ccccc}
 	  Grupo & Função & Intervalo & Soma de Riemann & TFC \\
-	  1     & $x^2$  & $[0,3]$   & $8,9$           & 9,0   \\
-	  2     & $x+1$  & $[-1,1]$  & $2,1$           & 2,0   \\
-	  3     & ...    & ...       & ...             & ...
+	  \midrule
+	  1     & $x^2+1$  & $[-1,1]$   & $2,6$           & 2,7   \\
+	  2     & $\sin(x)$  & $[-1,3]$  & $1,4$           & 1,5   \\
+	  3     & ...    & ...       & ...             & ...   \\
+	  \bottomrule
 	\end{tabular}
 	\hfill{}
 	\medskip
@@ -343,6 +367,9 @@
 	e que discutam seus resultados no fórum do AVA.
       
       \end{list}
+    
+  
+
     
   \section*{Nomenclatura}
     \begin{compactitem}
