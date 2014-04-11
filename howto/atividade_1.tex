@@ -17,8 +17,10 @@
   
   \title{Proposta de atividade 1:}
   \subtitle{o teorema fundamental do Cálculo}
-  \author{R. S. Morais, S. N. Dezidério, I. R. Pagnossin}
+  \author{I. R. Pagnossin, R. S. Morais, S. N. Dezidério}
 
+  \newcommand\importante{\textbf{Importante}}
+  
   \hyphenation{pro-ble-ma pri-mi-ti-va}
   
 \begin{document}
@@ -28,16 +30,31 @@
   \maketitle
 
   \begin{abstract}
-    Este trabalho apresenta uma proposta de atividade de aprendizagem que utiliza o recurso educacional interativo ``Integral de Riemann'' (disponível \href{http://cepa-usp.github.io/AI-0170/}{aqui}) para abordar o \emph{teorema fundamental do Cálculo}: utilizamos o software para construir uma soma de Riemann arbitrária, com o intuito de aproximar a área sob o gráfico de uma função afim $f$ no intervalo $[a,b]$ e comparamos o resultado com a área exata, que pode ser obtida geometricamente. Finalmente, utilizamos a anti-derivada $F$ para evidenciar a equivalência desses resultados com $F(b) - F(a)$.
+    Este trabalho apresenta uma proposta de atividade de aprendizagem que utiliza o recurso educacional interativo ``Integral de Riemann''
+    (disponível \href{http://cepa-usp.github.io/AI-0170/}{aqui}) para abordar o \emph{teorema fundamental do Cálculo} (TFC).
     
-    Como o software oferece bastante flexibilidade na construção das somas de Riemann, podemos aproximar a área sob $f$ utilizando uma quantidade finita de elementos de área, fundamentado no \emph{teorema do valor médio} para integrais (que não é abordado explicitamente). Por isso, propomos uma atividade com foco na participação dos alunos, baseando todo o processo em conhecimentos prévios deles.
+    A atividade está dividida em três partes: na primeira, utilizamos o software para construir uma soma de Riemann arbitrária,
+    com o intuito de aproximar a área sob o gráfico de uma função afim $f$ no intervalo $[a,b]$, e comparamos o resultado com a área exata,
+    que pode ser obtida geometricamente. Finalmente, utilizamos a anti-derivada $F$ para evidenciar a equivalência desses resultados com $F(b) - F(a)$.
+    
+    Como o software oferece bastante flexibilidade na construção das somas de Riemann, podemos aproximar a área sob $f$ utilizando uma quantidade
+    finita de elementos de área, fundamentado no \emph{teorema do valor médio} para integrais (que não é abordado explicitamente).
+    
+    Na segunda parte da atividade, repetimos o trabalho feito na primeira, desta vez para $f(x) = x^2$ e utilizando os critérios
+    conhecidos como ``soma inferior'' e ``soma superior''. Utilizamos o ensejo para abordar a transição do discreto para o contínuo.
+    
+    Finalmente, na terceira parte os alunos, divididos em grupos, replicam o que foi feito na primeira parte da atividade,
+    colocando em prática a soma de Riemann, o teorema fundamental do Cálculo e familiarizando-se com o software, para que
+    eles sejam capazes de utilizá-los nos exercícios propostos no Ambiente Virtual de Aprendizagem (AVA).
+    
+    
     
     Para mais instruções sobre como utilizar o recurso educacional, veja \href{http://www.youtube.com/watch?v=PJlPleMYuG4&t=22}{este tutorial}.
   \end{abstract}
   
   \section*{Parte 1}
   
-    Nesta primeira parte da atividade, construiremos uma soma de Riemann da \emph{função afim} $f(x) = 2x + 1$, cuja área sob ela pode ser calculada com base em argumentos geométricos (áreas do triângulo, do retângulo e do trapézio), conhecidos do aluno. Deste modo e utilizando implicitamente o \emph{teorema do valor médio} para integrais, poderemos construir uma soma de Riemann com poucos elementos de área e mostrar como o resultado da soma equipara-se ao cálculo analítico da integral definida, evidenciando assim o \emph{teorema fundamental do Cálculo}.
+    Nesta primeira parte da atividade, construiremos uma soma de Riemann da \emph{função afim} $f(x) = 2x + 1$, cuja área sob ela pode ser calculada com base em argumentos geométricos (áreas do triângulo, do retângulo e do trapézio), conhecidos do aluno. Deste modo e utilizando implicitamente o \emph{teorema do valor médio} para integrais, poderemos construir uma soma de Riemann com poucos elementos de área e mostrar como o resultado da soma equipara-se ao cálculo analítico da integral definida, evidenciando assim o TFC.
     
     Neste processo, é importante que os alunos sejam estimulados a participar, propondo o próximo passo na solução do problema que queremos resolver, a saber: encontrar o valor da área da região delimiteada por $x = a$, $x = b$, $y = 0 $ e $y = f(x)$ (a ``área sob $f$'').
   
@@ -46,7 +63,7 @@
     Ao final desta atividade, espera-se que os alunos saibam:
     \begin{compactitem}
       \item explicar o significado o termo \emph{soma de Riemann}.
-      \item explicar a importância do \emph{teorema fundamental do Cálculo}.
+      \item explicar a importância do TFC.
       \item explicar a relação entre os dois conceitos acima.
     \end{compactitem}
   
@@ -96,7 +113,7 @@
       \item Após determinar a área sob $f$ no intervalo $[a,b]$, questionar os alunos sobre como obter um valor \emph{aproximado} dessa área utilizando apenas retângulos. Espera-se que eles sugiram a inserção de vários retângulos abaixo do gráfico de $f$ (soma inferior) ou acima dele (soma superior), no intervalo de integração.
       
       Provavelmente os alunos questionarão o porquê dessa necessidade, haja vista que as fórmulas da Geometria Euclidiana Plana resolvem o problema.
-      Este é um bom momento para propor que eles pensem em como \emph{aproxiar} a área sob a função $x^2$ no mesmo intervalo de integração.
+      Este é um bom momento para propor que eles pensem em como \emph{aproximar} a área sob a função $x^2$ no mesmo intervalo de integração.
     
       \item Após a discussão acima, ainda na tela 4, crie uma partição do intervalo $[a,b]$. Ou seja, escolha um conjunto de pontos sobre o eixo das abscissas que, juntamente com os pontos $a$ e $b$, dividem o intervalo de integração em $n = 5$ (ou mais) subintervalos. 
       
@@ -111,7 +128,8 @@
 	\label{fig:particao}
       \end{figure}
 
-      \item Na tela 5, construa os elementos de área, isto é, os retângulos de base $\Delta x_i = x_{i+1} - x_i$ e altura $f(\xi_i)$, onde $\xi_i$ é um número \emph{arbitrário} do subintervalo $[x_i, x_{i+1}]$ e $i = 0,1,\ldots,n-1$. Note que a área do $i$-ésimo elemento de área é igual a $f(\xi_i)\Delta x_i$.
+      \item Na tela 5, construa os elementos de área, isto é, os retângulos de base $\Delta x_i = x_{i+1} - x_i$ e altura $f(\xi_i)$, onde $\xi_i$
+      é uma abscissa \emph{arbitrária} do subintervalo $[x_i, x_{i+1}]$ e $i = 0,1,\ldots,n-1$. Note que a área do $i$-ésimo elemento de área é igual a $f(\xi_i)\Delta x_i$.
       
       Para criar um elemento de área no software, clique no gráfico de $f$ em algum $\xi_i \in [x_i,x_{i+1}]$. Ao fazer isso, aparecerá o símbolo $\times$ sobre o gráfico de $f$, destacando o ponto $\left(\xi_i, f(\xi_i)\right)$. Neste momento, pressione o botão $+$ (mais) ou a tecla \textit{p} para que o elemento de área (um retângulo) seja automaticamente desenhado na tela. Se você repetir esse procedimento para um $\xi_i$ diferente do mesmo subintervalo, um novo elemento de área será criado no lugar do anterior. Para remover um elemento de área, clique sobre ele e pressione o botão $-$ (menos) ou a tecla ``delete''.
       
@@ -123,7 +141,7 @@
       
       Para fazer isso com o software, mova o mouse pelo subintervalo enquanto pressiona a tecla \textit{p} várias vezes, reconstruindo assim o elemento de área para vários $\xi_i$. Faça isso até que, \textbf{visualmente}, o excesso de área à esquerda de $\xi_i$ compense a falta à direita.\footnote{\textbf{Dica:} ao clicar sobre um elemento de área, aparecem duas retas verticais, uma à esquerda e outra à direita dele, que podem servir de guias para avaliar as áreas que faltam e que sobram.} Neste caso, $f(\xi_i)$ será o \emph{valor médio} de $f$ no subintervalo $[x_i, x_{i+1}]$.
       
-      \paragraph{Observação:} quando escolhemos os $\xi_i$ de modo que $f(\xi_i)$ seja mínimo em cada subintervalo $[x_i,x_{i+1}]$, ao somar os elementos de área obtemos a chamada ``soma inferior'', que subestima a área sob $f$. Por outro lado, quando escolhemos $\xi_i$ de modo $f(\xi_i)$ seja máximo, obtemos a ``soma superior'', na qual a área é superestimada.
+      \importante: quando escolhemos os $\xi_i$ de modo que $f(\xi_i)$ seja mínimo em cada subintervalo $[x_i,x_{i+1}]$, ao somar os elementos de área obtemos a chamada ``soma inferior'', que subestima a área sob $f$. Por outro lado, quando escolhemos $\xi_i$ de modo $f(\xi_i)$ seja máximo, obtemos a ``soma superior'', na qual a área é superestimada.
       
       \item Ajuste cada um dos $\xi_i$ conforme o critério do passo anterior. No final, compare novamente a soma das áreas dos elementos de área, no canto superior direito da tela, com a área obtida com argumentos geométricos (passo \ref{step:area}).
       
@@ -157,14 +175,14 @@
       
       Em alguns casos pode ser difícil acertar o clique sobre $\left(b,F(b)\right)$.\footnote{Especialmente se você não fez $C \approx 4,7$, como instruido no passo \ref{step:C}.} Para simplificar essa tarefa, selecione o elemento de área mais à direita para que o software desenhe as linhas-guia verticais nas laterais dele (fig~\ref{fig:linhas-guia}). Deste modo, basta clicar sobre a intersecção da linha vertical mais à direita com $F$ para obter $F(b)$.
       
-      \item Calcule $F(b) - F(a)$ e compare o resultado com os valores da soma de Riemann, no canto superior direito, e da área obtida com argumentos geométricos (passo \ref{step:area}). O resultado desses três procedimentos deve ser o mesmo, igual a (ou aproximadamente) 12. Esta é uma evidência do \emph{teorema fundamental do Cálculo}, a saber:
+      \item Calcule $F(b) - F(a)$ e compare o resultado com os valores da soma de Riemann, no canto superior direito, e da área obtida com argumentos geométricos (passo \ref{step:area}). O resultado desses três procedimentos deve ser o mesmo, igual a (ou aproximadamente) 12. Esta é uma evidência do TFC, a saber:
       \begin{equation}\label{eq:TFC}
        \text{Área sob $f$ em $[a,b]$} = \int_a^b f(x)\,dx = F(b) - F(a).
       \end{equation}
       
-      É fundamental chamar a atenção dos alunos para os dois últimos procedimentos: no primeiro, aproximamos a área sob $f$ pela soma da área de $n$ retângulos (\emph{matemática discreta}); no segundo, utilizamos a anti-derivada $F$ para calcular $F(b) - F(a)$ (\emph{matemática contínua}). A equivalência entre esses dois resultados é o teorema fundamental do Cálculo, que nos permite obter a \emph{integral definida de $f$ em $[a,b]$} (a área sob $f$) sem efetuar a laboriosa soma de Riemann.
+      É fundamental chamar a atenção dos alunos para os dois últimos procedimentos: no primeiro, aproximamos a área sob $f$ pela soma da área de $n$ retângulos (\emph{matemática discreta}); no segundo, utilizamos a anti-derivada $F$ para calcular $F(b) - F(a)$ (\emph{matemática contínua}). A equivalência entre esses dois resultados é o TFC, que nos permite obter a \emph{integral definida de $f$ em $[a,b]$} (a área sob $f$) sem efetuar a laboriosa soma de Riemann.
       
-      \paragraph{Atenção:} este é um bom momento para distinguir a ``área sob $f$'' da ``integral de $f$''.
+      \importante: este é um bom momento para distinguir a ``área sob $f$'' da ``integral de $f$''.
       Rigorosamente, a ``área sob $f$'' é de fato a área da \emph{região} delimitada por $x = a$, $x = b$, $y = 0$ e $y = f(x)$.
       Por exemplo, a \emph{integral} de $f(x) = x$ no intervalo $[1,-1]$ é igual a zero:
       \begin{equation*}
@@ -182,10 +200,28 @@
       
     \end{list}
     
+    \subsection*{Extra: teorema do valor médio}
+    
+      Implicitamente, a ideia de compensar a área faltando com a área sobrando está baseada no \emph{teorema do valor médio} (TVM) para integrais.
+      Embora ele não faça parte dos objetivos desta atividade, dependendo do rítmo de desenvolvimento dela, o professor pode julgar interessante abordá-lo.
+      Neste caso, convém chamar a atenção dos alunos para o fato de que, em cada sub-intervalo $[x_i,x_{i+1}]$, escolhemos $\xi_i$ de tal modo que
+      a área sob $f$ nesse sub-intervalo seja igual à do retângulo de base $\Delta x_i \doteq x_{i+1} - x_i$ e altura $f(\xi_i)$. Assim, podemos escrever:
+      \begin{equation*}
+	f(\xi_i)\Delta x_i = \int_{x_i}^{x_{i+1}} f(x)\, dx.
+      \end{equation*}
+      
+      Expandindo a ideia para todo o intervalo $[a,b]$ de integração, concluímos que se $f$ for contínua nesse intervalo, então $\exists\xi_i\in[a,b]$ tal que
+      \begin{equation*}
+	f(\xi_i) = \frac{1}{b - a}\int_a^b f(x)\, dx,
+      \end{equation*}
+      que é o teorema do valor médio para integrais.
+
+
+    
     \section*{Parte 2}
     
-      Nesta segunda parte, aplicaremos os dois conceitos explorados na parte anterior (soma de Riemann e teorema fundamental do Cálculo)
-      para encontrar a integral de $f(x) = x^2$ no intervalo $[0,3]$. Note que não poderemos utilizar a Geometria Euclidiana Plana.
+      Nesta segunda parte, aplicaremos os dois conceitos explorados na parte anterior (soma de Riemann e TFC)
+      para encontrar a integral de $f(x) = x^2$ no intervalo $[0,3]$. Note que, desta vez, não teremos como verificar o resultado por meio da Geometria Euclidiana Plana.
     
       \subsection*{Objetivos específicos}
   
@@ -207,27 +243,54 @@
         \usecounter{steps}%
       }
     
-	\item calcular integral de $f$
-	\item selecionar $f(x) = x^2$
-	\item selecionar $[a,b] = [0,3]$
-	\item selecionar ``soma inferior'' (``soma superior'')
-	\item chamar a atenção para o erro ``para menos'' (``para mais'')
-	\item aumentar/reduzir o número de elementos de área, chamando a atenção para a progressão da somatória, cada vez mais próxima da integral.
-	\item No limite em que $n \to \infty$, abordar a transição do discreto para o contínuo.
+	\item Utilizando o TFC, calcule a integral definida no quadro-negro:
+	\begin{equation*}
+	  \int_0^3 x^2\, dx = \left[\frac{x^3}{3} + C\right]_0^3 = 9,
+	\end{equation*}
+	onde $C\in\mathbb{C}$ é a constante de integração.
+
+	\item Agora vamos calcular a integral utilizando o método da soma de Riemann. Para isso, selecione $f(x) = x^2$ na tela 1 do aplicativo.
+	\item Na tela 2, ajuste o intervalo de integração para $[a,b] = [0,3]$.
+	\item\label{parte2:começo} Na tela 3, selecione ``soma inferior''. Explique o que isso significa: que agora escolhemos $\xi_i$ de tal modo que $f(\xi_i)$
+	seja mínimo no intervalo $[x_i,x_{i+1}]$, diferentemente do que foi feito na primeira parte, onde $\xi_i$ foi escolhido de modo que a área do
+	elemento de área fosse aproximadamente igual à área sob $f$ naquele sub-intervalo.
+	
+	\item Na tela 4, o aplicativo criará automaticamente uma partição \emph{uniforme} do intervalo de integração.
+	\item Na tela 5, o aplicativo criará automaticamente os elementos de área e exibirá o resultado da soma no canto superior direito da tela.
+	\item\label{parte2:fim} \importante: mostre que, conforme a quantidade $n$ de sub-intervalos aumenta, a soma de Riemann aproxima-se mais e mais
+	do resultado obtido pelo TFC, no primeiro passo. Para isso, volte para a tela 4 e utilize os botões $+$ e $-$ para aumentar ou reduzir $n$.
+	Em seguida, avance novamente até a tela 5 para mostrar o efeito.
+	
+	Por exemplo, inicialmente, com $n = 5$, a soma (inferior) de Riemann $S_n^{\text{inferior}} = 6,48 < 9$.
+	Na tela 4, pressione $+$ cinco vezes de modo que $n = 10$. Na tela 5, verifique que $S_{10}^{\text{inferior}} = 7,70 < 9$. Repita o processo quantas vezes forem necessárias
+	até que essa tendência esteja clara.
+	\item Repita os passos \ref{parte2:começo}--\ref{parte2:fim}, desta vez utilizando a ``soma superior'', e enfatize o fato de que, desta vez, a soma (superior) de Riemann
+	aproxima-se do valor esperado por cima. Por exemplo, $S_5^{\text{superior}} = 11,84 > 9$, $S_{10}^{\text{superior}} = 10,36 > 9$ etc.
+	
+	\item Conclua esta parte da atividade argumentando que $S_n^{\text{inferior}} \le F(b) - F(a) \le S_n^{\text{superior}}$ e que, no limite em que $n \to \infty$,
+	independentemente do critério utilizado (soma inferior, superior ou personalizada), teremos sempre
+	\begin{equation*}
+	  \lim_{n\to\infty} S_n^{\text{inferior}} \equiv \lim_{n\to\infty} S_n^{\text{superior}} \equiv \lim_{n\to\infty} S_n^{\text{personalizada}} = \int_a^b f(x)\, dx = F(b) - F(a).
+	\end{equation*}
+	
+	\importante: enfatize aqui a transição do discreto para o contínuo.
     
       \end{list}
       
     \subsection*{Parte 3}
     
-      Na parte final desta atividade os alunos replicarão o que foi exposto para outras funções simples.
+      Na parte final desta atividade os alunos replicarão o que foi exposto até agora para outras funções simples.
+      Esta etapa da atividade é importante para que os alunos possam familiarizarem-se com o software, evitando problemas técnicos ao executar as tarefas propostas no AVA.
     
-    \subsection*{Objetivos específicos}
+      \subsection*{Objetivos específicos}
   
       Ao final desta parte, espera-se que os alunos saibam:
       \begin{compactitem}
-	\item calcular uma integral simples pelo teorema fundamental do Cálculo.
+	\item calcular uma integral definida simples pelo TFC, considerando dada a primitiva.
 	\item construir a soma de Riemann associada utilizando o recurso educacional interativo.
       \end{compactitem}
+      
+      \subsection*{Roteiro}
       
       \begin{list}{\arabic{steps}.}{
 	\setlength\leftmargin{0cm}%
@@ -239,18 +302,45 @@
         \usecounter{steps}%
       }
       
-	\item separar a classe em grupos de 5 alunos
-	\item atribuir uma função da lista do recurso educacional interativo para cada grupo (informar também a primitiva)\footnote{Isto é importante, pois
-	ainda não abordamos as propriedades da integral, de modo que os alunos não sabem como tratar soma de funções, multiplicação por constante etc.}
-	\item instruir cada grupo a efetuar a integração
-	\item chamar, um grupo por vez, para o computador do professor, para efetur a construção da soma de Riemann (fica a critério dos alunos escolher o
-	tipo de soma que quiser).
-	\item o professor escreve no quadro uma tabela contendo os grupos nas linhas e, nas colunas, o resultado da integração via teorema fundamental do
-	Cálculo e via soma de Riemann. Cada grupo fica responsável por preencher sua linha da tabela. Enquanto um grupo vai na frente construir a somar
-	de Riemann, os demais fazem o cálculo pelo teorema fundamental, e vice-versa.
-	\item no final da atividade, que deve demorar aproximadamente 5 minutos por grupo, a tabela evidenciará a equivalência entre os resultados.
-	Caso não dê tempo de todos os grupos participarem, proponha que eles terminem o exercício por conta própria, acessando o recurso educacional 
-	por meio do AVA.
+	\item Peça aos alunos para organizarem-se em grupos de aproximadamente 5 e explique a dinâmica da atividade:
+	cada grupo receberá uma função $f$ e um intervalo de integração $[a,b]$, e cada um terá de calcular a integral $\int_a^b f(x)\,dx$
+	pelo TFC, no caderno, e pela soma de Riemann \emph{personalizada}, no computador do professor (ou do grupo, se houver).
+	Os resultados serão compilados numa tabela, para que todos possam apreciá-los.
+	
+	\item Atribua uma função $f$, dentre aquelas disponíveis no software (tela 1), e um intervalo $[a,b]$ para cada grupo.
+	
+	Informe também a primitiva de $f$. Isto é importante porque, até este momento, os alunos não tiveram contato com as propriedades das integrais,
+	de modo que eles não têm condições de integrar, por exemplo, $f(x) = x + 1$, ainda que eles saibam identificar as primitivas de $x$ e de $1$.
+	
+	\item Escolha um primeiro grupo, que utilizará o software para construir a soma de Riemann \emph{personalizada} da função e intervalo atribuidos a ele.
+	
+	É importante que os alunos utilizem a soma personalizada para poder obter resultados bastante próximos daqueles obtidos via TFC.
+	Este software impõe intencionalmente um limite de $n = 25$ sub-intervalos de integração, o que não permite obter uma soma inferior
+	ou superior bastante próxima do resultado via TFC. Caso queira explorar isso, utilize \href{http://midia.atp.usp.br/atividades-interativas/AI-0108}{este outro} recurso educacional interativo.
+	
+	\item Enquanto este grupo trabalha no software, oriente os demais a efetuar o cálculo da integral definida por meio do TFC.
+	
+	\item Auxilie os grupos em suas tarefas: aquele que está utilizando o computador, a construir a soma de Riemann; aqueles que estão em seus lugares, a resolver a integral via TFC.
+	
+	\item Construa no quadro-negro uma tabela relacionando os grupos com os resultados obtidos por eles via TFC e via soma de Riemann, como abaixo.
+	Responsabilize cada grupo de ir até o quadro-negro preencher seus resultados.
+	
+	\medskip
+	\hfill
+	\begin{tabular}{ccccc}
+	  Grupo & Função & Intervalo & Soma de Riemann & TFC \\
+	  1     & $x^2$  & $[0,3]$   & $8,9$           & 9,0   \\
+	  2     & $x+1$  & $[-1,1]$  & $2,1$           & 2,0   \\
+	  3     & ...    & ...       & ...             & ...
+	\end{tabular}
+	\hfill{}
+	\medskip
+	
+	\item No final da atividade, que deve demorar aproximadamente 5 minutos por grupo, a tabela evidenciará a equivalência entre os resultados.
+	Discuta o resultado.
+	
+	Caso falte tempo para que todos os grupos participarem, proponha que eles terminem o exercício por conta própria, acessando o recurso educacional no AVA,
+	e que discutam seus resultados no fórum do AVA.
       
       \end{list}
     
@@ -272,7 +362,7 @@
 
       \item A \emph{integral de Riemann} é o limite da soma de Riemann quando $n$ tende ao infinito. Ou seja, $I = \lim_{n \to \infty} S_n$. Neste limite, o critério de escolha de $\xi_i$ (soma superior, soma inferior ou personalizada, como usamos nesta proposta) é irrelevante para o resultado: $I = \int_a^b f(x)\, dx$.
 
-      \item O \emph{teorema fundamental do Cálculo} diz que, se $f$ for contínua em $[a,b]$, então $\int_a^b f(x)\,dx = F(b) - F(a)$, onde $F$ é qualquer anti-derivada de $f$.
+      \item O \emph{teorema fundamental do Cálculo} (TFC) diz que, se $f$ for contínua em $[a,b]$, então $\int_a^b f(x)\,dx = F(b) - F(a)$, onde $F$ é qualquer anti-derivada de $f$.
     \end{compactitem}
 
   \section*{Créditos}
